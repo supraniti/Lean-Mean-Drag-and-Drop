@@ -1,8 +1,8 @@
 var lmdd = (function() {
     var scope = {};
-    var draggableClass = 'flex-cell'; //add lmdd-draggable
+    var draggableClass = 'rectangle'; //add lmdd-draggable
     var handleClass = ''; //add lmdd-handle
-    var containerClass = 'flex-cell'; //add lmdd-container
+    var containerClass = 'nestable'; //add lmdd-container
     var draggedElement = false;
     var draggedClone = false;
     var mirror = false;
@@ -179,6 +179,8 @@ var lmdd = (function() {
         // mirror.style.top = (mouseLocation.clientY - (mirror.getBoundingClientRect().height / 2)) + 'px';
         // mirror.style.left = (mouseLocation.clientX - (mirror.getBoundingClientRect().width / 2)) + 'px';
         var offset = getOffset(mirror,mirror.parentNode);
+        console.log(mirror.style.top,mirror.style.left)
+        console.log(mirror.getBoundingClientRect());
         mirror.style.top = (mouseLocation.pageY) + 'px';
         mirror.style.left = (mouseLocation.pageX) + 'px';
     };

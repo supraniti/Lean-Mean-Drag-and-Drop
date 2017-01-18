@@ -28,7 +28,8 @@
   <meta name="theme-color" content="#ef5423">
   <!-- CSS-->
     <link href="gh-pages/style.css" type="text/css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-css.min.js" type="text/css" rel="stylesheet">
+    <link href="gh-pages/prism.css" rel="stylesheet">
+    <link href="dist/lmdd.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -63,24 +64,63 @@
       </nav>
   </header>
   <main>
+      <div class="container">
+          <div class="row">
       <div id="about" class="section scrollspy">
-          <p>Content </p>
+          <h4 class="deep-orange-text text-darken-3">About</h4>
+          <p><b>Lean & Mean Drag and Drop</b> is a small script  making drag and drop for re-ordering complex html layout a breeze</p>
+          <p>LMDD is light weighted (~3kb gzipped) and has zero dependencies. It can work with any type of layout, including flex-box, and produce beautiful looking UI with smooth transitions on sorting.</p>
       </div>
-
       <div id="installation" class="section scrollspy">
-          <p>Content </p>
+          <h4 class="deep-orange-text text-darken-3">Installation</h4>
+          <p>Add <a class="deep-orange-text" href="#">mldd.min.js</a> to your project and load it.</p>
+          <p>Initialize LMDD instance with your preferred options, and make sure to listen to the relevant events and respond accordingly</p>
+          <pre><code class="language-css">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
       </div>
 
       <div id="example1" class="section scrollspy">
-          <p>Content </p>
-      </div>
+          <h4 class="deep-orange-text text-darken-3">Example #1 - Simple Sortable Lists</h4>
+          <p>Note LMDD is markup oriented, meaning your HTML markup determines the way drag and drop behaviour:</p>
+          <p>Elements marked with class="your-draggable-class" will be draggable</p>
+          <p>Elements marked with class="your-container-class" will act as containers and you will be able to drop draggables inside them</p>
+          <h5 class="deep-orange-text text-darken-2">Horizontal Sortable</h5>
+          <div id="simple-sortable-1">
+             <div class="nestable">
+               <div class="orange rectangle"></div>
+               <div class="light-green rectangle"></div>
+               <div class="pink rectangle"></div>
+               <div class="deep-purple rectangle"></div>
+               <div class="light-blue rectangle"></div>
+               <div class="lime rectangle"></div>
+            </div>
+          </div>
+          <p>HTML markup:</p>
+            <pre class="language-html"><code>&lt;div id="simple-sortable-1">&lt;div class="container">
+      &lt;div class="orange rectangle">&lt;/div>
+      &lt;div class="light-green rectangle">&lt;/div>
+      &lt;div class="pink rectangle">&lt;/div>
+      &lt;div class="deep-purple rectangle">&lt;/div>
+      &lt;div class="light-blue rectangle">&lt;/div>
+      &lt;div class="lime rectangle">&lt;/div>
+  &lt;/div>
+&lt;/div></code></pre>
+          <p>Javascript:</p>
+          <pre><code class="language-javascript">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
 
+          <h5 class="deep-orange-text text-darken-2">Vertical Sortable</h5>
+
+          <h5 class="deep-orange-text text-darken-2">Grid Sortable</h5>
+
+          <pre><code class="language-css">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
+
+      </div>
       <div id="example2" class="section scrollspy">
           <p>Content </p>
       </div>
-
       <div id="example3" class="section scrollspy">
           <p>Content </p>
+      </div>
+          </div>
       </div>
   </main>
   <footer class="page-footer deep-orange">
@@ -93,7 +133,9 @@
   </footer>
   <!--  Scripts-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/prism.min.js"></script>
+  <script src="gh-pages/prism.js"></script>
+  <script src="dist/lmdd.js"></script>
+  <script src="gh-pages/script.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.9/vue.min.js"></script>
 <script>

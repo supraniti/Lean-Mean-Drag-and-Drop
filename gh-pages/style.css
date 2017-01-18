@@ -6,3 +6,10 @@ body{
 .side-nav .subheader{
     color: rgba(0,0,0,0.54) !important;
 }
+
+.rectangle{
+    height:100px;
+    width:100px;
+    margin:15px;
+    display:inline-block;
+}
