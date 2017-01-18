@@ -1,2 +1,8 @@
 body{
 }
+.side-nav a,.side-nav li>a>i.material-icons {
+    color: rgba(0,0,0,1) !important;
+}
+.side-nav .subheader{
+    color: rgba(0,0,0,0.54) !important;
+}
