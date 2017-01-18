@@ -22,10 +22,10 @@
   <link rel="icon" type="image/png" sizes="96x96" href="gh-pages/images/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="16x16" href="gh-pages/images/favicon-16x16.png">
   <link rel="manifest" href="gh-pages/images/manifest.json">
-  <meta name="msapplication-TileColor" content="#ff7043">
+  <meta name="msapplication-TileColor" content="#ef5423">
   <meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
   <!--  Android 5 Chrome Color-->
-  <meta name="theme-color" content="#ff7043">
+  <meta name="theme-color" content="#ef5423">
   <!-- CSS-->
     <link href="gh-pages/style.css" type="text/css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-css.min.js" type="text/css" rel="stylesheet">
@@ -35,28 +35,54 @@
 </head>
 <body>
   <header>
-      <nav class="deep-orange lighten-1" role="navigation">
+  <nav class="deep-orange lighten-1" role="navigation">
           <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">LMDD</a>
               <ul class="right hide-on-med-and-down">
-                  <li><a href="#">Example 1</a></li>
-                  <li><a href="#">Example 1</a></li>
-                  <li><a href="#">Example 1</a></li>
-                  <li><a href="#">Example 1</a></li>
-                  <li><a href="#">Example 1</a></li>
+                  <li><a href="#about">About</a></li>
+                  <li><a href="#installation">Installation</a></li>
+                  <li><a href="#example1">Example 1</a></li>
+                  <li><a href="#example2">Example 2</a></li>
+                  <li><a href="#example3">Example 3</a></li>
               </ul>
-              <ul id="nav-mobile" class="side-nav">
-                  <li><a href="#">Example 1</a></li>
-                  <li><a href="#">Example 1</a></li>
-                  <li><a href="#">Example 1</a></li>
-                  <li><a href="#">Example 1</a></li>
-                  <li><a href="#">Example 1</a></li>
+              <ul id="nav-mobile" class="side-nav deep-orange lighten-1">
+                  <li><div class="background">
+                          <img src="gh-pages/images/logo-250.png">
+                      </div>
+                  </li>
+                  <span class="white-text">555</span>
+                  <li><a class="waves-effect" href="#about"><i class="material-icons">announcement</i>About</a></li>
+                  <li><a class="waves-effect" href="#installation"><i class="material-icons">lightbulb_outline</i>Installation</a></li>
+                  <li><a class="waves-effect" href="#options"><i class="material-icons">settings</i>Options</a></li>
+                  <li><div class="divider"></div></li>
+                  <li><a class="subheader">Examples</a></li>
+                  <li><a class="waves-effect" href="#example1">Example 1</a></li>
+                  <li><a class="waves-effect" href="#example2">Example 2</a></li>
+                  <li><a class="waves-effect" href="#example3">Example 3</a></li>
               </ul>
               <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
           </div>
       </nav>
   </header>
   <main>
+      <div id="about" class="section scrollspy">
+          <p>Content </p>
+      </div>
 
+      <div id="installation" class="section scrollspy">
+          <p>Content </p>
+      </div>
+
+      <div id="example1" class="section scrollspy">
+          <p>Content </p>
+      </div>
+
+      <div id="example2" class="section scrollspy">
+          <p>Content </p>
+      </div>
+
+      <div id="example3" class="section scrollspy">
+          <p>Content </p>
+      </div>
   </main>
   <footer class="page-footer deep-orange">
     <div class="footer-copyright">
@@ -73,7 +99,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.9/vue.min.js"></script>
 <script>
     $( document ).ready(function(){
-        $(".button-collapse").sideNav();
+        $(".button-collapse").sideNav({
+            menuWidth: 250, // Default is 240
+            edge: 'left', // Choose the horizontal origin
+            closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+            draggable: true // Choose whether you can drag to open on touch screens
+            }
+        );
+        $('.scrollspy').scrollSpy();
     })
 </script>
 </body>
