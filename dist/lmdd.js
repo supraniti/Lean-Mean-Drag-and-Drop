@@ -151,6 +151,7 @@ var lmdd = (function() {
     var dragEnded = function(event) {
         if (draggedElement) {
             unsetMirror();
+            document.body.classList.toggle('unselectable');
             draggedElement.classList.toggle('lmdd-hidden');//reverse
             scope.animation.kill();
             scope = false;
@@ -160,6 +161,7 @@ var lmdd = (function() {
     }
     var dragStarted = function(event, el) {
         if (event.button === 0) {
+            document.body.classList.toggle('unselectable');
             scope = el;//reverse
             event.stopPropagation();
             scope.animation.init();//reverseVV
@@ -179,14 +181,16 @@ var lmdd = (function() {
         // mirror.style.top = (mouseLocation.clientY - (mirror.getBoundingClientRect().height / 2)) + 'px';
         // mirror.style.left = (mouseLocation.clientX - (mirror.getBoundingClientRect().width / 2)) + 'px';
         var offset = getOffset(mirror,mirror.parentNode);
-        console.log(mirror.style.top,mirror.style.left)
-        console.log(mirror.getBoundingClientRect());
-        mirror.style.top = (mouseLocation.pageY) + 'px';
-        mirror.style.left = (mouseLocation.pageX) + 'px';
+        // var offset = (elNode === draggedElement)?getOffset(elNode, scope):getOffset(elNode, elNode.parentNode);
+        // cloneNode.style.transform = 'translate(' + offset.x + 'px, ' + offset.y + 'px)';
+        console.log(mirror.getBoundingClientRect().top,mirror.parentNode.getBoundingClientRect().top);
+        mirror.style.top = (mouseLocation.clientY - parseInt(mirror.parentNode.style.top) + window.scrollY) + 'px';
+        mirror.style.left = (mouseLocation.clientX - parseInt(mirror.parentNode.style.left) + window.scrollX) + 'px';
     };
     var setMirror = function() {
         mirror = draggedClone.cloneNode(true);
         mirror.classList.toggle('lmdd-mirror');
+        mirror.classList.toggle('lmdd-dragged');
         mirror.style.width = draggedClone.getBoundingClientRect().width + 'px';
         mirror.style.height = draggedClone.getBoundingClientRect().height + 'px';
         var scaleX = Math.min(300/draggedClone.getBoundingClientRect().width,1);
@@ -258,6 +262,7 @@ var lmdd = (function() {
     };
     return {
         init: function(el) {
+            console.log('init',el)
             cleanNode(el);
             //get read of drag events
             document.addEventListener("drag", muteEvent, false); //reverse

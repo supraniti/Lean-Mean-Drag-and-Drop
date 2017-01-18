@@ -83,19 +83,56 @@
           <p>Note LMDD is markup oriented, meaning your HTML markup determines the way drag and drop behaviour:</p>
           <p>Elements marked with class="your-draggable-class" will be draggable</p>
           <p>Elements marked with class="your-container-class" will act as containers and you will be able to drop draggables inside them</p>
-          <h5 class="deep-orange-text text-darken-2">Horizontal Sortable</h5>
-          <div id="simple-sortable-1">
-             <div class="nestable">
-               <div class="orange rectangle"></div>
-               <div class="light-green rectangle"></div>
-               <div class="pink rectangle"></div>
-               <div class="deep-purple rectangle"></div>
-               <div class="light-blue rectangle"></div>
-               <div class="lime rectangle"></div>
-            </div>
+          <div class="flex-row">
+              <div class="flex-cell flex-1">
+                  <h5 class="deep-orange-text text-darken-2">Horizontal Sortable</h5>
+                  <div id="simple-sortable-1">
+                      <div class="flex-row nestable">
+                          <div class="orange rectangle"></div>
+                          <div class="light-green rectangle"></div>
+                          <div class="pink rectangle"></div>
+                          <div class="deep-purple rectangle"></div>
+                          <div class="light-blue rectangle"></div>
+                          <div class="lime rectangle"></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="flex-row">
+          <div class="flex-cell flex-3-10">
+              <h5 class="deep-orange-text text-darken-2">Vertical Sortable</h5>
+              <div id="simple-sortable-2">
+                  <div class="flex-col nestable">
+                      <div class="orange rectangle"></div>
+                      <div class="light-green rectangle"></div>
+                      <div class="pink rectangle"></div>
+                      <div class="deep-purple rectangle"></div>
+                      <div class="light-blue rectangle"></div>
+                      <div class="lime rectangle"></div>
+                  </div>
+              </div>
+          </div>
+              <div class="flex-cell flex-1-10"></div>
+          <div class="flex-cell flex-3-5">
+          <h5 class="deep-orange-text text-darken-2">Grid Sortable</h5>
+          <div id="simple-sortable-3">
+              <div class="flex-grid nestable">
+                  <div class="orange rectangle"></div>
+                  <div class="light-green rectangle"></div>
+                  <div class="pink rectangle"></div>
+                  <div class="deep-purple rectangle"></div>
+                  <div class="light-blue rectangle"></div>
+                  <div class="lime rectangle"></div>
+                  <div class="cyan rectangle"></div>
+                  <div class="amber rectangle"></div>
+                  <div class="blue-grey rectangle"></div>
+              </div>
+          </div>
+          </div>
           </div>
           <p>HTML markup:</p>
-            <pre class="language-html"><code>&lt;div id="simple-sortable-1">&lt;div class="container">
+            <pre class="language-html"><code>&lt;div id="simple-sortable-1">
+  &lt;div class="container">
       &lt;div class="orange rectangle">&lt;/div>
       &lt;div class="light-green rectangle">&lt;/div>
       &lt;div class="pink rectangle">&lt;/div>
