@@ -1,8 +1,8 @@
-var mldd = (function() {
+var lmdd = (function() {
     var scope = {};
-    var draggableClass = 'flex-cell'; //add mldd-draggable
-    var handleClass = ''; //add mldd-handle
-    var containerClass = 'flex-cell'; //add mldd-container
+    var draggableClass = 'flex-cell'; //add lmdd-draggable
+    var handleClass = ''; //add lmdd-handle
+    var containerClass = 'flex-cell'; //add lmdd-container
     var draggedElement = false;
     var draggedClone = false;
     var mirror = false;
@@ -15,7 +15,7 @@ var mldd = (function() {
         lastScrollY: -1,
         get container() {
             var container = document.elementFromPoint(this.clientX, this.clientY);
-            return (container) ? (container.classList.contains('mldd-container') ? container : false) : false;
+            return (container) ? (container.classList.contains('lmdd-container') ? container : false) : false;
         },
         get coordinates() {
             return ((this.container) ? getCoordinates(this.container) : false);
@@ -48,7 +48,7 @@ var mldd = (function() {
         return offset;
     };
     var setElementIndex = function(el, isRoot) {
-        el.dataset.mlddindex = (isRoot) ? 'root' : getIndex(el);
+        el.dataset.lmddindex = (isRoot) ? 'root' : getIndex(el);
         el.childNodes.forEach(function(node) {
             setElementIndex(node, false);
         });
@@ -62,7 +62,7 @@ var mldd = (function() {
     };
     var getIndex = function(el) {
         var index = [];
-        while (el.dataset.mlddindex !== 'root') {
+        while (el.dataset.lmddindex !== 'root') {
             index.unshift(Array.prototype.indexOf.call(el.parentNode.childNodes, el));
             el = el.parentElement;
         }
@@ -151,7 +151,7 @@ var mldd = (function() {
     var dragEnded = function(event) {
         if (draggedElement) {
             unsetMirror();
-            draggedElement.classList.toggle('mldd-hidden');//reverse
+            draggedElement.classList.toggle('lmdd-hidden');//reverse
             scope.animation.kill();
             scope = false;
             draggedElement = false;
@@ -166,12 +166,12 @@ var mldd = (function() {
             draggedElement = event.target;//reverse
             setDraggedClone();//reverseVV
             setMirror();//reverseVV
-            draggedElement.classList.toggle('mldd-hidden');//reverse
+            draggedElement.classList.toggle('lmdd-hidden');//reverse
         };
     };
     var setDraggedClone = function(el) {
         draggedClone = draggedElement.cloneRef;//reverse
-        draggedClone.classList.toggle('mldd-dragged');//reverse
+        draggedClone.classList.toggle('lmdd-dragged');//reverse
         scope.cloneRef.appendChild(draggedClone);//reverse
         animateNode(draggedElement);
     };
@@ -184,7 +184,7 @@ var mldd = (function() {
     };
     var setMirror = function() {
         mirror = draggedClone.cloneNode(true);
-        mirror.classList.toggle('mldd-mirror');
+        mirror.classList.toggle('lmdd-mirror');
         mirror.style.width = draggedClone.getBoundingClientRect().width + 'px';
         mirror.style.height = draggedClone.getBoundingClientRect().height + 'px';
         var scaleX = Math.min(300/draggedClone.getBoundingClientRect().width,1);
@@ -263,14 +263,14 @@ var mldd = (function() {
             //add container class
             var containers = el.getElementsByClassName(containerClass);
             if (el.classList.contains(containerClass)) {
-                el.classList.toggle('mldd-container') //reverse
+                el.classList.toggle('lmdd-container') //reverse
             };
             for (var i = 0; i < containers.length; i++) {
-                containers[i].classList.toggle('mldd-container'); //reverse
+                containers[i].classList.toggle('lmdd-container'); //reverse
             };
             var draggables = el.getElementsByClassName(draggableClass);
             for (var i = 0; i < draggables.length; i++) {
-                draggables[i].classList.toggle('mldd-draggable'); //revrese
+                draggables[i].classList.toggle('lmdd-draggable'); //revrese
                 draggables[i].addEventListener("mousedown", function(event) {
                     dragStarted(event, el);
                 }, false); //reverse
