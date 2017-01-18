@@ -1,0 +1,32 @@
+.lmdd-hidden{
+    visibility:hidden;
+}
+.lmdd-draggable{
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,1);
+}
+.lmdd-mirror{
+    position:fixed;
+    opacity:0.5 !important;
+    border: 1px dashed pink;
+    box-sizing:border-box;
+    pointer-events:none;
+    transition:none !important;
+    z-index:3;
+}
+.lmdd-dragged{
+    opacity:1;
+    filter: grayscale(50%);
+}
+.hidden-layer,
+.hidden-layer * {
+    opacity: 0;
+    z-index:1;
+}
+.visible-layer,
+.visible-layer * {
+    opacity:1;
+    transition: 1s;
+    margin:0 !important;
+    position:absolute;
+    z-index:-1;
+}
