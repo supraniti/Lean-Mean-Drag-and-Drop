@@ -25,9 +25,11 @@
 }
 .visible-layer,
 .visible-layer * {
+    display:block !important;
     opacity:1;
     transition: 1s;
     margin:0 !important;
+    padding:0 !important;
     position:absolute;
     z-index:-1;
 }

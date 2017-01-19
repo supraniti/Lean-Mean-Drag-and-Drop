@@ -1,3 +1,5 @@
+////todos:
+
 var lmdd = (function() {
     var scope = {};
     var draggableClass = 'rectangle'; //add lmdd-draggable
@@ -245,7 +247,8 @@ var lmdd = (function() {
             this.clone.removeAttribute('id');
             createReference(this.el,this.clone);//reverseVV
             this.refresh();
-            document.body.append(this.clone); //reverseVV
+            scope.parentNode.append(this.clone); //reverseVV
+            // document.body.append(this.clone); //reverseVV
             this.clone.classList.toggle('visible-layer'); //reverseVV
             this.el.classList.toggle('hidden-layer'); //reverseVV
         };
@@ -253,7 +256,8 @@ var lmdd = (function() {
             animateElement(this.el, this.clone);
         };
         this.kill = function() {
-            document.body.removeChild(this.clone);
+            scope.parentNode.removeChild(this.clone); //reverseVV
+            // document.body.removeChild(this.clone);
             this.clone = {};
             this.el.classList.toggle('hidden-layer');
             deleteReference(this.el);

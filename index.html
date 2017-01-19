@@ -83,55 +83,8 @@
           <p>Note LMDD is markup oriented, meaning your HTML markup determines the way drag and drop behaviour:</p>
           <p>Elements marked with class="your-draggable-class" will be draggable</p>
           <p>Elements marked with class="your-container-class" will act as containers and you will be able to drop draggables inside them</p>
-          <div class="flex-row">
-              <div class="flex-cell flex-1">
-                  <h5 class="deep-orange-text text-darken-2">Horizontal Sortable</h5>
-                  <div id="simple-sortable-1">
-                      <div class="flex-row nestable">
-                          <div class="orange rectangle"></div>
-                          <div class="light-green rectangle"></div>
-                          <div class="pink rectangle"></div>
-                          <div class="deep-purple rectangle"></div>
-                          <div class="light-blue rectangle"></div>
-                          <div class="lime rectangle"></div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="flex-row">
-          <div class="flex-cell flex-3-10">
-              <h5 class="deep-orange-text text-darken-2">Vertical Sortable</h5>
-              <div id="simple-sortable-2">
-                  <div class="flex-col nestable">
-                      <div class="orange rectangle"></div>
-                      <div class="light-green rectangle"></div>
-                      <div class="pink rectangle"></div>
-                      <div class="deep-purple rectangle"></div>
-                      <div class="light-blue rectangle"></div>
-                      <div class="lime rectangle"></div>
-                  </div>
-              </div>
-          </div>
-              <div class="flex-cell flex-1-10"></div>
-          <div class="flex-cell flex-3-5">
-          <h5 class="deep-orange-text text-darken-2">Grid Sortable</h5>
-          <div id="simple-sortable-3">
-              <div class="flex-grid nestable">
-                  <div class="orange rectangle"></div>
-                  <div class="light-green rectangle"></div>
-                  <div class="pink rectangle"></div>
-                  <div class="deep-purple rectangle"></div>
-                  <div class="light-blue rectangle"></div>
-                  <div class="lime rectangle"></div>
-                  <div class="cyan rectangle"></div>
-                  <div class="amber rectangle"></div>
-                  <div class="blue-grey rectangle"></div>
-              </div>
-          </div>
-          </div>
-          </div>
-          <p>HTML markup:</p>
-            <pre class="language-html"><code>&lt;div id="simple-sortable-1">
+          <p class="deep-orange-text text-darken-3">HTML markup:</p>
+          <pre class="language-html"><code>&lt;div id="simple-sortable-1">
   &lt;div class="container">
       &lt;div class="orange rectangle">&lt;/div>
       &lt;div class="light-green rectangle">&lt;/div>
@@ -141,18 +94,40 @@
       &lt;div class="lime rectangle">&lt;/div>
   &lt;/div>
 &lt;/div></code></pre>
-          <p>Javascript:</p>
+          <p class="deep-orange-text text-darken-3">Javascript:</p>
           <pre><code class="language-javascript">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
-
-          <h5 class="deep-orange-text text-darken-2">Vertical Sortable</h5>
-
-          <h5 class="deep-orange-text text-darken-2">Grid Sortable</h5>
-
-          <pre><code class="language-css">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
-
+          <p class="deep-orange-text text-darken-3">Result:</p>
+          <div id="simple-example">
+              <div class="flex-grid flex-align-space-around nestable z-depth-2">
+                  <div class="light-green z-depth-3 rectangle"></div>
+                  <div class="pink z-depth-3 rectangle"></div>
+                  <div class="deep-purple z-depth-3 rectangle"></div>
+                  <div class="light-blue z-depth-3 rectangle"></div>
+                  <div class="lime z-depth-3 rectangle"></div>
+                  <div class="teal z-depth-3 rectangle"></div>
+                  <div class="amber z-depth-3 rectangle"></div>
+                  <div class="blue-grey z-depth-3 rectangle"></div>
+                  <div class="green z-depth-3 rectangle"></div>
+              </div>
+          </div>
+      </div>
       </div>
       <div id="example2" class="section scrollspy">
-          <p>Content </p>
+          <h4 class="deep-orange-text text-darken-3">Example #2 - Containers, sortable, and draggable items</h4>
+          <p>LMDD is markup oriented, meaning you use the markup to tell the app what to act like...</p>
+          <ul>
+              <li>html element marked with 'lmdd-container' class will act as a drop target</li>
+              <li>html element marked with 'lmdd-draggable' class will set the element as draggable so you can move it around and drop it in containers</li>
+              <li>html element marked with 'lmdd-sortable' class means this is a sortable item (you can drop the draggable before or after this element</li>
+          </ul>
+      </div>
+      <div id="markup-example">
+          <div class="flex-grid nestable z-depth-2">
+              <div class="flex-grid nestable light-green z-depth-3 rectangle"></div>
+              <div class="flex-grid nestable pink z-depth-3 rectangle"></div>
+              <div class="flex-grid nestable deep-purple z-depth-3 rectangle"></div>
+              <div class="flex-grid nestable light-blue z-depth-3 rectangle"></div>
+          </div>
       </div>
       <div id="example3" class="section scrollspy">
           <p>Content </p>
