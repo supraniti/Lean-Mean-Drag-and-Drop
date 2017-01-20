@@ -182,6 +182,10 @@ var lmdd = (function() {
     };
     var dragEnded = function(event) {
         if (draggedElement) {
+            document.removeEventListener("touchmove", function(event) {
+                event.preventDefault();
+                mouseLocationUpdated(event);
+            }, false); //reverse
             unsetMirror();
             document.body.classList.toggle('unselectable');
             draggedElement.classList.toggle('lmdd-hidden');//reverse
@@ -192,6 +196,12 @@ var lmdd = (function() {
         }
     }
     var dragStarted = function(event, el) {
+        if (event.type = 'touchstart'){
+            document.addEventListener("touchmove", function(event) {
+                event.preventDefault();
+                mouseLocationUpdated(event);
+            }, false); //reverse
+        };
         if (event.button === 0) {
             document.body.classList.toggle('unselectable');
             scope = el;//reverse
@@ -318,16 +328,11 @@ var lmdd = (function() {
                     dragStarted(event, el);
                 }, false); //reverse
                 draggables[i].addEventListener("touchstart", function(event) {
-                    console.log('touched')
                     dragStarted(event, el);
                 }, false); //reverse
             }
             //record mouse movements
             document.addEventListener("mousemove", mouseLocationUpdated); //reverse
-            document.addEventListener("touchmove", function(event) {
-                event.preventDefault();
-                mouseLocationUpdated(event);
-            }, false); //reverse
             document.addEventListener("scroll", mouseLocationUpdated);
             window.addEventListener("mouseup", dragEnded); //reverse
             document.addEventListener("touchend", function(event) {
