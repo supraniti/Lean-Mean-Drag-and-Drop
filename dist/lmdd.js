@@ -239,7 +239,6 @@ var lmdd = (function() {
         mirror = false;
     };
     var mouseLocationUpdated = function(event) {
-        console.log(event)
         var location = (event.type='touchmove')?event.touches[0]:event;
         mouseLocation.pageY = location.pageY;
         mouseLocation.pageX = location.pageX;
@@ -326,8 +325,7 @@ var lmdd = (function() {
             //record mouse movements
             document.addEventListener("mousemove", mouseLocationUpdated); //reverse
             document.addEventListener("touchmove", function(event) {
-                console.log('touchmove');
-                console.log(event);
+                event.preventDefault();
                 mouseLocationUpdated(event);
             }, false); //reverse
             document.addEventListener("scroll", mouseLocationUpdated);
