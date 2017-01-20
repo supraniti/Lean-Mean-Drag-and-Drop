@@ -182,10 +182,7 @@ var lmdd = (function() {
     };
     var dragEnded = function(event) {
         if (draggedElement) {
-            document.removeEventListener("touchmove", function(event) {
-                event.preventDefault();
-                mouseLocationUpdated(event);
-            }, false); //reverse
+            document.removeEventListener("touchmove", mouseLocationUpdated, false); //reverse
             unsetMirror();
             document.body.classList.toggle('unselectable');
             draggedElement.classList.toggle('lmdd-hidden');//reverse
@@ -197,10 +194,7 @@ var lmdd = (function() {
     }
     var dragStarted = function(event, el) {
         if (event.type = 'touchstart'){
-            document.addEventListener("touchmove", function(event) {
-                event.preventDefault();
-                mouseLocationUpdated(event);
-            }, false); //reverse
+            document.addEventListener("touchmove", mouseLocationUpdated, false); //reverse
         };
         if (event.button === 0) {
             document.body.classList.toggle('unselectable');
@@ -249,7 +243,10 @@ var lmdd = (function() {
         mirror = false;
     };
     var mouseLocationUpdated = function(event) {
-        var location = (event.type='touchmove')?event.touches[0]:event;
+        if(event.type==='touchmove'){
+            event.preventDefault();
+        }
+        var location = (event.type === 'touchmove')?event.touches[0]:event;
         mouseLocation.pageY = location.pageY;
         mouseLocation.pageX = location.pageX;
         mouseLocation.clientX = location.clientX;
