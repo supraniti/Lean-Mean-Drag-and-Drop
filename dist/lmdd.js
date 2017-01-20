@@ -239,10 +239,12 @@ var lmdd = (function() {
         mirror = false;
     };
     var mouseLocationUpdated = function(event) {
-        mouseLocation.pageY = event.pageY;
-        mouseLocation.pageX = event.pageX;
-        mouseLocation.clientX = event.clientX;
-        mouseLocation.clientY = event.clientY;
+        console.log(event)
+        var location = (event.type='touchmove')?event.touches[0]:event;
+        mouseLocation.pageY = location.pageY;
+        mouseLocation.pageX = location.pageX;
+        mouseLocation.clientX = location.clientX;
+        mouseLocation.clientY = location.clientY;
         if (mirror) {
             updateMirrorLocation();
         };
@@ -317,15 +319,23 @@ var lmdd = (function() {
                     dragStarted(event, el);
                 }, false); //reverse
                 draggables[i].addEventListener("touchstart", function(event) {
+                    console.log('touched')
                     dragStarted(event, el);
                 }, false); //reverse
             }
             //record mouse movements
             document.addEventListener("mousemove", mouseLocationUpdated); //reverse
-            document.addEventListener("touchmove", mouseLocationUpdated);//reverse
+            document.addEventListener("touchmove", function(event) {
+                console.log('touchmove');
+                console.log(event);
+                mouseLocationUpdated(event);
+            }, false); //reverse
             document.addEventListener("scroll", mouseLocationUpdated);
             window.addEventListener("mouseup", dragEnded); //reverse
-            document.addEventListener("touchend", dragEnded);
+            document.addEventListener("touchend", function(event) {
+                console.log('touchend');
+                dragEnded(event);
+            }, false); //reverse
             //create animation object
             el.animation = new animation(el);
             //el.range = document.createRange(); // for later performance enhancement
