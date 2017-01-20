@@ -1,8 +1,41 @@
+
+
 ////todos:
+function touchHandler(event)
+{
+    var touches = event.changedTouches,
+        first = touches[0],
+        type = "";
+    switch(event.type)
+    {
+        case "touchstart": type = "mousedown"; break;
+        case "touchmove":  type = "mousemove"; break;
+        case "touchend":   type = "mouseup";   break;
+        default:           return;
+    }
+
+    // initMouseEvent(type, canBubble, cancelable, view, clickCount,
+    //                screenX, screenY, clientX, clientY, ctrlKey,
+    //                altKey, shiftKey, metaKey, button, relatedTarget);
+
+    var simulatedEvent = document.createEvent("MouseEvent");
+    simulatedEvent.initMouseEvent(type, true, true, window, 1,
+        first.screenX, first.screenY,
+        first.clientX, first.clientY, false,
+        false, false, false, 0/*left*/, null);
+
+    first.target.dispatchEvent(simulatedEvent);
+    event.preventDefault();
+}
+    document.addEventListener("touchstart", touchHandler, true);
+    document.addEventListener("touchmove", touchHandler, true);
+    document.addEventListener("touchend", touchHandler, true);
+    document.addEventListener("touchcancel", touchHandler, true);
 
 var lmdd = (function() {
     var scope = {};
-    var draggableClass = 'rectangle'; //add lmdd-draggable
+    var protectedStyleProperties =['padding','paddingTop','paddingBottom','paddingLeft','paddingRight'];
+    var draggableClass = 'item'; //add lmdd-draggable
     var handleClass = ''; //add lmdd-handle
     var containerClass = 'nestable'; //add lmdd-container
     var draggedElement = false;
@@ -39,6 +72,32 @@ var lmdd = (function() {
                 cleanNode(child);
             };
         };
+    };
+    var copyComputedStyle = function(from,to){
+        var computed_style_object = false;
+        //trying to figure out which style object we need to use depense on the browser support
+        //so we try until we have one
+        computed_style_object = document.defaultView.getComputedStyle(from,null);
+
+        var stylePropertyValid = function(name,value){
+            //checking that the value is not a undefined
+            return typeof value !== 'undefined' &&
+                //checking that the value is not a object
+                typeof value !== 'object' &&
+                //checking that the value is not a function
+                typeof value !== 'function' &&
+                //checking that we dosent have empty string
+                value.length > 0 &&
+                //checking that the property is not int index ( happens on some browser
+                value != parseInt(value)
+
+        };
+        protectedStyleProperties.forEach(function(property){
+            if(stylePropertyValid(property,computed_style_object[property]))
+            {
+                to.style[property] = computed_style_object[property];
+            }
+        });
     };
     var getOffset = function(el1, el2) {
         var rect1 = el1.getBoundingClientRect(),
@@ -81,6 +140,7 @@ var lmdd = (function() {
     var animateNode = function(elNode) {
         var cloneNode = elNode.cloneRef;
         var elRect = elNode.getBoundingClientRect();
+        cloneNode.style.position = 'absolute';
         cloneNode.style.width = elRect.width + 'px';
         cloneNode.style.height = elRect.height + 'px';
         if (elNode === scope) {
@@ -176,7 +236,7 @@ var lmdd = (function() {
     var setDraggedClone = function(el) {
         draggedClone = draggedElement.cloneRef;//reverse
         draggedClone.classList.toggle('lmdd-dragged');//reverse
-        scope.cloneRef.appendChild(draggedClone);//reverse
+        scope.cloneRef.appendChild(draggedClone);//reverse***********for nested structures?
         animateNode(draggedElement);
     };
     var updateMirrorLocation = function() {
@@ -185,7 +245,6 @@ var lmdd = (function() {
         var offset = getOffset(mirror,mirror.parentNode);
         // var offset = (elNode === draggedElement)?getOffset(elNode, scope):getOffset(elNode, elNode.parentNode);
         // cloneNode.style.transform = 'translate(' + offset.x + 'px, ' + offset.y + 'px)';
-        console.log(mirror.getBoundingClientRect().top,mirror.parentNode.getBoundingClientRect().top);
         mirror.style.top = (mouseLocation.clientY - parseInt(mirror.parentNode.style.top) + window.scrollY) + 'px';
         mirror.style.left = (mouseLocation.clientX - parseInt(mirror.parentNode.style.left) + window.scrollX) + 'px';
     };
@@ -206,7 +265,6 @@ var lmdd = (function() {
         updateMirrorLocation();
     };
     var unsetMirror = function() {
-        //document.body.removeChild(mirror);
         scope.cloneRef.removeChild(mirror);
         mirror = false;
     };
@@ -220,6 +278,7 @@ var lmdd = (function() {
         };
         if ((mouseLocation.container) && (mouseLocation.container.original)&&(draggedElement)) {
             mouseLocation.container.insertBefore(draggedElement, mouseLocation.container.childNodes[mouseLocation.position]);
+            //mouseLocation.container.cloneRef.insertBefore(draggedElement.cloneRef, mouseLocation.container.cloneRef.childNodes[mouseLocation.position]);
             scope.animation.refresh();
         }
     };
@@ -238,6 +297,9 @@ var lmdd = (function() {
         for (var i=0;i<elArray.length;i++){
             elArray[i].cloneRef = cloneArray[i];
             elArray[i].original = true;
+            if (elArray[i].nodeType === 1){
+                copyComputedStyle(elArray[i],elArray[i].cloneRef);
+            }
         };
     }
     var animation = function(el, excludedChildNodes) {
@@ -248,7 +310,7 @@ var lmdd = (function() {
             createReference(this.el,this.clone);//reverseVV
             this.refresh();
             scope.parentNode.append(this.clone); //reverseVV
-            // document.body.append(this.clone); //reverseVV
+            //document.body.append(this.clone); //reverseVV
             this.clone.classList.toggle('visible-layer'); //reverseVV
             this.el.classList.toggle('hidden-layer'); //reverseVV
         };
@@ -257,7 +319,6 @@ var lmdd = (function() {
         };
         this.kill = function() {
             scope.parentNode.removeChild(this.clone); //reverseVV
-            // document.body.removeChild(this.clone);
             this.clone = {};
             this.el.classList.toggle('hidden-layer');
             deleteReference(this.el);
@@ -292,6 +353,7 @@ var lmdd = (function() {
             window.addEventListener("mouseup", dragEnded); //reverse
             //create animation object
             el.animation = new animation(el);
+            //el.range = document.createRange(); // for later performance enhancement
         }
     };
 })();

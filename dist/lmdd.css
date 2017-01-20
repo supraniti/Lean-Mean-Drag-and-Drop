@@ -5,7 +5,7 @@
     cursor:pointer;
 }
 .lmdd-mirror{
-    position:fixed;
+    position:absolute;
     opacity:1;
     border: 1px dashed pink;
     box-sizing:border-box;
@@ -29,7 +29,7 @@
     opacity:1;
     transition: 1s;
     margin:0 !important;
-    padding:0 !important;
+    /*padding:0 !important;*/
     position:absolute;
     z-index:-1;
 }

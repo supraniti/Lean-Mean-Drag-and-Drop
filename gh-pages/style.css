@@ -45,14 +45,24 @@
     margin:2.5%;
     flex-basis:calc(33.3333% - 5%);
 }
+#simple-example-2 .item{
+    margin-top:10px;
+    margin-bottom:10px;
+}
 #markup-example .rectangle{
     margin:2.5%;
-    flex-basis:calc(100% - 5%);
+    width:100px;
+    height:100px;
+    flex-basis:100px;
 }
 #markup-example{
-    max-width:350px;
+    max-width:500px;
 }
 
+#markup-example .nestable{
+min-width:100px;
+min-height:100px;
+}
 .w1{
     flex-basis:8.3333%;
     max-width:8.3333%;
