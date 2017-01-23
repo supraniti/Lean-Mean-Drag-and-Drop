@@ -6,11 +6,6 @@
     background-color:rgba(0,0,0,0.5);
 }
 
-#simple-example-2 table{
-    border-collapse:separate;
-    border-spacing:1em;
-    border:1px solid;
-}
 
 .flex-align-center{
     justify-content:center;
@@ -73,7 +68,12 @@
 #markup-example{
     /*max-width:500px;*/
 }
-
+#markup-example ol { counter-reset: item; padding-top:5px; padding-bottom:5px;}
+#markup-example li { display: block; margin-top:5px; margin-bottom:5px;}
+#markup-example li:before { content: counters(item, ".") " "; counter-increment: item; margin-right:5px; }
+.list-item{
+    background-color:rgba(255,80,30,0.1);
+}
 #markup-example .nestable {
     margin:1%;
 }

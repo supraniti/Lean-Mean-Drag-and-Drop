@@ -1,8 +1,5 @@
+///todo: pointer styling, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
 var lmdd = (function() {
-    var appTimer = setInterval(function(){
-        mouseLocation.lastPageY=mouseLocation.pageY;
-        mouseLocation.lastPageX=mouseLocation.pageX;
-    }, 100);
     var scroll = {
         lastX:0,
         lastY:0,
@@ -33,29 +30,42 @@ var lmdd = (function() {
     var draggedElement = false;
     var draggedClone = false;
     var mirror = false;
+    var speedTracker = {
+        lastPageX: -1,
+        lastPageY: -1,
+        lastTimeStamp: -1,
+        lastSpeed:-1,
+        get speed(){
+            if (this.lastTimeStamp !== mouseLocation.timeStamp){
+                var time = mouseLocation.timeStamp - this.lastTimeStamp;
+                var distance = Math.sqrt(Math.pow(mouseLocation.pageY - this.lastPageY, 2) + Math.pow(mouseLocation.pageX - this.lastPageX, 2));
+                var speed = distance/time;
+                this.lastTimeStamp = mouseLocation.timeStamp;
+                this.lastPageX = mouseLocation.pageX;
+                this.lastPageY = mouseLocation.pageY;
+                this.lastSpeed = speed;
+                return speed;
+            }
+            else{
+                return this.lastSpeed;
+            }
+        }
+    };
     var mouseLocation = {
         clientX: -1,
         clientY: -1,
         pageX: -1,
         pageY: -1,
         timeStamp: -1,
-        lastPageX: -1,
-        lastPageY: -1,
-        lastTimeStamp: -1,
         get container() {
             var container = document.elementFromPoint(this.clientX, this.clientY);
             return (container) ? (container.classList.contains('lmdd-container') ? container : false) : false;
         },
         get position() {
-            console.log('positionCalc');
             return getPosition(this.coordinates, this.clientY, this.clientX)
         },
         get coordinates() {
-            console.log('cordinatesCalc');
             return ((this.container) ? getCoordinates(this.container) : false);
-        },
-        get speed(){
-            return ((this.lastPageX - this.pageX)*(this.lastPageX - this.pageX) + (this.lastPageY - this.pageY)*(this.lastPageY - this.pageY));
         }
     };
     // helper functions
@@ -132,23 +142,22 @@ var lmdd = (function() {
         }
         return el;
     };
-    var muteEvent = function(event) {
-        event.preventDefault();
-        return false;
-    };
     var getCoordinates = function(el) {
         var coordinates = [];
         el.childNodes.forEach(function(node, index) { //replace with getelementbyclassname
             if (node.nodeType === 1){
-                var cordinate = node.getBoundingClientRect();
-                cordinate.index = index;
-                coordinates.push(cordinate);
+                var coordinate = node.getBoundingClientRect();
+                coordinate.index = index;
+                if (!node.classList.contains('fixed')){
+                    coordinates.push(coordinate);
+                }
             }
         });
         return coordinates;
     };
     var getPosition = function(coordinates, top, left) {
         var length = coordinates.length;
+        if (length === 0){return null}
         var lastAbove = 0;
         var firstBelow = 0;
         var firstRight = 0;
@@ -180,9 +189,10 @@ var lmdd = (function() {
             }
         };
         if (position === length) {
-            position = null;
+            console.log('coordinates[position-1].index + 1',coordinates,position)
+            return coordinates[position-1].index + 1;
         }
-        return position; //position of nextSibling for insertbefore function
+        return coordinates[position].index;
     };
     var dragEnded = function(event) {
         if (draggedElement) {
@@ -266,8 +276,9 @@ var lmdd = (function() {
         mouseLocation.pageX = location.pageX;
         mouseLocation.clientX = location.clientX;
         mouseLocation.clientY = location.clientY;
+        mouseLocation.timeStamp = event.timeStamp;
         updateMirrorLocation();
-        if ((mouseLocation.container)&&(mouseLocation.container.original)&&(draggedElement)&&(mouseLocation.speed<100)) {//
+        if ((mouseLocation.container)&&(mouseLocation.container.original)&&(draggedElement)&&(speedTracker.speed<0.1)) {//
             mouseLocation.container.insertBefore(draggedElement, mouseLocation.container.childNodes[mouseLocation.position]);
             scope.animation.refresh();
         }
