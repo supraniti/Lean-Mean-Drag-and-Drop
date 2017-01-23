@@ -1,3 +1,17 @@
+.chts{
+    min-height:50px;
+    min-width:50px;
+    margin:10px;
+    padding:10px;
+    background-color:rgba(0,0,0,0.5);
+}
+
+#simple-example-2 table{
+    border-collapse:separate;
+    border-spacing:1em;
+    border:1px solid;
+}
+
 .flex-align-center{
     justify-content:center;
 }
@@ -29,7 +43,6 @@
 .side-nav .subheader{
     color: rgba(0,0,0,0.54) !important;
 }
-
 .rectangle:after {
     content: "";
     display: block;
@@ -51,18 +64,20 @@
 }
 #markup-example .rectangle{
     margin:2.5%;
-    width:100px;
-    height:100px;
-    flex-basis:100px;
+    flex-basis:calc(33.3333% - 5%);
+
+    /*width:100px;*/
+    /*height:100px;*/
+    /*flex-basis:100px;*/
 }
 #markup-example{
-    max-width:500px;
+    /*max-width:500px;*/
 }
 
-#markup-example .nestable{
-min-width:100px;
-min-height:100px;
+#markup-example .nestable {
+    margin:1%;
 }
+
 .w1{
     flex-basis:8.3333%;
     max-width:8.3333%;
@@ -72,20 +87,20 @@ min-height:100px;
     max-width:16.6667%;
 }
 .w3{
-    flex-basis:25%;
-    max-width:25%;
+    flex-basis:23%;
+    max-width:23%;
 }
 .w4{
-    flex-basis:33.3333%;
-    max-width:33.3333%;
+    flex-basis:31.3333%;
+    max-width:31.3333%;
 }
 .w5{
     flex-basis:41.6667%;
     max-width:41.6667%;
 }
 .w6 {
-    flex-basis: 50%;
-    max-width: 50%;
+    flex-basis: 48%;
+    max-width: 48%;
 }
 .w7{
     flex-basis:58.3333%;

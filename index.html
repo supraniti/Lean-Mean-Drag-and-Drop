@@ -80,7 +80,7 @@
 
       <div id="example1" class="section scrollspy">
           <h4 class="deep-orange-text text-darken-3">Example #1 - Simple Sortable Lists</h4>
-          <p>Note LMDD is markup oriented, meaning your HTML markup determines the way drag and drop behaviour:</p>
+          <p class="flow-text">Note LMDD is markup oriented, meaning your HTML markup determines the way drag and drop behaviour:</p>
           <p>Elements marked with class="your-draggable-class" will be draggable</p>
           <p>Elements marked with class="your-container-class" will act as containers and you will be able to drop draggables inside them</p>
           <p class="deep-orange-text text-darken-3">HTML markup:</p>
@@ -98,27 +98,28 @@
           <pre><code class="language-javascript">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
           <p class="deep-orange-text text-darken-3">Result:</p>
           <div id="simple-example">
-              <div class="flex-grid flex-align-space-around nestable z-depth-2">
-                  <div class="light-green z-depth-3 item rectangle"></div>
-                  <div class="pink z-depth-3 item rectangle"></div>
-                  <div class="deep-purple z-depth-3 item rectangle"></div>
-                  <div class="light-blue z-depth-3 item rectangle"></div>
-                  <div class="lime z-depth-3 item rectangle"></div>
-                  <div class="teal z-depth-3 item rectangle"></div>
-                  <div class="amber z-depth-3 item rectangle"></div>
-                  <div class="blue-grey z-depth-3 item rectangle"></div>
-                  <div class="green z-depth-3 item rectangle"></div>
+              <div class="flex-grid xxx flex-align-space-around nestable z-depth-2">
+                  <div class="light-green xxx z-depth-3 rectangle"></div>
+                  <div class="pink z-depth-3 xxx item rectangle"></div>
+                  <div class="deep-purple xxx z-depth-3 item rectangle"></div>
+                  <div class="light-blue xxx z-depth-3 item rectangle"></div>
+                  <div class="lime xxx z-depth-3 item rectangle"></div>
+                  <div class="teal xxx z-depth-3 item rectangle"></div>
+                  <div class="amber xxx z-depth-3 item rectangle"></div>
+                  <div class="blue-grey xxx z-depth-3 item rectangle"></div>
+                  <div class="green xxx z-depth-3 item rectangle"></div>
               </div>
           </div>
       </div>
       <div id="simple-example-2">
-          <ul class="collection nestable">
-              <li class="collection-item light-blue item">collection-item light-blue item</li>
-              <li class="collection-item lime item">collection-item light-blue item</li>
-              <li class="collection-item pink item">collection-item light-blue item</li>
-              <li class="collection-item amber item">collection-item light-blue item</li>
+          <ul class="collection xxx nestable">
+              <li class="collection-item xxx light-blue item"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><span>collection-item light-blue item</span></li>
+              <li class="collection-item xxx lime item"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><p>collection-item light-blue item</p></li>
+              <li class="collection-item xxx pink item"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><b>collection-item light-blue item</b></li>
+              <li class="collection-item xxx amber item"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><a>collection-item light-blue item</a></li>
           </ul>
       </div>
+
       <div id="example2" class="section scrollspy">
           <h4 class="deep-orange-text text-darken-3">Example #2 - Containers, sortable, and draggable items</h4>
           <p>LMDD is markup oriented, meaning you use the markup to tell the app what to act like...</p>
@@ -129,17 +130,25 @@
           </ul>
       </div>
       <div id="markup-example">
-          <div class="flex-grid nestable z-depth-2">
-              <div class="light-green z-depth-3 item rectangle"></div>
-              <div class="pink z-depth-3 item rectangle"></div>
-              <div class="deep-purple z-depth-3 item rectangle"></div>
-              <div class="light-blue z-depth-3 item rectangle"></div>
-              <div class="flex-grid nestable z-depth-2">
+          <div class="flex-grid nestable z-depth-3 w12">
+              <div class="flex-grid lime w4 nestable z-depth-3 item">
                   <div class="light-green z-depth-3 item rectangle"></div>
                   <div class="pink z-depth-3 item rectangle"></div>
                   <div class="deep-purple z-depth-3 item rectangle"></div>
                   <div class="light-blue z-depth-3 item rectangle"></div>
               </div>
+              <div class="flex-grid lime w4 nestable z-depth-3 item">
+              <div class="light-green z-depth-3 item rectangle"></div>
+              <div class="pink z-depth-3 item rectangle"></div>
+              <div class="deep-purple z-depth-3 item rectangle"></div>
+              <div class="light-blue z-depth-3 item rectangle"></div>
+          </div>
+              <div class="flex-grid lime w4 nestable z-depth-3 item">
+              <div class="light-green z-depth-3 item rectangle"></div>
+              <div class="pink z-depth-3 item rectangle"></div>
+              <div class="deep-purple z-depth-3 item rectangle"></div>
+              <div class="light-blue z-depth-3 item rectangle"></div>
+          </div>
           </div>
       </div>
       <div id="example3" class="section scrollspy">
