@@ -1,4 +1,4 @@
-///todo: pointer styling, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
+///todo: pointer styling, revert,clone, speed option, touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
 var lmdd = (function() {
     var scroll = {
         lastX:0,
@@ -17,7 +17,9 @@ var lmdd = (function() {
         handleClass:false,
         regulateMouseOver:false,
         mirrorMaxHeight:100,
-        mirrorMaxWidth:300
+        mirrorMaxWidth:300,
+        revert:false,
+        clone:false
     };
     var getDraggable = function(el){
 
@@ -57,10 +59,11 @@ var lmdd = (function() {
         pageX: -1,
         pageY: -1,
         timeStamp: -1,
-        get container() {
-            var container = document.elementFromPoint(this.clientX, this.clientY);
-            return (container) ? (container.classList.contains('lmdd-container') ? container : false) : false;
-        },
+        container:false,
+        // get container() {
+        //     var container = document.elementFromPoint(this.clientX, this.clientY);
+        //     return (container) ? (container.classList.contains('lmdd-container') ? container : false) : false;
+        // },
         get position() {
             return getPosition(this.coordinates, this.clientY, this.clientX)
         },
@@ -189,7 +192,6 @@ var lmdd = (function() {
             }
         };
         if (position === length) {
-            console.log('coordinates[position-1].index + 1',coordinates,position)
             return coordinates[position-1].index + 1;
         }
         return coordinates[position].index;
@@ -206,24 +208,31 @@ var lmdd = (function() {
             draggedClone = false;
         }
     }
+    var mouseoverfunc = function(event){
+        console.log(event);
+    };
     var dragStarted = function(event, el) {
-        // if (!event.target.classList.contains('handle')){
-        //     return false;
-        // }
+        var clone = false;
         var target = event.target;
         while (!target.classList.contains('lmdd-draggable')){
             target = target.parentNode;
         }
+
         if (event.type = 'touchstart'){
             document.addEventListener("touchmove", mouseLocationUpdated, false); //reverse
         };
         if(el.lmddOptions.handleClass){
-
+            // if (!event.target.classList.contains('handle')){
+            //     return false;
+            // }
         }
         if (event.button === 0) {
             document.body.classList.toggle('unselectable');///reverse
             scope = el;//reverse
             event.stopPropagation();
+            if (clone){
+                target.parentNode.insertBefore(target.cloneNode(true),target)
+            }
             scope.animation.init();//reverseVV
             draggedElement = target;//reverse
             setDraggedClone();//reverseVV
@@ -265,7 +274,23 @@ var lmdd = (function() {
     var scrollEvent = function (){
         updateMirrorLocation();
     };
+    var searchContainer = function(path){
+
+    };
     var mouseLocationUpdated = function(event) {
+        if(event.path.includes(scope)){
+            var i = 0;
+            var el = false;
+            while (event.path[i]!==scope){
+                if(event.path[i].classList.contains('lmdd-container')){
+                    el = event.path[i];
+                    // console.log(event.path[i]);
+                    break;
+                };
+                i++;
+            }
+            mouseLocation.container = el;
+        };
         scroll.lastX = window.scrollX;
         scroll.lastY = window.scrollY;
         if(event.type==='touchmove'){
@@ -336,6 +361,7 @@ var lmdd = (function() {
             cleanNode(el);//get rid of whitespaces
             el.lmddOptions = Object.assign({}, options, lmddOptions);//create options object
             console.log(el.lmddOptions);
+
             //add container class
             var containers = el.getElementsByClassName(containerClass);
             if (el.classList.contains(containerClass)) {
