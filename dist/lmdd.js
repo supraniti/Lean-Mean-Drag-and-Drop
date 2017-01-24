@@ -1,4 +1,4 @@
-///todo: pointer styling, revert,clone, speed option, touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
+///todo: pointer styling, revert, speed option, touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
 var lmdd = (function() {
     var scroll = {
         lastX:0,
@@ -21,11 +21,7 @@ var lmdd = (function() {
         revert:false,
         clone:false
     };
-    var getDraggable = function(el){
-
-    };
     var scope = {};
-    var protectedStyleProperties =['padding','paddingTop','paddingBottom','paddingLeft','paddingRight'];
     var draggableClass = 'item'; //add lmdd-draggable
     var handleClass = ''; //add lmdd-handle
     var containerClass = 'nestable'; //add lmdd-container
@@ -60,10 +56,6 @@ var lmdd = (function() {
         pageY: -1,
         timeStamp: -1,
         container:false,
-        // get container() {
-        //     var container = document.elementFromPoint(this.clientX, this.clientY);
-        //     return (container) ? (container.classList.contains('lmdd-container') ? container : false) : false;
-        // },
         get position() {
             return getPosition(this.coordinates, this.clientY, this.clientX)
         },
