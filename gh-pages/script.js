@@ -2,12 +2,35 @@
  * Created by יאיר on 18/01/2017.
  */
 lmdd.init(document.getElementById('simple-example'),{
-    containerClass:'myConatainer',
-    itemClass:'myItem',
-    draggableItemClass:'myDraggableItem',
-    handleClass:'handle',
-    protectedStyleProperties:['padding','paddingTop','paddingBottom','paddingLeft','paddingRight'],
-    mirrorMaxHeight:500
+    containerClass:'nestable',
+    fixedItemClass:false,
+    draggableItemClass:'item',
+    handleClass:false,
+    regulateMouseOver:false,
+    mirrorMaxHeight:100,
+    mirrorMaxWidth:300,
+    revert:false,
+    clone:false
 });
-lmdd.init(document.getElementById('simple-example-2'));
-lmdd.init(document.getElementById('markup-example'));
+lmdd.init(document.getElementById('simple-example-2'),{
+    containerClass:'nestable',
+    fixedItemClass:false,
+    draggableItemClass:'item',
+    handleClass:'handle',
+    regulateMouseOver:false,
+    mirrorMaxHeight:100,
+    mirrorMaxWidth:300,
+    revert:false,
+    clone:false
+});
+lmdd.init(document.getElementById('markup-example'),{
+    containerClass:'nestable',
+    fixedItemClass:false,
+    draggableItemClass:'item',
+    handleClass:false,
+    regulateMouseOver:false,
+    mirrorMaxHeight:100,
+    mirrorMaxWidth:300,
+    revert:false,
+    clone:false
+});

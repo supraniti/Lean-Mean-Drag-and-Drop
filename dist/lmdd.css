@@ -1,12 +1,16 @@
+.lmdd-container{
+}
 .lmdd-hidden{
     visibility:hidden;
 }
 .lmdd-draggable{
-    cursor:pointer;
+    cursor:move;
+}
+.visible-layer .lmdd-mirror{
+    opacity:0.5;
 }
 .lmdd-mirror{
     position:absolute;
-    opacity:0.8;
     border: 1px dashed pink;
     box-sizing:border-box;
     pointer-events:none;
@@ -21,6 +25,7 @@
 .hidden-layer * {
     opacity: 0;
     z-index:1;
+    cursor:crosshair;
 }
 .visible-layer,
 .visible-layer * {
@@ -37,4 +42,5 @@
     -moz-user-select: none !important;
     -ms-user-select: none !important;
     user-select: none !important;
+    cursor:not-allowed;
 }
