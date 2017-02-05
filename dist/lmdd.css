@@ -1,46 +1,46 @@
-.lmdd-container{
-}
 .lmdd-hidden{
     visibility:hidden;
+}
+.lmdd-none{
+    width:0 !important;
+    height:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    opacity:0 !important;
+    visibility:hidden !important;
 }
 .lmdd-draggable{
     cursor:move;
 }
-.visible-layer .lmdd-mirror{
-    opacity:0.5;
-}
 .lmdd-mirror{
     position:absolute;
     border: 1px dashed pink;
-    box-sizing:border-box;
     pointer-events:none;
     transition:none !important;
-    z-index:99;
+    opacity:0.5 !important;
 }
 .lmdd-dragged{
-    filter: grayscale(50%);
+    filter: grayscale(100%) !important;
     opacity:0.5 !important;
+    margin:0;
 }
 .hidden-layer,
 .hidden-layer * {
     opacity: 0;
     z-index:1;
-    cursor:crosshair;
+    cursor:crosshair !important;
 }
 .visible-layer,
 .visible-layer * {
-    display:block !important;
     opacity:1;
-    transition: 1s;
-    margin:0 !important;
-    padding:0 !important;
-    position:absolute;
     z-index:-1;
+    transition: 1s;
 }
 .unselectable{
     -webkit-user-select: none !important;
     -moz-user-select: none !important;
     -ms-user-select: none !important;
     user-select: none !important;
-    cursor:not-allowed;
+    /*cursor:not-allowed;*/
 }

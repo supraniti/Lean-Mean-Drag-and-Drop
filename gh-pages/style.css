@@ -1,12 +1,47 @@
+
+
+
+*{
+    box-sizing:border-box;
+}
+
+#dimension{
+    width:300px;
+    height:300px;
+    background-color:red;
+    opacity:0.5;
+    overflow: scroll;
+}
+.child{
+    width:400px;
+    border:1px solid black;
+    margin:15px;
+    height:150px;
+    background-color:green;
+    opacity:0.5;
+}
 .chts{
     min-height:50px;
     min-width:50px;
     margin:10px;
     padding:10px;
+    border:5px solid white;
     background-color:rgba(0,0,0,0.5);
+    box-sizing:border-box;
+}
+#eventExample{
+    width:125%;
+}
+li span{
+    font-size:55px;
 }
 
-
+.w13{
+    flex:1 1 auto;
+    min-width:10px;
+    margin:2.5%;
+    padding:10px;
+}
 .flex-align-center{
     justify-content:center;
 }
@@ -49,9 +84,16 @@
 #simple-example{
     max-width:350px;
 }
-#simple-example .rectangle{
+.rectangle{
     margin:2.5%;
     flex-basis:calc(33.3333% - 5%);
+}
+#clone-example{
+    max-width:750px;
+}
+#clone-example .rectangle{
+    margin:2.5%;
+    flex-basis:calc(25% - 5%);
 }
 #simple-example-2 .item{
     margin-top:10px;
@@ -68,9 +110,9 @@
 #markup-example{
     /*max-width:500px;*/
 }
-#markup-example ol { counter-reset: item; padding-top:5px; padding-bottom:5px;}
-#markup-example li { display: block; margin-top:5px; margin-bottom:5px;}
-#markup-example li:before { content: counters(item, ".") " "; counter-increment: item; margin-right:5px; }
+/*#markup-example ol { counter-reset: item; padding-top:5px; padding-bottom:5px;}*/
+/*#markup-example li { display: block; margin-top:5px; margin-bottom:5px;}*/
+/*#markup-example li:before { content: counters(item, ".") " "; counter-increment: item; margin-right:5px; }*/
 .list-item{
     background-color:rgba(255,80,30,0.1);
 }

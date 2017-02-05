@@ -77,7 +77,18 @@
           <p>Initialize LMDD instance with your preferred options, and make sure to listen to the relevant events and respond accordingly</p>
           <pre><code class="language-css">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
       </div>
-
+              <div id="dimension">
+                  <div class="child"></div>
+                  <div class="child"></div>
+                  <div class="child"></div>
+                  <div class="child"></div>
+                  <div class="child"></div>
+              </div>
+        <div id="gparent" class="chts">
+            <div id="parent" class="chts">
+                <div id="child" class="chts"></div>
+            </div>
+        </div>
       <div id="example1" class="section scrollspy">
           <h4 class="deep-orange-text text-darken-3">Example #1 - Simple Sortable Lists</h4>
           <p class="flow-text">Note LMDD is markup oriented, meaning your HTML markup determines the way drag and drop behaviour:</p>
@@ -100,35 +111,70 @@
           <div id="eventExample" class="check">
               <div class="check chts"><div class="chts"><div class="chts"></div></div></div>
               <div class="chts"><div class="check chts"><div class="chts"></div></div></div>
-              <div class="chts"><div class="chts"><div class="check chts"></div></div></div>
           </div>
-
-x
-
+          <div id="markup-example">
+              <div class="flex-grid nestable z-depth-3 w12 ">
+                  <div class="flex-grid lime w4 nestable z-depth-3 item">
+                      <div class="light-green z-depth-3 item rectangle animation-block"></div>
+                      <div class="pink z-depth-3 item rectangle animation-block"></div>
+                      <div class="deep-purple z-depth-3 item rectangle animation-block"></div>
+                      <div class="light-blue z-depth-3 item rectangle animation-block"></div>
+                  </div>
+                  <div class="flex-grid lime lighten-3 w13 z-depth-3 nestable item">
+                      <div class="light-green z-depth-3  rectangle "></div>
+                      <div class="pink z-depth-3 rectangle"></div>
+                      <div class="deep-purple z-depth-3  rectangle "></div>
+                      <div class="light-blue z-depth-3  rectangle "></div>
+                  </div>
+                  <div class="flex-grid lime darken-1 w4 nestable z-depth-3 item ">
+                      <div class="light-green z-depth-3 item rectangle"></div>
+                      <div class="pink z-depth-3 item rectangle "></div>
+                      <div class="deep-purple z-depth-3 item rectangle "></div>
+                      <div class="light-blue z-depth-3 item rectangle "></div>
+                  </div>
+                  <div class="flex-grid lime darken-2 w4 nestable z-depth-3 item ">
+                      <div class="light-green z-depth-3 item rectangle "></div>
+                      <div class="pink z-depth-3 item rectangle"></div>
+                      <div class="deep-purple z-depth-3 item rectangle "></div>
+                      <div class="light-blue z-depth-3 item rectangle "></div>
+                  </div>
+              </div>
+          </div>
 
           <div id="simple-example">
               <div class="flex-grid xxx flex-align-space-around nestable z-depth-2">
-              <div class="light-green item z-depth-3 rectangle"></div>
-              <div class="pink item z-depth-3 rectangle"></div>
-              <div class="deep-purple xxx z-depth-3 item rectangle"></div>
-              <div class="light-blue xxx z-depth-3 item rectangle"></div>
-              <div class="lime xxx z-depth-3 item rectangle"></div>
-              <div class="teal xxx z-depth-3 item rectangle"></div>
-              <div class="amber xxx z-depth-3 item rectangle"></div>
-              <div class="blue-grey item z-depth-3 rectangle"></div>
-              <div class="green item z-depth-3 rectangle"></div>
+                  <div class="light-green item z-depth-3 rectangle"></div>
+                  <div class="pink item z-depth-3 rectangle"></div>
+                  <div class="deep-purple xxx z-depth-3 item rectangle"></div>
+                  <div class="light-blue xxx z-depth-3 item rectangle"></div>
+                  <div class="lime xxx z-depth-3 item rectangle"></div>
+                  <div class="teal xxx z-depth-3 item rectangle"></div>
+                  <div class="amber xxx z-depth-3 item rectangle"></div>
+                  <div class="blue-grey item z-depth-3 rectangle"></div>
+                  <div class="green item z-depth-3 rectangle"></div>
+              </div>
           </div>
+          <div id="clone-example">
+              <div class="flex-grid xxx flex-align-space-around z-depth-2">
+                  <div class="light-green item z-depth-3 rectangle"></div>
+                  <div class="pink item z-depth-3 rectangle"></div>
+                  <div class="deep-purple xxx z-depth-3 item rectangle"></div>
+              </div>
+              <div class="flex-grid xxx flex-align-space-around nestable z-depth-2">
+                  <div class="light-green item z-depth-3 rectangle"></div>
+                  <div class="pink item z-depth-3 rectangle"></div>
+                  <div class="deep-purple xxx z-depth-3 item rectangle"></div>
+              </div>
           </div>
       </div>
       <div id="simple-example-2">
-          <ul class="collection xxx nestable">
-              <li class="collection-item xxx light-blue item"><div class="chts"><div class="chts"><div class="chts"><i class="material-icons handle">reorder</i></div></div></div><span>collection-item light-blue item</span></li>
-              <li class="collection-item xxx lime item"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><p>collection-item light-blue item</p></li>
-              <li class="collection-item xxx pink item"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><b>collection-item light-blue item</b></li>
-              <li class="collection-item xxx amber item"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><a>collection-item light-blue item</a></li>
+          <ul class="collection xxx  nestable">
+              <li class="collection-item  xxx light-blue item animation-block"><div class="chts"><div class="chts"><div class="chts"><i class="material-icons handle">reorder</i></div></div></div><span>collection-item light-blue item</span><b>collection-item light-blue item</b></li>
+              <li class="collection-item  xxx lime item animation-block"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><p>collection-item light-blue item</p><span>collection-item light-blue item</span></li>
+              <li class="collection-item  xxx pink item animation-block"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><b>collection-item light-blue item</b><span>collection-item light-blue item</span></li>
+              <li class="collection-item  xxx amber item animation-block"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><a>collection-item light-blue item</a><span>collection-item light-blue item</span><b>collection-item light-blue item</b></li>
           </ul>
       </div>
-
       <div id="example2" class="section scrollspy">
           <h4 class="deep-orange-text text-darken-3">Example #2 - Containers, sortable, and draggable items</h4>
           <p>LMDD is markup oriented, meaning you use the markup to tell the app what to act like...</p>
@@ -137,35 +183,6 @@ x
               <li>html element marked with 'lmdd-draggable' class will set the element as draggable so you can move it around and drop it in containers</li>
               <li>html element marked with 'lmdd-sortable' class means this is a sortable item (you can drop the draggable before or after this element</li>
           </ul>
-      </div>
-      <div id="markup-example">
-          <div class="flex-grid nestable z-depth-3 w12">
-              <div class="flex-grid lime w4 nestable z-depth-3 item">
-                  <div class="light-green z-depth-3 item rectangle"></div>
-                  <div class="pink z-depth-3 item rectangle"></div>
-                  <div class="deep-purple z-depth-3 item rectangle"></div>
-                  <div class="light-blue z-depth-3 item rectangle"></div>
-              </div>
-              <div class="flex-grid lime w4 nestable z-depth-3 item">
-                  <div class="light-green z-depth-3 item rectangle"></div>
-                  <div class="pink z-depth-3 item rectangle"></div>
-                  <div class="deep-purple z-depth-3 item rectangle"></div>
-                  <div class="light-blue z-depth-3 item rectangle"></div>
-              </div>
-              <div class="flex-grid lime w4 nestable z-depth-3 item">
-                  <div class="light-green z-depth-3 item rectangle"></div>
-                  <div class="pink z-depth-3 item rectangle"></div>
-                  <div class="deep-purple z-depth-3 item rectangle"></div>
-                  <div class="light-blue z-depth-3 item rectangle"></div>
-              </div>
-          </div>
-          <!--<ol class="nestable">-->
-              <!--<li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"></ol></li></ol></li>-->
-              <!--<li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"></ol></li><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"></ol></li></ol></li>-->
-              <!--<li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"></ol></li><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"></ol></li><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"></ol></li></ol></li>-->
-              <!--<li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"></ol></li><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"></ol></li></ol></li>-->
-              <!--<li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"></ol></li><li class="item list-item"><span>just a sentence</span><ol class="nestable list-item"></ol></li></ol></li></ol></li>-->
-          <!--</ol>-->
       </div>
       <div id="example3" class="section scrollspy">
           <p>Content </p>
