@@ -20,7 +20,10 @@ if (typeof Object.assign != 'function') {
     };
 }
 //nodelist foreach hack
-NodeList.prototype.forEach = Array.prototype.forEach;
+if (typeof (NodeList.prototype.forEach) === 'undefined'){
+    NodeList.prototype.forEach = Array.prototype.forEach;
+}
+
 ///todo: touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
 var lmdd = (function() {
     var options = {
@@ -34,15 +37,11 @@ var lmdd = (function() {
         revert:false,
         dragstartTimeout:200,
         calcInterval:200,
+        nativeScroll:false,
         clone:false
     };
+    var protectedProperties = ['padding','padding-top','padding-bottom','padding-right','padding-left','display','list-style-type','line-height'];
     var calcInterval = false;
-    var origin = {
-        container:{},
-        nextSibling: {},
-        clone:{},
-        cloneAnimated:false
-    };
     var scroll = {
         lastX:window.pageXOffset,
         lastY:window.pageYOffset,
@@ -57,44 +56,63 @@ var lmdd = (function() {
         x:0,
         y:0
     }
-    var scope = {};
-    var draggedElement = false;
-    var draggedClone = false;
-    var mirror = false;
-    var currentEvent = false;//updated on every app tick
-    var pendingEvent = false;//updated on every event
-    var currentPosition = false;//update on every mousemove event
-    var currentContainer = false;//updated on every event update
-    var currentLocation = false;//updated on every event update (when mouse speed is moderate)
-    var currentSpeed = false;
-    var speedEvent = false;
-
-    var mouseLocation = {
-        event:{},
-        lastEvent:{},
-        container:false,
-        pos: 0,
-        updatePosition:function(){
-            this.pos = getPosition(this.cords, pendingEvent.clientY, pendingEvent.clientX);
-        },
-        cords: {},
-        updateCords: function(){
-            if(currentContainer){
-                this.cords = getCoordinates(currentContainer);
-            }
-        },
-        get position() {
-            return getPosition(this.coordinates, this.event.clientY, this.event.clientX)
-        },
-        get coordinates() {
-            return ((this.container) ? getCoordinates(this.container) : false);
-        },
-        get speed(){
-            var time = this.event.timeStamp - this.lastEvent.timeStamp;
-            var distance = Math.sqrt(Math.pow(this.event.pageY - this.lastEvent.pageY, 2) + Math.pow(this.event.pageX - this.lastEvent.pageX, 2));
-            this.lastEvent = this.event;
-            return distance/time;
+    var scope = {};//html element in which drag event occurs
+    var draggedElement = false;//html element being dragged
+    var draggedClone = false;//clone of dragged element (used to animate movement)
+    var mirror = false;//clone of dragged element attached to mouse cursor while dragging
+    var events = {
+        last:false,
+        tick:false,
+    };
+    var positions = {
+        currentTarget:false,
+        originalContainer:false,
+        originalNextSibling:false,
+        currentContainer:false,
+        previousContainer:false,
+        currentCoordinates:false,
+        currentPosition:false,
+        previousPosition:false
+    };
+    var status = {
+        mouseSpeed:false,
+        dragEvent:false
+    };
+    var updateOriginalPosition = function(){
+        positions.originalContainer = draggedElement.parentNode;
+        positions.originalNextSibling = draggedElement.nextSibling;
+    };
+    var updateCurrentContainer = function(){
+        positions.previousContainer = positions.currentContainer;
+        positions.currentContainer = getWrapper(events.last.target,'lmdd-container');
+        if (positions.currentContainer !== positions.previousContainer){console.log('containerChanged',positions.currentContainer , positions.previousContainer)}
+    };
+    var updateCurrentCoordinates = function(){
+        if (positions.currentContainer){
+            positions.currentCoordinates = getCoordinates(positions.currentContainer);
         }
+        else{
+            positions.currentCoordinates = getCoordinates(positions.originalContainer);
+        }
+    };
+    var updateCurrentPosition = function(){
+        positions.previousPosition = positions.currentPosition;
+        if (positions.currentContainer) {
+            positions.currentPosition = getPosition(positions.currentCoordinates, events.last.clientY, events.last.clientX);
+        }
+        else{
+            positions.currentPosition = false;
+        };
+    };
+    var appendDraggedElement = function(){
+        if (positions.currentContainer){
+            positions.currentContainer.insertBefore(draggedElement, positions.currentContainer.childNodes[positions.currentPosition]);
+        }
+        else {
+            positions.originalContainer.insertBefore(draggedElement,positions.originalNextSibling);
+        }
+        updateCurrentCoordinates();
+        animateElement(scope);
     };
     // helper functions
     var cleanNode = function(node) {//clean empty nodes
@@ -124,6 +142,17 @@ var lmdd = (function() {
         };
         return offset;
     };
+    var getWrapper = function(el, wrapperClass){
+        var path = [];
+        var wrapper = false;
+        for ( ; el && el !== document; el = el.parentNode ) {
+            path.unshift(el);
+            if ((el.classList.contains(wrapperClass))&&(!wrapper)){
+                wrapper = el;
+            }
+        };
+        return (path.indexOf(scope) > -1) ? wrapper : false;
+    };
     var setElementIndex = function(el, isRoot) {
         el.dataset.lmddindex = (isRoot) ? 'root' : getIndex(el);
         el.childNodes.forEach(function(node) {
@@ -149,7 +178,7 @@ var lmdd = (function() {
         if(el.nodeType === 1){
             animateNode (el);
             if (el.classList.contains('lmdd-container')||(el === scope)){
-                if (el!==draggedElement){
+                if (el !== draggedElement){
                     el.cloneRef.style.display='block';
                     el.cloneRef.style.padding=0;
                     el.childNodes.forEach(function (node) {
@@ -236,7 +265,6 @@ var lmdd = (function() {
         return coordinates[position].index;
     };
     var dragStarted = function(event) {
-        mouseLocation.event = event;
         scroll.lastX = window.pageXOffset;
         scroll.lastY = window.pageYOffset;
         setAnimationLayer();
@@ -247,7 +275,6 @@ var lmdd = (function() {
     };
     var setDraggedClone = function() {
         draggedClone = draggedElement.cloneRef;//use a copy of the dragged element to act as shadow/ghost
-        var protectedProperties = ['padding','padding-top','padding-bottom','padding-right','padding-left','display','list-style-type','line-height'];
         var cStyle = (window.getComputedStyle)?window.getComputedStyle(draggedElement,null):draggedElement.currentStyle;
         for (var i=0;i<protectedProperties.length;i++){
             draggedClone.style[protectedProperties[i]]= cStyle[protectedProperties[i]];
@@ -257,8 +284,8 @@ var lmdd = (function() {
         scope.cloneRef.appendChild(draggedClone);//insert the shadow into the dom
     };
     var updateMirrorLocation = function() {
-        mirror.style.top = (pendingEvent.pageY - parseInt(mirror.parentNode.style.top) + scroll.deltaY - dragOffset.y) + 'px';
-        mirror.style.left = (pendingEvent.pageX - parseInt(mirror.parentNode.style.left) + scroll.deltaX - dragOffset.x) + 'px';
+        mirror.style.top = (events.last.pageY - parseInt(mirror.parentNode.style.top) + scroll.deltaY - dragOffset.y) + 'px';
+        mirror.style.left = (events.last.pageX - parseInt(mirror.parentNode.style.left) + scroll.deltaX - dragOffset.x) + 'px';
     };
     var setMirror = function() {
         mirror = draggedClone.cloneNode(true);
@@ -286,41 +313,6 @@ var lmdd = (function() {
             }
 
         }
-    };
-    var scrollEvent = function (event){
-        updateMirrorLocation();
-    };
-    var getWrapper = function(el, wrapperClass){
-        var path = [];
-        var wrapper = false;
-        for ( ; el && el !== document; el = el.parentNode ) {
-            path.unshift(el);
-            if ((el.classList.contains(wrapperClass))&&(!wrapper)){
-                wrapper = el;
-            }
-        };
-        return (path.indexOf(scope) > -1) ? wrapper : false;
-    };
-    var mouseLocationUpdated = function(event) {
-        pendingEvent = event;
-        // mouseLocation.container = getWrapper(event.target,'lmdd-container');
-        var revert = true;
-        scroll.lastX = window.pageXOffset;
-        scroll.lastY = window.pageYOffset;
-        var location = (event.type === 'touchmove')?event.touches[0]:event;
-        mouseLocation.event = (event.type === 'touchmove')?event.touches[0]:event;
-        updateMirrorLocation();
-        // if ((mouseLocation.container)&&(mouseLocation.container.original)&&(draggedElement)&&(mouseLocation.speed<0.1)) {//
-        //     mouseLocation.container.insertBefore(draggedElement, mouseLocation.container.childNodes[mouseLocation.position]);
-        //     animateElement(scope);
-        //     mouseLocation.updateCords();
-        //     console.log('oldfunc')
-        // }
-        // else if(!mouseLocation.container&&revert){
-        //     origin.container.insertBefore(draggedElement,origin.nextSibling);
-        //     animateElement(scope);
-        //     console.log('oldfunc')
-        // }
     };
     var createReference = function(el,clone){
         var elArray = [];
@@ -376,15 +368,12 @@ var lmdd = (function() {
         };
     };
     var unsetDraggables = function(el){
-        el.removeEventListener('mousedown',dragStarted,false)
         var draggables = el.getElementsByClassName(el.lmddOptions.draggableItemClass);
         for (var i = 0; i < draggables.length; i++) {
             draggables[i].classList.remove('lmdd-draggable'); //revrese
         };
         var containers = el.getElementsByClassName(el.lmddOptions.containerClass);
-        if (el.classList.contains(el.lmddOptions.containerClass)) {
-            el.classList.remove('lmdd-container') //reverse
-        };
+        el.classList.remove('lmdd-container') //reverse
         for (var i = 0; i < containers.length; i++) {
             containers[i].classList.remove('lmdd-container'); //reverse
         };
@@ -399,42 +388,80 @@ var lmdd = (function() {
         scope = false;
         draggedElement = false;
         draggedClone = false;
-        pendingEvent = false;
+        events.last = false;
         clearInterval(calcInterval);
-        document.removeEventListener("mousemove", mouseLocationUpdated); //reverse
-        document.removeEventListener("scroll", scrollEvent);//reverse
+        document.removeEventListener("mousemove", eventManager , false); //reverse
+        document.removeEventListener("scroll", eventManager , false);//reverse
     };
     var eventTicker = function(){
-        currentSpeed = pendingEvent.timeStamp - speedEvent.timeStamp;
-        speedEvent = pendingEvent;
-        if (currentEvent.target !== pendingEvent.target){
-            currentContainer = getWrapper(pendingEvent.target,'lmdd-container');
-            mouseLocation.container = getWrapper(pendingEvent.target,'lmdd-container');
-            mouseLocation.updateCords();
-            currentEvent = pendingEvent;
-        }
-        mouseLocation.updatePosition();
         var revert = true;
-        if ((currentContainer)&&(currentContainer!==draggedElement)&&(currentContainer.original)&&(draggedElement)&&(currentSpeed>0)) {//
-            currentContainer.insertBefore(draggedElement, currentContainer.childNodes[mouseLocation.pos]);
-            animateElement(scope);
-            mouseLocation.updateCords();
+        if (events.tick === events.last){
+            return false;
         }
-        else if(!mouseLocation.container&&revert&&(currentSpeed>0)){
-            origin.container.insertBefore(draggedElement,origin.nextSibling);
-            animateElement(scope);
+        events.tick = events.last;
+        if (positions.currentTarget !== events.last.target){
+            positions.currentTarget = events.last.target;
+            updateCurrentContainer();
+            if (!positions.currentContainer){//no container found
+                console.log('out of scope...');
+                if (positions.previousContainer && revert){//execute once (revert)
+                    console.log('revert');
+                    appendDraggedElement();
+                    animateElement(scope);
+                }
+            }
+            else{//found a container
+                if (positions.currentContainer !== positions.previousContainer){//its a new one...
+                    updateCurrentCoordinates();
+                    updateCurrentPosition();
+                    console.log('append on:',positions.currentContainer,positions.currentPosition);
+                    appendDraggedElement();
+                    animateElement(scope);
+                }
+                else{//same container
+                    updateCurrentPosition();
+                    if (positions.currentPosition !== positions.previousPosition){//new position
+                        appendDraggedElement();
+                        animateElement(scope);
+                        console.log('append on:',positions.currentContainer,positions.currentPosition);
+                    };
+                }
+            }
         }
-
+        else{
+            console.log('mmmm...')
+            updateCurrentPosition();
+            if (positions.currentPosition !== positions.previousPosition){//new position
+                console.log('append on:',positions.currentContainer,positions.currentPosition);
+                appendDraggedElement();
+                animateElement(scope);
+            };
+        };
     };
     var eventManager = function(event){
-        if ((event.type === 'mouseup')&&(event.button === 0)) {
+        if (event.type === 'mouseup'){
             killEvent();
+            return false;
         };
-        if ((event.type === 'mousedown')&&(event.button === 0)){
+        if ((event.button !== 0)&&(event.type !== 'scroll')){
+            killEvent();
+            return false;
+        };
+        if (event.type === 'mousemove'){
+            events.last = event;
+            scroll.lastX = window.pageXOffset;
+            scroll.lastY = window.pageYOffset;
+            updateMirrorLocation();
+        };
+        if (event.type === 'scroll'){
+            updateMirrorLocation();
+            updateCurrentCoordinates();
+        };
+        if (event.type === 'mousedown'){
             scope = this;
-            pendingEvent = event;
+            events.last = event;
             window.setTimeout(function(){//delay the dragstart for a short time to enable clicking and text selection
-                if ((pendingEvent)&&(window.getSelection().anchorOffset === window.getSelection().focusOffset)){
+                if ((events.last)&&(window.getSelection().anchorOffset === window.getSelection().focusOffset)){
                     if((scope.lmddOptions.handleClass)&&(!event.target.classList.contains(scope.lmddOptions.handleClass))){//not dragging with handle
                             killEvent();
                             return false;
@@ -446,16 +473,15 @@ var lmdd = (function() {
                     }
                     else if(!draggedElement){
                         draggedElement = target;
+                        updateOriginalPosition();
                         draggedElement.classList.add('lmdd-hidden');//reverse
                         window.getSelection().removeAllRanges();//disable selection on FF and IE - JS
                         document.body.classList.add('unselectable');//disable selection on Chrome - CSS
-                        origin.container = target.parentNode;
-                        origin.nextSibling = target.nextSibling;
                         dragOffset.x = event.clientX - target.getBoundingClientRect().left;
                         dragOffset.y = event.clientY - target.getBoundingClientRect().top;
                         dragStarted(event);
-                        document.addEventListener("mousemove", mouseLocationUpdated); //follow mouse movement
-                        document.addEventListener("scroll", scrollEvent);//for updating mirror location onscroll
+                        document.addEventListener("mousemove" , eventManager , false); //follow mouse movement
+                        document.addEventListener("scroll" , eventManager , false);//for updating mirror location onscroll
                         calcInterval = window.setInterval(eventTicker,scope.lmddOptions.calcInterval);//calculation interval for mouse movement
                     }
                 };
