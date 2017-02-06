@@ -1,15 +1,6 @@
 .lmdd-hidden{
     visibility:hidden;
 }
-.lmdd-none{
-    width:0 !important;
-    height:0 !important;
-    margin:0 !important;
-    padding:0 !important;
-    border:0 !important;
-    opacity:0 !important;
-    visibility:hidden !important;
-}
 .lmdd-draggable{
     cursor:move;
 }
@@ -21,7 +12,7 @@
     opacity:0.5 !important;
 }
 .lmdd-dragged{
-    filter: grayscale(100%) !important;
+    /*filter: grayscale(100%) !important;*/
     opacity:0.5 !important;
     margin:0;
 }

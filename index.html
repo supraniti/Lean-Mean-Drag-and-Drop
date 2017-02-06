@@ -1,101 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="msapplication-tap-highlight" content="no">
-  <meta name="description" content="drag and drop script for complex nested html structures">
-  <title>Lean & Mean Drag and Drop - LMDD</title>
-  <!-- Favicons-->
-  <link rel="apple-touch-icon" sizes="57x57" href="gh-pages/images/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="gh-pages/images/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="gh-pages/images/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="gh-pages/images/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="gh-pages/images/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="gh-pages/images/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="gh-pages/images/apple-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="gh-pages/images/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="gh-pages/images/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="gh-pages/images/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="gh-pages/images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="gh-pages/images/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="gh-pages/images/favicon-16x16.png">
-  <link rel="manifest" href="gh-pages/images/manifest.json">
-  <meta name="msapplication-TileColor" content="#ef5423">
-  <meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
-  <!--  Android 5 Chrome Color-->
-  <meta name="theme-color" content="#ef5423">
-  <!-- CSS-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="description" content="drag and drop script for complex nested html structures">
+    <title>Lean & Mean Drag and Drop - LMDD</title>
+    <!-- Favicons-->
+    <link rel="apple-touch-icon" sizes="57x57" href="gh-pages/images/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="gh-pages/images/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="gh-pages/images/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="gh-pages/images/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="gh-pages/images/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="gh-pages/images/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="gh-pages/images/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="gh-pages/images/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="gh-pages/images/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="gh-pages/images/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="gh-pages/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="gh-pages/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="gh-pages/images/favicon-16x16.png">
+    <link rel="manifest" href="gh-pages/images/manifest.json">
+    <meta name="msapplication-TileColor" content="#ef5423">
+    <meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
+    <!--  Android 5 Chrome Color-->
+    <meta name="theme-color" content="#ef5423">
+    <!-- CSS-->
     <link href="gh-pages/style.css" type="text/css" rel="stylesheet">
     <link href="gh-pages/prism.css" rel="stylesheet">
     <link href="dist/lmdd.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" type="text/css"
+          rel="stylesheet" media="screen,projection">
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-  <header>
-  <nav class="deep-orange lighten-1" role="navigation">
-          <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">LMDD</a>
-              <ul class="right hide-on-med-and-down">
-                  <li><a href="#about">About</a></li>
-                  <li><a href="#installation">Installation</a></li>
-                  <li><a href="#example1">Example 1</a></li>
-                  <li><a href="#example2">Example 2</a></li>
-                  <li><a href="#example3">Example 3</a></li>
-              </ul>
-              <ul id="nav-mobile" class="side-nav deep-orange lighten-1 white-text">
-                  <li><div class="background">
-                          <img src="gh-pages/images/logo-250.png">
-                      </div>
-                  </li>
-                  <li><a class="waves-effect" href="#about"><i class="material-icons">announcement</i>About</a></li>
-                  <li><a class="waves-effect" href="#installation"><i class="material-icons">lightbulb_outline</i>Installation</a></li>
-                  <li><a class="waves-effect" href="#options"><i class="material-icons">settings</i>Options</a></li>
-                  <li><div class="divider"></div></li>
-                  <li><a class="subheader">Examples</a></li>
-                  <li><a class="waves-effect" href="#example1">Example 1</a></li>
-                  <li><a class="waves-effect" href="#example2">Example 2</a></li>
-                  <li><a class="waves-effect" href="#example3">Example 3</a></li>
-              </ul>
-              <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-          </div>
-      </nav>
-  </header>
-  <main>
-      <div class="container">
-          <div class="row">
-      <div id="about" class="section scrollspy">
-          <h4 class="deep-orange-text text-darken-3">About</h4>
-          <p><b>Lean & Mean Drag and Drop</b> is a small script  making drag and drop for re-ordering complex html layout a breeze</p>
-          <p>LMDD is light weighted (~3kb gzipped) and has zero dependencies. It can work with any type of layout, including flex-box, and produce beautiful looking UI with smooth transitions on sorting.</p>
-      </div>
-      <div id="installation" class="section scrollspy">
-          <h4 class="deep-orange-text text-darken-3">Installation</h4>
-          <p>Add <a class="deep-orange-text" href="#">mldd.min.js</a> to your project and load it.</p>
-          <p>Initialize LMDD instance with your preferred options, and make sure to listen to the relevant events and respond accordingly</p>
-          <pre><code class="language-css">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
-      </div>
-              <div id="dimension">
-                  <div class="child"></div>
-                  <div class="child"></div>
-                  <div class="child"></div>
-                  <div class="child"></div>
-                  <div class="child"></div>
-              </div>
-        <div id="gparent" class="chts">
-            <div id="parent" class="chts">
-                <div id="child" class="chts"></div>
-            </div>
+<header>
+    <nav class="deep-orange lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">LMDD</a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="#about">About</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#example1">Example 1</a></li>
+                <li><a href="#example2">Example 2</a></li>
+                <li><a href="#example3">Example 3</a></li>
+            </ul>
+            <ul id="nav-mobile" class="side-nav deep-orange lighten-1 white-text">
+                <li>
+                    <div class="background">
+                        <img src="gh-pages/images/logo-250.png">
+                    </div>
+                </li>
+                <li><a class="waves-effect" href="#about"><i class="material-icons">announcement</i>About</a></li>
+                <li><a class="waves-effect" href="#installation"><i class="material-icons">lightbulb_outline</i>Installation</a>
+                </li>
+                <li><a class="waves-effect" href="#options"><i class="material-icons">settings</i>Options</a></li>
+                <li>
+                    <div class="divider"></div>
+                </li>
+                <li><a class="subheader">Examples</a></li>
+                <li><a class="waves-effect" href="#example1">Example 1</a></li>
+                <li><a class="waves-effect" href="#example2">Example 2</a></li>
+                <li><a class="waves-effect" href="#example3">Example 3</a></li>
+            </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
         </div>
-      <div id="example1" class="section scrollspy">
-          <h4 class="deep-orange-text text-darken-3">Example #1 - Simple Sortable Lists</h4>
-          <p class="flow-text">Note LMDD is markup oriented, meaning your HTML markup determines the way drag and drop behaviour:</p>
-          <p>Elements marked with class="your-draggable-class" will be draggable</p>
-          <p>Elements marked with class="your-container-class" will act as containers and you will be able to drop draggables inside them</p>
-          <p class="deep-orange-text text-darken-3">HTML markup:</p>
-          <pre class="language-html"><code>&lt;div id="simple-sortable-1">
+    </nav>
+</header>
+<main>
+    <div class="container">
+        <div class="row">
+            <div id="about" class="section scrollspy">
+                <h4 class="deep-orange-text text-darken-3">About</h4>
+                <p><b>Lean & Mean Drag and Drop</b> is a small script making drag and drop for re-ordering complex html
+                    layout a breeze</p>
+                <p>LMDD is light weighted (~3kb gzipped) and has zero dependencies. It can work with any type of layout,
+                    including flex-box, and produce beautiful looking UI with smooth transitions on sorting.</p>
+            </div>
+            <div id="installation" class="section scrollspy">
+                <h4 class="deep-orange-text text-darken-3">Installation</h4>
+                <p>Add <a class="deep-orange-text" href="#">mldd.min.js</a> to your project and load it.</p>
+                <p>Initialize LMDD instance with your preferred options, and make sure to listen to the relevant events
+                    and respond accordingly</p>
+                <pre><code
+                        class="language-css">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
+            </div>
+
+            <div id="first-example">
+                <div class="example-container white z-depth-3">
+                    <div class="example-item red darken-3 z-depth-1"></div>
+                    <div class="example-item pink darken-2 z-depth-1"></div>
+                    <div class="example-item purple darken-1 z-depth-1"></div>
+                    <div class="example-item deep-purple lighten-1 z-depth-1"></div>
+                    <div class="example-item indigo lighten-2 z-depth-1"></div>
+                    <div class="example-item blue lighten-3 z-depth-1"></div>
+                </div>
+            </div>
+
+            <div id="dimension">
+                <div class="child"></div>
+                <div class="child"></div>
+                <div class="child"></div>
+                <div class="child"></div>
+                <div class="child"></div>
+            </div>
+            <div id="gparent" class="chts">
+                <div id="parent" class="chts">
+                    <div id="child" class="chts"></div>
+                </div>
+            </div>
+            <div id="example1" class="section scrollspy">
+                <h4 class="deep-orange-text text-darken-3">Example #1 - Simple Sortable Lists</h4>
+                <p class="flow-text">Note LMDD is markup oriented, meaning your HTML markup determines the way drag and
+                    drop behaviour:</p>
+                <p>Elements marked with class="your-draggable-class" will be draggable</p>
+                <p>Elements marked with class="your-container-class" will act as containers and you will be able to drop
+                    draggables inside them</p>
+                <p class="deep-orange-text text-darken-3">HTML markup:</p>
+                <pre class="language-html"><code>&lt;div id="simple-sortable-1">
   &lt;div class="container">
       &lt;div class="orange rectangle">&lt;/div>
       &lt;div class="light-green rectangle">&lt;/div>
@@ -105,113 +128,154 @@
       &lt;div class="lime rectangle">&lt;/div>
   &lt;/div>
 &lt;/div></code></pre>
-          <p class="deep-orange-text text-darken-3">Javascript:</p>
-          <pre><code class="language-javascript">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
-          <p class="deep-orange-text text-darken-3">Result:</p>
-          <div id="eventExample" class="check">
-              <div class="check chts"><div class="chts"><div class="chts"></div></div></div>
-              <div class="chts"><div class="check chts"><div class="chts"></div></div></div>
-          </div>
-          <div id="markup-example">
-              <div class="flex-grid nestable z-depth-3 w12 ">
-                  <div class="flex-grid lime w4 nestable z-depth-3 item">
-                      <div class="light-green z-depth-3 item rectangle animation-block"></div>
-                      <div class="pink z-depth-3 item rectangle animation-block"></div>
-                      <div class="deep-purple z-depth-3 item rectangle animation-block"></div>
-                      <div class="light-blue z-depth-3 item rectangle animation-block"></div>
-                  </div>
-                  <div class="flex-grid lime lighten-3 w13 z-depth-3 nestable item">
-                      <div class="light-green z-depth-3  rectangle "></div>
-                      <div class="pink z-depth-3 rectangle"></div>
-                      <div class="deep-purple z-depth-3  rectangle "></div>
-                      <div class="light-blue z-depth-3  rectangle "></div>
-                  </div>
-                  <div class="flex-grid lime darken-1 w4 nestable z-depth-3 item ">
-                      <div class="light-green z-depth-3 item rectangle"></div>
-                      <div class="pink z-depth-3 item rectangle "></div>
-                      <div class="deep-purple z-depth-3 item rectangle "></div>
-                      <div class="light-blue z-depth-3 item rectangle "></div>
-                  </div>
-                  <div class="flex-grid lime darken-2 w4 nestable z-depth-3 item ">
-                      <div class="light-green z-depth-3 item rectangle "></div>
-                      <div class="pink z-depth-3 item rectangle"></div>
-                      <div class="deep-purple z-depth-3 item rectangle "></div>
-                      <div class="light-blue z-depth-3 item rectangle "></div>
-                  </div>
-              </div>
-          </div>
+                <p class="deep-orange-text text-darken-3">Javascript:</p>
+                <pre><code class="language-javascript">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
+                <p class="deep-orange-text text-darken-3">Result:</p>
+                <div id="eventExample" class="check">
+                    <div class="check chts">
+                        <div class="chts">
+                            <div class="chts"></div>
+                        </div>
+                    </div>
+                    <div class="chts">
+                        <div class="check chts">
+                            <div class="chts"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="markup-example">
+                    <div class="flex-grid nestable z-depth-3 w12 ">
+                        <div class="flex-grid lime w4 nestable z-depth-3 item">
+                            <div class="light-green z-depth-3 item rectangle animation-block"></div>
+                            <div class="pink z-depth-3 item rectangle animation-block"></div>
+                            <div class="deep-purple z-depth-3 item rectangle animation-block"></div>
+                            <div class="light-blue z-depth-3 item rectangle animation-block"></div>
+                        </div>
+                        <div class="flex-grid lime lighten-3 w13 z-depth-3 nestable item">
+                            <div class="light-green z-depth-3  rectangle "></div>
+                            <div class="pink z-depth-3 rectangle"></div>
+                            <div class="deep-purple z-depth-3  rectangle "></div>
+                            <div class="light-blue z-depth-3  rectangle "></div>
+                        </div>
+                        <div class="flex-grid lime darken-1 w4 nestable z-depth-3 item ">
+                            <div class="light-green z-depth-3 item rectangle"></div>
+                            <div class="pink z-depth-3 item rectangle "></div>
+                            <div class="deep-purple z-depth-3 item rectangle "></div>
+                            <div class="light-blue z-depth-3 item rectangle "></div>
+                        </div>
+                        <div class="flex-grid lime darken-2 w4 nestable z-depth-3 item ">
+                            <div class="light-green z-depth-3 item rectangle "></div>
+                            <div class="pink z-depth-3 item rectangle"></div>
+                            <div class="deep-purple z-depth-3 item rectangle "></div>
+                            <div class="light-blue z-depth-3 item rectangle "></div>
+                        </div>
+                    </div>
+                </div>
 
-          <div id="simple-example">
-              <div class="flex-grid xxx flex-align-space-around nestable z-depth-2">
-                  <div class="light-green item z-depth-3 rectangle"></div>
-                  <div class="pink item z-depth-3 rectangle"></div>
-                  <div class="deep-purple xxx z-depth-3 item rectangle"></div>
-                  <div class="light-blue xxx z-depth-3 item rectangle"></div>
-                  <div class="lime xxx z-depth-3 item rectangle"></div>
-                  <div class="teal xxx z-depth-3 item rectangle"></div>
-                  <div class="amber xxx z-depth-3 item rectangle"></div>
-                  <div class="blue-grey item z-depth-3 rectangle"></div>
-                  <div class="green item z-depth-3 rectangle"></div>
-              </div>
-          </div>
-          <div id="clone-example">
-              <div class="flex-grid xxx flex-align-space-around z-depth-2">
-                  <div class="light-green item z-depth-3 rectangle"></div>
-                  <div class="pink item z-depth-3 rectangle"></div>
-                  <div class="deep-purple xxx z-depth-3 item rectangle"></div>
-              </div>
-              <div class="flex-grid xxx flex-align-space-around nestable z-depth-2">
-                  <div class="light-green item z-depth-3 rectangle"></div>
-                  <div class="pink item z-depth-3 rectangle"></div>
-                  <div class="deep-purple xxx z-depth-3 item rectangle"></div>
-              </div>
-          </div>
-      </div>
-      <div id="simple-example-2">
-          <ul class="collection xxx  nestable">
-              <li class="collection-item  xxx light-blue item animation-block"><div class="chts"><div class="chts"><div class="chts"><i class="material-icons handle">reorder</i></div></div></div><span>collection-item light-blue item</span><b>collection-item light-blue item</b></li>
-              <li class="collection-item  xxx lime item animation-block"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><p>collection-item light-blue item</p><span>collection-item light-blue item</span></li>
-              <li class="collection-item  xxx pink item animation-block"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><b>collection-item light-blue item</b><span>collection-item light-blue item</span></li>
-              <li class="collection-item  xxx amber item animation-block"><i class="material-icons handle">reorder</i><div class="chts"><div class="chts"><div class="chts"></div></div></div><a>collection-item light-blue item</a><span>collection-item light-blue item</span><b>collection-item light-blue item</b></li>
-          </ul>
-      </div>
-      <div id="example2" class="section scrollspy">
-          <h4 class="deep-orange-text text-darken-3">Example #2 - Containers, sortable, and draggable items</h4>
-          <p>LMDD is markup oriented, meaning you use the markup to tell the app what to act like...</p>
-          <ul>
-              <li>html element marked with 'lmdd-container' class will act as a drop target</li>
-              <li>html element marked with 'lmdd-draggable' class will set the element as draggable so you can move it around and drop it in containers</li>
-              <li>html element marked with 'lmdd-sortable' class means this is a sortable item (you can drop the draggable before or after this element</li>
-          </ul>
-      </div>
-      <div id="example3" class="section scrollspy">
-          <p>Content </p>
-      </div>
-          </div>
-      </div>
-  </main>
-  <footer class="page-footer deep-orange">
-    <div class="footer-copyright">
-      <div class="container">
-        © 2017 Supraniti, All rights reserved.
-        <a class="grey-text text-lighten-4 right" href="https://github.com/supraniti/Lean-Mean-Drag-and-Drop/blob/master/LICENSE">MIT License</a>
-      </div>
+                <div id="simple-example">
+                    <div class="flex-grid xxx flex-align-space-around nestable z-depth-2">
+                        <div class="light-green item z-depth-3 rectangle"></div>
+                        <div class="pink item z-depth-3 rectangle"></div>
+                        <div class="deep-purple xxx z-depth-3 item rectangle"></div>
+                        <div class="light-blue xxx z-depth-3 item rectangle"></div>
+                        <div class="lime xxx z-depth-3 item rectangle"></div>
+                        <div class="teal xxx z-depth-3 item rectangle"></div>
+                        <div class="amber xxx z-depth-3 item rectangle"></div>
+                        <div class="blue-grey item z-depth-3 rectangle"></div>
+                        <div class="green item z-depth-3 rectangle"></div>
+                    </div>
+                </div>
+                <div id="clone-example">
+                    <div class="flex-grid xxx flex-align-space-around z-depth-2">
+                        <div class="light-green item z-depth-3 rectangle"></div>
+                        <div class="pink item z-depth-3 rectangle"></div>
+                        <div class="deep-purple xxx z-depth-3 item rectangle"></div>
+                    </div>
+                    <div class="flex-grid xxx flex-align-space-around nestable z-depth-2">
+                        <div class="light-green item z-depth-3 rectangle"></div>
+                        <div class="pink item z-depth-3 rectangle"></div>
+                        <div class="deep-purple xxx z-depth-3 item rectangle"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="simple-example-2">
+                <ul class="collection xxx  nestable">
+                    <li class="collection-item  xxx light-blue item animation-block">
+                        <div class="chts">
+                            <div class="chts">
+                                <div class="chts"><i class="material-icons handle">reorder</i></div>
+                            </div>
+                        </div>
+                        <span>collection-item light-blue item</span><b>collection-item light-blue item</b></li>
+                    <li class="collection-item  xxx lime item animation-block"><i
+                            class="material-icons handle">reorder</i>
+                        <div class="chts">
+                            <div class="chts">
+                                <div class="chts"></div>
+                            </div>
+                        </div>
+                        <p>collection-item light-blue item</p><span>collection-item light-blue item</span></li>
+                    <li class="collection-item  xxx pink item animation-block"><i
+                            class="material-icons handle">reorder</i>
+                        <div class="chts">
+                            <div class="chts">
+                                <div class="chts"></div>
+                            </div>
+                        </div>
+                        <b>collection-item light-blue item</b><span>collection-item light-blue item</span></li>
+                    <li class="collection-item  xxx amber item animation-block"><i
+                            class="material-icons handle">reorder</i>
+                        <div class="chts">
+                            <div class="chts">
+                                <div class="chts"></div>
+                            </div>
+                        </div>
+                        <a>collection-item light-blue item</a><span>collection-item light-blue item</span><b>collection-item
+                            light-blue item</b></li>
+                </ul>
+            </div>
+            <div id="example2" class="section scrollspy">
+                <h4 class="deep-orange-text text-darken-3">Example #2 - Containers, sortable, and draggable items</h4>
+                <p>LMDD is markup oriented, meaning you use the markup to tell the app what to act like...</p>
+                <ul>
+                    <li>html element marked with 'lmdd-container' class will act as a drop target</li>
+                    <li>html element marked with 'lmdd-draggable' class will set the element as draggable so you can
+                        move it around and drop it in containers
+                    </li>
+                    <li>html element marked with 'lmdd-sortable' class means this is a sortable item (you can drop the
+                        draggable before or after this element
+                    </li>
+                </ul>
+            </div>
+            <div id="example3" class="section scrollspy">
+                <p>Content </p>
+            </div>
+        </div>
     </div>
-  </footer>
-  <!--  Scripts-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="gh-pages/prism.js"></script>
-  <script src="dist/lmdd.js"></script>
-  <script src="gh-pages/script.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.9/vue.min.js"></script>
+</main>
+<footer class="page-footer deep-orange">
+    <div class="footer-copyright">
+        <div class="container">
+            © 2017 Supraniti, All rights reserved.
+            <a class="grey-text text-lighten-4 right"
+               href="https://github.com/supraniti/Lean-Mean-Drag-and-Drop/blob/master/LICENSE">MIT License</a>
+        </div>
+    </div>
+</footer>
+<!--  Scripts-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="gh-pages/prism.js"></script>
+<script src="dist/lmdd.js"></script>
+<script src="gh-pages/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.9/vue.min.js"></script>
 <script>
-    $( document ).ready(function(){
+    $(document).ready(function () {
         $(".button-collapse").sideNav({
-            menuWidth: 250, // Default is 240
-            edge: 'left', // Choose the horizontal origin
-            closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
-            draggable: true // Choose whether you can drag to open on touch screens
+                menuWidth: 250, // Default is 240
+                edge: 'left', // Choose the horizontal origin
+                closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+                draggable: true // Choose whether you can drag to open on touch screens
             }
         );
         $('.scrollspy').scrollSpy();
