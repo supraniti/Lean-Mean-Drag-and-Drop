@@ -24,13 +24,13 @@ if (typeof (NodeList.prototype.forEach) === 'undefined') {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
 
-///todo: refactoring, add scroll polyfill, touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
+///todo: refactoring, touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
 
 //scroll controller
-var scrollController = function(){
-    var nested = false, container = false, scrollSpeed = false, animate = false, action = false, rect = false;
-    var animationFrame,reh,veh1,veh2,rew,vew1,vew2,cspy,cspx,cmpy,cmpx,asm,mspy,mspx;
-    var setContainer = function(el){
+var scrollController = function () {
+    var nested = false, container = false, scrollSpeed = false, action = false, rect = false;
+    var timeoutVar, reh, veh1, veh2, rew, vew1, vew2, cspy, cspx, cmpy, cmpx, asm, mspy, mspx;
+    var setContainer = function (el) {
         if (document.body.contains(el)) {
             var vScroll = false, hScroll = false, cStyle = window.getComputedStyle(el, null);
             if (el.offsetWidth > el.clientWidth && el.clientWidth > 0) {
@@ -45,74 +45,56 @@ var scrollController = function(){
         }
         return (document.documentElement);
     };
-    var getAction = function(e){
-        reh = container.scrollHeight;
-        veh1 = container.clientHeight;
-        veh2 = (nested) ? container.offsetHeight : window.innerHeight;
-        rew = container.scrollWidth;
-        vew1 = container.clientWidth;
-        vew2 = (nested) ? container.offsetWidth : window.innerWidth;
-        cspy = (nested) ? container.scrollTop : window.pageYOffset;
-        cspx = (nested) ? container.scrollLeft : window.pageXOffset;
+    var newEvent = function (e) {
         cmpy = (nested) ? e.clientY - rect.top : e.clientY;
         cmpx = (nested) ? e.clientX - rect.left : e.clientX;
-        asm = 20 / window.devicePixelRatio;
-        mspy = reh - veh1;
-        mspx = rew - vew1;
-        scrollSpeed = (Math.max(asm - cmpx, asm - cmpy, cmpx + asm - vew1, cmpy + asm - veh1)) / 5;
-        if ((cspx > 0) && (cmpx <= asm)) {
-            return ('left');
-        }
-        if ((rew > vew2) && (cspx < mspx) && (cmpx + asm >= vew1)) {
-            return ('right');
-        }
-        if ((cspy > 0) && (cmpy <= asm)) {
-            return ('top');
-        }
-        if ((reh > veh2) && (cspy < mspy) && (cmpy + asm >= veh1)) {
-            return ('bottom');
-        }
-        return false;
+        updateVars();
+        scroll();
+    };
+    var updateVars = function () {
+        reh = container.scrollHeight;//real element height
+        veh1 = container.clientHeight;//visible element height without scroll bar
+        veh2 = (nested) ? container.offsetHeight : window.innerHeight; //visible element height including scroll bar
+        rew = container.scrollWidth;//real element width
+        vew1 = container.clientWidth;//visible element width without scroll bar
+        vew2 = (nested) ? container.offsetWidth : window.innerWidth;// visible element width including scroll bar
+        cspy = (nested) ? container.scrollTop : window.pageYOffset;//current scroll point on Y axis
+        cspx = (nested) ? container.scrollLeft : window.pageXOffset;//current scroll point on X axis
+        asm = 20 / window.devicePixelRatio;//scroll margin (adjusted in case of browser zoom)
+        mspy = reh - veh1;//maximum scroll point on Y axis
+        mspx = rew - vew1;//maximum scroll point on X axis
+        scrollSpeed = (Math.max(asm - cmpx, asm - cmpy, cmpx + asm - vew1, cmpy + asm - veh1));//distance between cursor and scroll margin
     };
     var scroll = function () {
-        if ((action) && (!animate)) {
-            animationFrame = setInterval(function () {
-                console.log(action)
-                scroll();
-            }, 10);
-            animate = true;
-        }
-        if (action === 'top') {
-            console.log(cspx,cspy,scrollSpeed);
-            (nested) ? container.scrollTop -= scrollSpeed : window.scrollTo(cspx, cspy - scrollSpeed);
-        }
-        if (action === 'bottom') {
-            (nested) ? container.scrollTop += scrollSpeed : window.scrollTo(cspx, cspy + scrollSpeed);
-        }
-        if (action === 'left') {
+        clearTimeout(timeoutVar);
+        action = false;
+        if ((cspx > 0) && (cmpx <= asm)) {//left
+            action = true;
             (nested) ? container.scrollLeft -= scrollSpeed : window.scrollTo(cspx - scrollSpeed, cspy);
         }
-        if (action === 'right') {
+        if ((rew > vew2) && (cspx < mspx) && (cmpx + asm >= vew1)) {//right
+            action = true;
             (nested) ? container.scrollLeft += scrollSpeed : window.scrollTo(cspx + scrollSpeed, cspy);
         }
-        if (!action) {
-            clearInterval(animationFrame);
-            animate = false;
+        if ((cspy > 0) && (cmpy <= asm)) {//top
+            action = true;
+            (nested) ? container.scrollTop -= scrollSpeed : window.scrollTo(cspx, cspy - scrollSpeed);
         }
-    }
-
-    return{
-        mousemove:function(e){
-            action = getAction(e);
-        },
-        tick:function(e){
+        if ((reh > veh2) && (cspy < mspy) && (cmpy + asm >= veh1)) {//bottom
+            action = true;
+            (nested) ? container.scrollTop += scrollSpeed : window.scrollTo(cspx, cspy + scrollSpeed);
+        }
+        if (action) {
+            updateVars();
+            timeoutVar = setTimeout(scroll, 16);
+        }
+    };
+    return {
+        mousemove: function (e) {
             container = setContainer(e.target);
             rect = container.getBoundingClientRect();
             nested = (container !== document.documentElement);
-            scroll();
-        },
-        log: function(){
-            console.log(nested, action);
+            newEvent(e);
         }
     }
 }
@@ -506,8 +488,7 @@ var lmdd = (function () {
         document.removeEventListener("scroll", eventManager, false);//reverse
     };
     var eventTicker = function () {
-        sc.tick(events.last);
-        sc.log();
+        sc.mousemove(events.last);
         var revert = true;
         if (events.tick === events.last) {
             return false;
@@ -551,7 +532,6 @@ var lmdd = (function () {
         ;
         if (event.type === 'mousemove') {
             events.last = event;
-            sc.mousemove(events.last);
             scroll.lastX = window.pageXOffset;
             scroll.lastY = window.pageYOffset;
             updateMirrorLocation();
@@ -564,13 +544,15 @@ var lmdd = (function () {
         ;
         if (event.type === 'mousedown') {
             scope = this;
+            event.preventDefault();//disable native scrolling
             events.last = event;
             window.setTimeout(function () {//delay the dragstart for a short time to enable clicking and text selection
                 if ((events.last) && (window.getSelection().anchorOffset === window.getSelection().focusOffset)) {
                     if ((scope.lmddOptions.handleClass) && (!event.target.classList.contains(scope.lmddOptions.handleClass))) {//not dragging with handle
                         killEvent();
                         return false;
-                    };
+                    }
+                    ;
                     var target = getWrapper(event.target, 'lmdd-draggable');
                     if (!target) {//not dragging a draggable
                         killEvent();
@@ -588,7 +570,8 @@ var lmdd = (function () {
                         document.addEventListener("mousemove", eventManager, false); //follow mouse movement
                         if (document.body.setCapture) {
                             document.body.setCapture(false);
-                        };//reverse!!
+                        }
+                        ;//reverse!!
                         document.addEventListener("scroll", eventManager, false);//for updating mirror location onscroll
                         calcInterval = window.setInterval(eventTicker, scope.lmddOptions.calcInterval);//calculation interval for mouse movement
                     }
