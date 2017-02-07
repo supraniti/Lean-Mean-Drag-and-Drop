@@ -592,6 +592,3 @@ var lmdd = (function () {
         }
     };
 })();
-window['lmdd'] = lmdd;
-lmdd.prototype['init'] = lmdd.init;
-lmdd.prototype['kill'] = lmdd.kill;
