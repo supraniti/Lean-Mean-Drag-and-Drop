@@ -60,7 +60,7 @@ var scrollController = function () {
         vew2 = (nested) ? container.offsetWidth : window.innerWidth;// visible element width including scroll bar
         cspy = (nested) ? container.scrollTop : window.pageYOffset;//current scroll point on Y axis
         cspx = (nested) ? container.scrollLeft : window.pageXOffset;//current scroll point on X axis
-        asm = 20 / window.devicePixelRatio;//scroll margin (adjusted in case of browser zoom)
+        asm = 20 / window.devicePixelRatio;//scroll margin (adjusted to the browser zoom level)
         mspy = reh - veh1;//maximum scroll point on Y axis
         mspx = rew - vew1;//maximum scroll point on X axis
         scrollSpeed = (Math.max(asm - cmpx, asm - cmpy, cmpx + asm - vew1, cmpy + asm - veh1));//distance between cursor and scroll margin
@@ -97,7 +97,7 @@ var scrollController = function () {
             newEvent(e);
         }
     }
-}
+};
 var sc = new scrollController();
 
 var lmdd = (function () {
@@ -131,14 +131,14 @@ var lmdd = (function () {
     var dragOffset = {
         x: 0,
         y: 0
-    }
+    };
     var scope = {};//html element in which drag event occurs
     var draggedElement = false;//html element being dragged
     var draggedClone = false;//clone of dragged element (used to animate movement)
     var mirror = false;//clone of dragged element attached to mouse cursor while dragging
     var events = {
         last: false,
-        tick: false,
+        tick: false
     };
     var positions = {
         currentTarget: false,
@@ -150,10 +150,10 @@ var lmdd = (function () {
         currentPosition: false,
         previousPosition: false
     };
-    var status = {
-        mouseSpeed: false,
-        dragEvent: false
-    };
+    // var status = {
+    //     mouseSpeed: false,
+    //     dragEvent: false
+    // };
     var updateOriginalPosition = function () {
         positions.originalContainer = draggedElement.parentNode;
         positions.originalNextSibling = draggedElement.nextSibling;
@@ -181,7 +181,6 @@ var lmdd = (function () {
         else {
             positions.currentPosition = false;
         }
-        ;
     };
     var appendDraggedElement = function () {
         if (positions.currentContainer) {
@@ -206,9 +205,7 @@ var lmdd = (function () {
             } else if (child.nodeType === 1) {
                 cleanNode(child);
             }
-            ;
         }
-        ;
     };
     var getOffset = function (el1, el2) {//todo:double check on IE
         var rect1 = el1.getBoundingClientRect(),
@@ -217,11 +214,10 @@ var lmdd = (function () {
             left: parseInt(window.getComputedStyle(el2, null).getPropertyValue('border-left-width')),
             top: parseInt(window.getComputedStyle(el2, null).getPropertyValue('border-top-width'))
         };
-        var offset = {
+        return {
             x: rect1.left - rect2.left - borderWidth.left,
             y: rect1.top - rect2.top - borderWidth.top
         };
-        return offset;
     };
     var getWrapper = function (el, wrapperClass) {
         var path = [];
@@ -232,7 +228,6 @@ var lmdd = (function () {
                 wrapper = el;
             }
         }
-        ;
         return (path.indexOf(scope) > -1) ? wrapper : false;
     };
     var setElementIndex = function (el, isRoot) {
@@ -273,30 +268,29 @@ var lmdd = (function () {
     var animateNode = function (elNode) {
         var cloneNode = elNode.cloneRef;
         var elRect = elNode.getBoundingClientRect();
+        var offset;
         cloneNode.style.position = 'absolute';
         cloneNode.style.width = (elRect.width) + 'px';
         cloneNode.style.height = (elRect.height) + 'px';
         cloneNode.style.margin = 0;
         if (elNode === scope) {
-            var offset = getOffset(elNode, elNode.parentNode);
             cloneNode.style.top = elRect.top + window.pageYOffset + 'px';
             cloneNode.style.left = elRect.left + window.pageXOffset + 'px';
         } else {
-            var offset = (elNode === draggedElement) ? getOffset(elNode, scope) : getOffset(elNode, elNode.parentNode);
+            offset = (elNode === draggedElement) ? getOffset(elNode, scope) : getOffset(elNode, elNode.parentNode);
             cloneNode.style.transform = 'translate3d(' + offset.x + 'px, ' + offset.y + 'px,0px)';
             //todo: depends on animation option (translate3d,topleft,translate2d)
             // cloneNode.style.top =  offset.y + 'px';
             // cloneNode.style.left = offset.x + 'px';
         }
-        ;
     };
-    var getElement = function (index, root) {
-        var el = root;
-        for (var i = 0; i < index.length; i++) {
-            el = el.childNodes[index[i]];
-        }
-        return el;
-    };
+    // var getElement = function (index, root) {
+    //     var el = root;
+    //     for (var i = 0; i < index.length; i++) {
+    //         el = el.childNodes[index[i]];
+    //     }
+    //     return el;
+    // };
     var getCoordinates = function (el) {
         var coordinates = [];
         el.childNodes.forEach(function (node, index) { //replace with getelementbyclassname
@@ -327,7 +321,6 @@ var lmdd = (function () {
                 break;
             }
         }
-        ;
         for (; firstBelow <= length; firstBelow++) {
             if (firstBelow === length) {
                 break;
@@ -335,7 +328,6 @@ var lmdd = (function () {
                 break;
             }
         }
-        ;
         var firstRight = lastAbove + 1;
         for (; firstRight <= firstBelow; firstRight++) {
             if (firstRight === firstBelow) {
@@ -346,13 +338,12 @@ var lmdd = (function () {
                 break;
             }
         }
-        ;
         if (position === length) {
             return coordinates[position - 1].index + 1;
         }
         return coordinates[position].index;
     };
-    var dragStarted = function (event) {
+    var dragStarted = function () {
         scroll.lastX = window.pageXOffset;
         scroll.lastY = window.pageYOffset;
         setAnimationLayer();
@@ -417,7 +408,6 @@ var lmdd = (function () {
             elArray[i].cloneRef = cloneArray[i];
             elArray[i].original = true;
         }
-        ;
     };
     var toggleVisibleLayer = function () {
         if (scope.cloneRef) {
@@ -446,31 +436,26 @@ var lmdd = (function () {
     var setDraggables = function (el) {
         var containers = el.getElementsByClassName(el.lmddOptions.containerClass);
         if (el.classList.contains(el.lmddOptions.containerClass)) {
-            el.classList.add('lmdd-container') //reverse
+            el.classList.add('lmdd-container'); //reverse
         }
-        ;
         for (var i = 0; i < containers.length; i++) {
             containers[i].classList.add('lmdd-container'); //reverse
         }
-        ;
         var draggables = el.getElementsByClassName(el.lmddOptions.draggableItemClass);
-        for (var i = 0; i < draggables.length; i++) {
+        for (i = 0; i < draggables.length; i++) {
             draggables[i].classList.add('lmdd-draggable'); //revrese
         }
-        ;
     };
     var unsetDraggables = function (el) {
         var draggables = el.getElementsByClassName(el.lmddOptions.draggableItemClass);
         for (var i = 0; i < draggables.length; i++) {
             draggables[i].classList.remove('lmdd-draggable'); //revrese
         }
-        ;
         var containers = el.getElementsByClassName(el.lmddOptions.containerClass);
-        el.classList.remove('lmdd-container') //reverse
-        for (var i = 0; i < containers.length; i++) {
+        el.classList.remove('lmdd-container');//reverse
+        for (i = 0; i < containers.length; i++) {
             containers[i].classList.remove('lmdd-container'); //reverse
         }
-        ;
     };
     var killEvent = function () {
         document.body.classList.remove('unselectable');
@@ -496,9 +481,7 @@ var lmdd = (function () {
         events.tick = events.last;
         updateCurrentContainer();
         if (!positions.currentContainer) {//no container found
-            console.log('out of scope...');
             if (positions.previousContainer && revert) {//execute once (revert)
-                console.log('revert');
                 appendDraggedElement();
             }
         }
@@ -506,16 +489,13 @@ var lmdd = (function () {
             if (positions.currentContainer !== positions.previousContainer) {//its a new one...
                 updateCurrentCoordinates();
                 updateCurrentPosition();
-                console.log('append on:', positions.currentContainer, positions.currentPosition);
                 appendDraggedElement();
             }
             else {//same container
                 updateCurrentPosition();
                 if (positions.currentPosition !== positions.previousPosition) {//new position
                     appendDraggedElement();
-                    console.log('append on:', positions.currentContainer, positions.currentPosition);
                 }
-                ;
             }
         }
     };
@@ -524,24 +504,20 @@ var lmdd = (function () {
             killEvent();
             return false;
         }
-        ;
         if ((event.button !== 0) && (event.type !== 'scroll')) {
             killEvent();
             return false;
         }
-        ;
         if (event.type === 'mousemove') {
             events.last = event;
             scroll.lastX = window.pageXOffset;
             scroll.lastY = window.pageYOffset;
             updateMirrorLocation();
         }
-        ;
         if (event.type === 'scroll') {
             updateMirrorLocation();
             updateCurrentCoordinates();
         }
-        ;
         if (event.type === 'mousedown') {
             scope = this;
             event.preventDefault();//disable native scrolling
@@ -552,7 +528,6 @@ var lmdd = (function () {
                         killEvent();
                         return false;
                     }
-                    ;
                     var target = getWrapper(event.target, 'lmdd-draggable');
                     if (!target) {//not dragging a draggable
                         killEvent();
@@ -570,23 +545,20 @@ var lmdd = (function () {
                         document.addEventListener("mousemove", eventManager, false); //follow mouse movement
                         if (document.body.setCapture) {
                             document.body.setCapture(false);
-                        }
-                        ;//reverse!!
+                        }//reverse!!
                         document.addEventListener("scroll", eventManager, false);//for updating mirror location onscroll
                         calcInterval = window.setInterval(eventTicker, scope.lmddOptions.calcInterval);//calculation interval for mouse movement
                     }
                 }
-                ;
             }, scope.lmddOptions.dragstartTimeout);
         }
-    }
+    };
     return {
         init: function (el, lmddOptions) {
             if (!el.lmdd) {
                 cleanNode(el);//get rid of whitespaces
                 el.lmdd = true;
                 el.lmddOptions = Object.assign({}, options, lmddOptions);//create options object
-                console.log(el.lmddOptions);
                 setDraggables(el);
                 el.addEventListener('mousedown', eventManager, false);
                 window.addEventListener('mouseup', eventManager, false);
@@ -598,7 +570,6 @@ var lmdd = (function () {
             if (el.lmdd) {
                 document.removeEventListener("drag", muteEvent, false);
                 document.removeEventListener("dragstart", muteEvent, false);
-                console.log('unsettingdraggables')
                 unsetDraggables(el);
                 el.lmdd = false;
                 delete(el.lmddOptions);
