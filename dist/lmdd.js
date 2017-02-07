@@ -27,6 +27,10 @@ if (typeof (NodeList.prototype.forEach) === 'undefined') {
 ///todo: refactoring, touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
 
 //scroll controller
+/**
+ * Creates a scroll controller object
+ * @constructor
+ */
 var scrollController = function () {
     var nested = false, container = false, scrollSpeed = false, action = false, rect = false;
     var timeoutVar, reh, veh1, veh2, rew, vew1, vew2, cspy, cspx, cmpy, cmpx, asm, mspy, mspx;
@@ -34,11 +38,11 @@ var scrollController = function () {
         if (document.body.contains(el)) {
             var vScroll = false, hScroll = false, cStyle = window.getComputedStyle(el, null);
             if (el.offsetWidth > el.clientWidth && el.clientWidth > 0) {
-                var borderWidth = parseInt(cStyle.getPropertyValue('border-right-width')) + parseInt(cStyle.getPropertyValue('border-left-width'));
+                var borderWidth = parseInt(cStyle.getPropertyValue('border-right-width'),10) + parseInt(cStyle.getPropertyValue('border-left-width'),10);
                 vScroll = (el.offsetWidth > el.clientWidth + borderWidth);
             }
             if (el.offsetHeight > el.clientHeight && el.clientHeight > 0) {
-                var borderHeight = parseInt(cStyle.getPropertyValue('border-right-height')) + parseInt(cStyle.getPropertyValue('border-left-height'));
+                var borderHeight = parseInt(cStyle.getPropertyValue('border-right-height'),10) + parseInt(cStyle.getPropertyValue('border-left-height'),10);
                 hScroll = (el.offsetHeight > el.clientHeight + borderHeight);
             }
             return (vScroll || hScroll) ? el : setContainer(el.parentNode);
@@ -89,14 +93,25 @@ var scrollController = function () {
             timeoutVar = setTimeout(scroll, 16);
         }
     };
-    return {
-        mousemove: function (e) {
-            container = setContainer(e.target);
-            rect = container.getBoundingClientRect();
-            nested = (container !== document.documentElement);
-            newEvent(e);
-        }
+    var mousemove = function(e){
+        container = setContainer(e.target);
+        rect = container.getBoundingClientRect();
+        nested = (container !== document.documentElement);
+        newEvent(e);
     }
+    return {
+        callMousemove:function(e){
+            mousemove(e);
+        }
+    };
+    // {
+    //     mousemove: function (e) {
+    //         container = setContainer(e.target);
+    //         rect = container.getBoundingClientRect();
+    //         nested = (container !== document.documentElement);
+    //         newEvent(e);
+    //     }
+    // }
 };
 var sc = new scrollController();
 
@@ -117,7 +132,7 @@ var lmdd = (function () {
         clone: false
     };
     var protectedProperties = ['padding', 'padding-top', 'padding-bottom', 'padding-right', 'padding-left', 'display', 'list-style-type', 'line-height'];
-    var calcInterval = false;
+    var calcInterval = null;
     var scroll = {
         lastX: window.pageXOffset,
         lastY: window.pageYOffset,
@@ -137,8 +152,8 @@ var lmdd = (function () {
     var draggedClone = false;//clone of dragged element (used to animate movement)
     var mirror = false;//clone of dragged element attached to mouse cursor while dragging
     var events = {
-        last: false,
-        tick: false
+        last: null,
+        tick: null
     };
     var positions = {
         currentTarget: false,
@@ -211,8 +226,8 @@ var lmdd = (function () {
         var rect1 = el1.getBoundingClientRect(),
             rect2 = el2.getBoundingClientRect();
         var borderWidth = {
-            left: parseInt(window.getComputedStyle(el2, null).getPropertyValue('border-left-width')),
-            top: parseInt(window.getComputedStyle(el2, null).getPropertyValue('border-top-width'))
+            left: parseInt(window.getComputedStyle(el2, null).getPropertyValue('border-left-width'),10),
+            top: parseInt(window.getComputedStyle(el2, null).getPropertyValue('border-top-width'),10)
         };
         return {
             x: rect1.left - rect2.left - borderWidth.left,
@@ -363,8 +378,8 @@ var lmdd = (function () {
         scope.cloneRef.appendChild(draggedClone);//insert the shadow into the dom
     };
     var updateMirrorLocation = function () {
-        mirror.style.top = (events.last.pageY - parseInt(mirror.parentNode.style.top) + scroll.deltaY - dragOffset.y) + 'px';
-        mirror.style.left = (events.last.pageX - parseInt(mirror.parentNode.style.left) + scroll.deltaX - dragOffset.x) + 'px';
+        mirror.style.top = (events.last.pageY - parseInt(mirror.parentNode.style.top,10) + scroll.deltaY - dragOffset.y) + 'px';
+        mirror.style.left = (events.last.pageX - parseInt(mirror.parentNode.style.left,10) + scroll.deltaX - dragOffset.x) + 'px';
     };
     var setMirror = function () {
         mirror = draggedClone.cloneNode(true);
@@ -473,7 +488,7 @@ var lmdd = (function () {
         document.removeEventListener("scroll", eventManager, false);//reverse
     };
     var eventTicker = function () {
-        sc.mousemove(events.last);
+        sc.callMousemove(events.last);
         var revert = true;
         if (events.tick === events.last) {
             return false;
@@ -541,7 +556,7 @@ var lmdd = (function () {
                         document.body.classList.add('unselectable');//disable selection on Chrome - CSS
                         dragOffset.x = event.clientX - target.getBoundingClientRect().left;
                         dragOffset.y = event.clientY - target.getBoundingClientRect().top;
-                        dragStarted(event);
+                        dragStarted();
                         document.addEventListener("mousemove", eventManager, false); //follow mouse movement
                         if (document.body.setCapture) {
                             document.body.setCapture(false);
@@ -577,3 +592,6 @@ var lmdd = (function () {
         }
     };
 })();
+window['lmdd'] = lmdd;
+lmdd.prototype['init'] = lmdd.init;
+lmdd.prototype['kill'] = lmdd.kill;
