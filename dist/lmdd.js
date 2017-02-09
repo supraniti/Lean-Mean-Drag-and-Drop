@@ -24,14 +24,14 @@ if (typeof (NodeList.prototype.forEach) === 'undefined') {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
 
-///todo: refactoring, touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
+///todo: gracefull finish, interactivity classes, touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
 
 //scroll controller
 /**
  * Creates a scroll controller object
  * @constructor
  */
-var scrollController = function () {
+var scrollControl = function () {
     var nested = false, container = false, scrollSpeed = false, action = false, rect = false;
     var timeoutVar, reh, veh1, veh2, rew, vew1, vew2, cspy, cspx, cmpy, cmpx, asm, mspy, mspx;
     var setContainer = function (el) {
@@ -93,28 +93,18 @@ var scrollController = function () {
             timeoutVar = setTimeout(scroll, 16);
         }
     };
-    var mousemove = function(e){
+    var eventHandler = function(e){
         container = setContainer(e.target);
         rect = container.getBoundingClientRect();
         nested = (container !== document.documentElement);
         newEvent(e);
     }
     return {
-        callMousemove:function(e){
-            mousemove(e);
+        update:function(e){
+            eventHandler(e);
         }
     };
-    // {
-    //     mousemove: function (e) {
-    //         container = setContainer(e.target);
-    //         rect = container.getBoundingClientRect();
-    //         nested = (container !== document.documentElement);
-    //         newEvent(e);
-    //     }
-    // }
 };
-var sc = new scrollController();
-
 var lmdd = (function () {
     var options = {
         containerClass: false,
@@ -125,12 +115,13 @@ var lmdd = (function () {
         mirrorMaxHeight: 100,
         mirrorMaxWidth: 300,
         revert: false,
-        dragstartTimeout: 200,
+        dragstartTimeout: 50,
         calcInterval: 200,
         nativeScroll: false,
         protectedProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-right', 'padding-left', 'display', 'list-style-type', 'line-height'],
-        clone: false
+        matchObject: false
     };
+    var scrollController = new scrollControl();
     var protectedProperties = ['padding', 'padding-top', 'padding-bottom', 'padding-right', 'padding-left', 'display', 'list-style-type', 'line-height'];
     var calcInterval = null;
     var scroll = {
@@ -165,10 +156,18 @@ var lmdd = (function () {
         currentPosition: false,
         previousPosition: false
     };
-    // var status = {
-    //     mouseSpeed: false,
-    //     dragEvent: false
-    // };
+    var dragEvent = false;
+    var todo = {
+        executeTask : function(batch){
+            todo[batch].forEach(function(fn){
+                fn();
+            });
+            todo[batch] = [];
+        },
+        onDragEnd : [],
+        onNextAppend: [],
+        onAppKill: []
+    };
     var updateOriginalPosition = function () {
         positions.originalContainer = draggedElement.parentNode;
         positions.originalNextSibling = draggedElement.nextSibling;
@@ -198,16 +197,43 @@ var lmdd = (function () {
         }
     };
     var appendDraggedElement = function () {
-        if (positions.currentContainer) {
+        if ((positions.currentContainer)&&(acceptDrop(positions.currentContainer,draggedElement))) {
             positions.currentContainer.insertBefore(draggedElement, positions.currentContainer.childNodes[positions.currentPosition]);
+            todo.executeTask('onNextAppend');
         }
         else {
-            positions.originalContainer.insertBefore(draggedElement, positions.originalNextSibling);
+            if (scope.lmddOptions.revert){
+                positions.originalContainer.insertBefore(draggedElement, positions.originalNextSibling);
+            }
         }
         updateCurrentCoordinates();
         animateElement(scope);
     };
+    var acceptDrop = function(container,item){
+        if(item.contains(container)){
+            return false;
+        }
+        if (container.classList.contains('lmdd-dispatcher')){
+            return false;
+        }
+        if (scope.lmddOptions.matchObject){
+            var cType = container.dataset.containerType || false;
+            var iType = item.dataset.itemType || false;
+            return ((cType) ? ((iType) ? scope.lmddOptions.matchObject [cType][iType] : scope.lmddOptions.matchObject[cType]['default']) : scope.lmddOptions.matchObject['default']);
+        }
+        return true;
+    };
     // helper functions
+    var toggleClass = function (el, className,  action, undo){
+        (action) ? el.classList.add(className) : el.classList.remove(className);
+        if(undo){
+            todo[undo].push(function(){(action) ? el.classList.remove(className) : el.classList.add(className)});
+        }
+    };
+    var toggleEvent = function (el, listener, fn, useCapture, undo){
+        el.addEventListener(listener, fn, useCapture);
+        todo[undo].push(function(){el.removeEventListener(listener, fn, useCapture);});
+    };
     var cleanNode = function (node) {//clean empty nodes
         for (var n = 0; n < node.childNodes.length; n++) {
             var child = node.childNodes[n];
@@ -365,7 +391,8 @@ var lmdd = (function () {
         setDraggedClone();
         animateElement(scope);//take care of positioning
         setMirror();//reverseVV
-        toggleVisibleLayer();//show us what you've done
+        toggleClass(scope,'hidden-layer',true,'onDragEnd');
+        toggleClass(scope.cloneRef,'visible-layer',true,'onDragEnd');
     };
     var setDraggedClone = function () {
         draggedClone = draggedElement.cloneRef;//use a copy of the dragged element to act as shadow/ghost
@@ -397,16 +424,11 @@ var lmdd = (function () {
         mirror.style.transform = 'scale(' + scale + ',' + scale + ')';
         mirror.style.transformOrigin = '0 0';
         scope.cloneRef.appendChild(mirror);
+        todo.onDragEnd.push(function(){
+            // scope.cloneRef.removeChild(mirror);
+            mirror = false;
+        });
         updateMirrorLocation();
-    };
-    var unsetMirror = function () {
-        if (draggedElement) {
-            if (scope.cloneRef) {
-                scope.cloneRef.removeChild(mirror);
-                mirror = false;
-            }
-
-        }
     };
     var createReference = function (el, clone) {
         var elArray = [];
@@ -424,12 +446,6 @@ var lmdd = (function () {
             elArray[i].original = true;
         }
     };
-    var toggleVisibleLayer = function () {
-        if (scope.cloneRef) {
-            scope.cloneRef.classList.toggle('visible-layer'); //reverseVV
-            scope.classList.toggle('hidden-layer'); //reverseVV
-        }
-    };
     var muteEvent = function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -440,63 +456,45 @@ var lmdd = (function () {
         clone.id += '-lmddClone';
         createReference(scope, clone);//create a clone reference for every element on scope
         scope.parentNode.appendChild(scope.cloneRef); //insert the clone into the dom
-    };
-    var unsetAnimationLayer = function () {
-        toggleVisibleLayer();
-        if (scope.cloneRef) {
-            scope.parentNode.removeChild(scope.cloneRef); //reverseVV
-        }
-        deleteReference(scope);
+        todo.onDragEnd.push(function(){
+            scope.parentNode.removeChild(scope.cloneRef);
+            deleteReference(scope);
+        })
     };
     var setDraggables = function (el) {
         var containers = el.getElementsByClassName(el.lmddOptions.containerClass);
         if (el.classList.contains(el.lmddOptions.containerClass)) {
-            el.classList.add('lmdd-container'); //reverse
+            toggleClass(el,'lmdd-container',true,'onAppKill');
         }
         for (var i = 0; i < containers.length; i++) {
-            containers[i].classList.add('lmdd-container'); //reverse
+            toggleClass(containers[i],'lmdd-container',true,'onAppKill');
         }
         var draggables = el.getElementsByClassName(el.lmddOptions.draggableItemClass);
         for (i = 0; i < draggables.length; i++) {
-            draggables[i].classList.add('lmdd-draggable'); //revrese
-        }
-    };
-    var unsetDraggables = function (el) {
-        var draggables = el.getElementsByClassName(el.lmddOptions.draggableItemClass);
-        for (var i = 0; i < draggables.length; i++) {
-            draggables[i].classList.remove('lmdd-draggable'); //revrese
-        }
-        var containers = el.getElementsByClassName(el.lmddOptions.containerClass);
-        el.classList.remove('lmdd-container');//reverse
-        for (i = 0; i < containers.length; i++) {
-            containers[i].classList.remove('lmdd-container'); //reverse
+            toggleClass(draggables[i],'lmdd-draggable',true,'onAppKill');
         }
     };
     var killEvent = function () {
-        document.body.classList.remove('unselectable');
-        if (draggedElement) {
-            draggedElement.classList.remove('lmdd-hidden');
-            unsetMirror();
-            unsetAnimationLayer();
+        if (dragEvent) {
+            todo.executeTask('onDragEnd');
         }
         scope = false;
+        dragEvent = false;
         draggedElement = false;
         draggedClone = false;
         events.last = false;
-        clearInterval(calcInterval);
-        document.removeEventListener("mousemove", eventManager, false); //reverse
-        document.removeEventListener("scroll", eventManager, false);//reverse
     };
     var eventTicker = function () {
-        sc.callMousemove(events.last);
-        var revert = true;
+        if (!scope.lmddOptions.nativeScroll) {
+            scrollController.update(events.last)
+        }
         if (events.tick === events.last) {
             return false;
         }
         events.tick = events.last;
         updateCurrentContainer();
         if (!positions.currentContainer) {//no container found
-            if (positions.previousContainer && revert) {//execute once (revert)
+            if (positions.previousContainer && scope.lmddOptions.revert) {//execute once (revert)
                 appendDraggedElement();
             }
         }
@@ -535,7 +533,6 @@ var lmdd = (function () {
         }
         if (event.type === 'mousedown') {
             scope = this;
-            event.preventDefault();//disable native scrolling
             events.last = event;
             window.setTimeout(function () {//delay the dragstart for a short time to enable clicking and text selection
                 if ((events.last) && (window.getSelection().anchorOffset === window.getSelection().focusOffset)) {
@@ -548,21 +545,46 @@ var lmdd = (function () {
                         killEvent();
                         return false;
                     }
-                    else if (!draggedElement) {
+                    else if (!dragEvent) {
+                        if (!scope.lmddOptions.nativeScroll){
+                            event.preventDefault();//disable native scrolling on mouse down
+                        }
+                        if (target.classList.contains('lmdd-clonner')){
+                            scope.cloned = target.parentNode.insertBefore(target.cloneNode(true),target);
+                            target.classList.remove('lmdd-clonner');
+                            todo.onAppKill.push(function(){
+                                scope.cloned.classList.remove('lmdd-draggable');
+                                scope.cloned.classList.remove('lmdd-container');
+                            });
+                            toggleClass(scope.cloned,'no-display',true,'onNextAppend');
+                            todo.onNextAppend.push(function(){
+                                toggleClass(scope.cloned.cloneRef,'no-display',false);
+                                toggleClass(scope.cloned.cloneRef,'no-transition',true ,'onDragEnd');
+                                updateOriginalPosition();
+                            });
+                        }
                         draggedElement = target;
+                        dragEvent = true;
                         updateOriginalPosition();
-                        draggedElement.classList.add('lmdd-hidden');//reverse
                         window.getSelection().removeAllRanges();//disable selection on FF and IE - JS
-                        document.body.classList.add('unselectable');//disable selection on Chrome - CSS
+                        toggleClass(document.body,'unselectable',true,'onDragEnd');
+                        toggleClass(draggedElement,'lmdd-hidden',true,'onDragEnd');
                         dragOffset.x = event.clientX - target.getBoundingClientRect().left;
                         dragOffset.y = event.clientY - target.getBoundingClientRect().top;
                         dragStarted();
-                        document.addEventListener("mousemove", eventManager, false); //follow mouse movement
+                        toggleEvent(document , 'mousemove', eventManager , false, 'onDragEnd');
+                        toggleEvent(document , 'scroll', eventManager , false, 'onDragEnd');
                         if (document.body.setCapture) {
                             document.body.setCapture(false);
-                        }//reverse!!
-                        document.addEventListener("scroll", eventManager, false);//for updating mirror location onscroll
+                            todo.onDragEnd.push(function(){
+                                document.releaseCapture();
+                            });
+                        }
                         calcInterval = window.setInterval(eventTicker, scope.lmddOptions.calcInterval);//calculation interval for mouse movement
+                        todo.onDragEnd.push(function(){
+                            clearInterval(calcInterval);
+                            calcInterval = null;
+                        });
                     }
                 }
             }, scope.lmddOptions.dragstartTimeout);
@@ -575,17 +597,15 @@ var lmdd = (function () {
                 el.lmdd = true;
                 el.lmddOptions = Object.assign({}, options, lmddOptions);//create options object
                 setDraggables(el);
-                el.addEventListener('mousedown', eventManager, false);
-                window.addEventListener('mouseup', eventManager, false);
-                document.addEventListener("drag", muteEvent, false);
-                document.addEventListener("dragstart", muteEvent, false);
+                toggleEvent(el,'mousedown',eventManager,false,'onAppKill');
+                toggleEvent(window,'mouseup',eventManager,false,'onAppKill');
+                toggleEvent(document,'drag',muteEvent,false,'onAppKill');
+                toggleEvent(document,'dragstart',muteEvent,false,'onAppKill');
             }
         },
         kill: function (el) {
             if (el.lmdd) {
-                document.removeEventListener("drag", muteEvent, false);
-                document.removeEventListener("dragstart", muteEvent, false);
-                unsetDraggables(el);
+                todo.executeTask('onAppKill');
                 el.lmdd = false;
                 delete(el.lmddOptions);
             }

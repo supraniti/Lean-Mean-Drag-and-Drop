@@ -1,3 +1,9 @@
+.no-display{
+    display:none;
+}
+.no-transition, .no-transition *{
+    transition:none !important;
+}
 .lmdd-hidden{
     visibility:hidden;
 }

@@ -9,7 +9,7 @@ lmdd.init(document.getElementById('simple-example'), {
     regulateMouseOver: false,
     mirrorMaxHeight: 100,
     mirrorMaxWidth: 300,
-    revert: false,
+    revert: true,
     clone: false
 });
 lmdd.init(document.getElementById('first-example'), {
@@ -20,7 +20,7 @@ lmdd.init(document.getElementById('first-example'), {
     regulateMouseOver: false,
     mirrorMaxHeight: 100,
     mirrorMaxWidth: 300,
-    revert: false,
+    revert: true,
     clone: false
 });
 lmdd.init(document.getElementById('clone-example'), {
@@ -53,7 +53,7 @@ lmdd.init(document.getElementById('markup-example'), {
     regulateMouseOver: false,
     mirrorMaxHeight: 100,
     mirrorMaxWidth: 300,
-    revert: false,
+    revert: true,
     clone: false
 });
 

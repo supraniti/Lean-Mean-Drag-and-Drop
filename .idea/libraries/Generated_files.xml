@@ -3,10 +3,12 @@
     <properties>
       <sourceFilesUrls>
         <item url="file://$PROJECT_DIR$/dist/lmdd.min.js" />
+        <item url="file://$PROJECT_DIR$/gh-pages/script.min.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
       <root url="file://$PROJECT_DIR$/dist/lmdd.min.js" />
+      <root url="file://$PROJECT_DIR$/gh-pages/script.min.js" />
     </CLASSES>
     <SOURCES />
   </library>

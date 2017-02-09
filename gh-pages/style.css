@@ -1,14 +1,31 @@
-.example-container{
-    display:flex;
-    flex-flow:row wrap;
+#first-example {
+    display: flex;
     margin-top:15px;
     margin-bottom:15px;
 }
-.example-item{
+.canvas{
+    flex: 1 1 80%;
+    display:flex;
+    flex-flow:row wrap;
+}
+.canvas .example-item{
     margin:10px;
     flex: 0 0 auto;
-    min-height:173px;
-    min-width:173px;
+    height:100px;
+    width:100px;
+}
+.palette{
+    flex: 1 1 80px;
+    display:flex;
+    flex-flow:column nowrap;
+    padding:15px;
+}
+.palette .example-item{
+    flex: 0 0 auto;
+    min-height:50px;
+    min-width:50px;
+    margin-top:5px;
+    margin-bottom:5px;
 }
 .example-grid{
 
@@ -41,9 +58,6 @@
     border:5px solid white;
     background-color:rgba(0,0,0,0.5);
     box-sizing:border-box;
-}
-#eventExample{
-    width:125%;
 }
 li span{
     font-size:55px;
