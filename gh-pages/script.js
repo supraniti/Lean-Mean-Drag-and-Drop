@@ -1,7 +1,7 @@
 /**
  * Created by יאיר on 18/01/2017.
  */
-lmdd.init(document.getElementById('simple-example'), {
+lmdd.set(document.getElementById('simple-example'), {
     containerClass: 'nestable',
     fixedItemClass: false,
     draggableItemClass: 'item',
@@ -12,7 +12,7 @@ lmdd.init(document.getElementById('simple-example'), {
     revert: true,
     clone: false
 });
-lmdd.init(document.getElementById('first-example'), {
+lmdd.set(document.getElementById('first-example'), {
     containerClass: 'example-container',
     fixedItemClass: false,
     draggableItemClass: 'example-item',
@@ -23,7 +23,7 @@ lmdd.init(document.getElementById('first-example'), {
     revert: true,
     clone: false
 });
-lmdd.init(document.getElementById('clone-example'), {
+lmdd.set(document.getElementById('clone-example'), {
     containerClass: 'nestable',
     fixedItemClass: false,
     draggableItemClass: 'item',
@@ -34,7 +34,7 @@ lmdd.init(document.getElementById('clone-example'), {
     revert: false,
     clone: false
 });
-lmdd.init(document.getElementById('simple-example-2'), {
+lmdd.set(document.getElementById('simple-example-2'), {
     containerClass: 'nestable',
     fixedItemClass: false,
     draggableItemClass: 'item',
@@ -45,7 +45,7 @@ lmdd.init(document.getElementById('simple-example-2'), {
     revert: false,
     clone: false
 });
-lmdd.init(document.getElementById('markup-example'), {
+lmdd.set(document.getElementById('markup-example'), {
     containerClass: 'nestable',
     fixedItemClass: false,
     draggableItemClass: 'item',
