@@ -10,15 +10,17 @@
 .lmdd-draggable{
     cursor:move;
 }
-.lmdd-mirror{
+.visible-layer .lmdd-mirror.gf-transition{
+    transition:all 0.5s !important;
+}
+.visible-layer .lmdd-mirror{
     position:absolute;
     border: 1px dashed pink;
     pointer-events:none;
-    transition:none !important;
-    opacity:0.5 !important;
+    transition:top 0s, left 0s;
+    opacity:0.5;
 }
 .lmdd-dragged{
-    /*filter: grayscale(100%) !important;*/
     opacity:0.5 !important;
     margin:0;
 }
