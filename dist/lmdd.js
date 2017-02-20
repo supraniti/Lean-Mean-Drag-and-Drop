@@ -23,6 +23,7 @@ if (typeof Object.assign != 'function') {
 if (typeof (NodeList.prototype.forEach) === 'undefined') {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
+//convert touch events to mouse events
 var simulateMouseEvent = function(event) {
     var simulatedType = (event.type === 'touchstart') ? 'mousedown' : (event.type === 'touchend') ? 'mouseup' : 'mousemove';
     // Ignore multi-touch events
@@ -64,7 +65,7 @@ var simulateMouseEvent = function(event) {
 window.addEventListener('touchstart',simulateMouseEvent,{passive: false});
 window.addEventListener('touchmove',simulateMouseEvent,{passive: false});
 window.addEventListener('touchend',simulateMouseEvent,{passive: false});
-///todo: touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
+///todo: wrappping it up,handle clone status, handle inputs, vuejs app (layoutbuilder),embed options
 
 
 //scroll controller
@@ -94,7 +95,6 @@ var scrollControl = function () {
         scroll();
     };
     var updateVars = function () {
-        console.log(container)
         reh = container.scrollHeight;//real element height
         veh1 = container.clientHeight;//visible element height without scroll bar
         veh2 = (nested) ? container.offsetHeight : window.innerHeight; //visible element height including scroll bar
@@ -103,7 +103,6 @@ var scrollControl = function () {
         vew2 = (nested) ? container.offsetWidth : window.innerWidth;// visible element width including scroll bar
         cspy = (nested) ? container.scrollTop : window.pageYOffset;//current scroll point on Y axis
         cspx = (nested) ? container.scrollLeft : window.pageXOffset;//current scroll point on X axis
-        // asm = Math.max((20 / window.devicePixelRatio),20);//scroll margin (adjusted to the browser zoom level)
         asm = 20;
         mspy = reh - veh1;//maximum scroll point on Y axis
         mspx = rew - vew1;//maximum scroll point on X axis
@@ -112,9 +111,6 @@ var scrollControl = function () {
     var scroll = function () {
         clearTimeout(timeoutVar);
         action = false;
-        console.log('(reh > veh2) && (cspy < mspy) && (cmpy + asm >= veh1)');
-        console.log(reh,veh2,cspy,mspy,cmpy,asm,veh1);
-        console.log(container.offsetHeight,window.innerHeight)
         if (stop) {
             return false;
         }
@@ -173,6 +169,7 @@ var lmdd = (function () {
     var status = 'waitDragStart'; // dragStart, , waitDragEnd, dragEnd
     var scrollController = new scrollControl();
     var calcInterval = null;
+    var dataIndex = null;
     var scroll = {
         lastX: window.pageXOffset,
         lastY: window.pageYOffset,
@@ -206,7 +203,6 @@ var lmdd = (function () {
         currentPosition: false,
         previousPosition: false
     };
-    var dragEvent = false;
     var todo = {
         executeTask: function (batch) {
             todo[batch].forEach(function (fn) {
@@ -342,7 +338,7 @@ var lmdd = (function () {
     };
     var getIndex = function (el) {
         var index = [];
-        while (el.dataset.lmddindex !== 'root') {
+        while (el !== scope) {
             index.unshift(Array.prototype.indexOf.call(el.parentNode.childNodes, el));
             el = el.parentElement;
         }
@@ -545,9 +541,28 @@ var lmdd = (function () {
         scrollController.kill();
         clearInterval(calcInterval);
         calcInterval = null;
+        if (scope.check){
+            toggleClass(scope.cloned, 'no-display', false, false);
+           if(scope.check.parentNode){
+               scope.check.parentNode.removeChild(scope.check);
+           };
+        }
         todo.executeTask('onDragEnd');
+        var event = new CustomEvent('lmddend', {
+            'detail':{
+                'draggedElement': draggedElement,
+                'originalContainer': positions.originalContainer,
+                'originalNextSibling': positions.originalNextSibling,
+                'currentContainer': draggedElement.parentNode,
+                'currentNextSibling': draggedElement.nextSibling
+            }
+        });
+        if (scope){
+            scope.dispatchEvent(event);
+
+        }
+        console.log(event.detail);
         scope = false;
-        dragEvent = false;
         draggedElement = false;
         draggedClone = false;
         events.last = false;
@@ -609,12 +624,14 @@ var lmdd = (function () {
                                     }
                                     if (target.classList.contains('lmdd-clonner')) {//clone the target
                                         scope.cloned = target.parentNode.insertBefore(target.cloneNode(true), target);
+                                        scope.check = target;
                                         target.classList.remove('lmdd-clonner');
                                         toggleClass(scope.cloned, 'no-display', true, 'onNextAppend');
                                         todo.onNextAppend.push(function () {
                                             toggleClass(scope.cloned.cloneRef, 'no-display', false);
                                             toggleClass(scope.cloned.cloneRef, 'no-transition', true, 'onDragEnd');
                                             updateOriginalPosition();
+                                            scope.check = false;
                                         });
                                     }
                                     draggedElement = target;
@@ -664,7 +681,8 @@ var lmdd = (function () {
                             killEvent();
                         });
                         window.setTimeout(function(){
-                            killEvent();
+                            (status !== 'waitDragStart') ? killEvent() : false;
+                            // killEvent();
                         },1000);
                         return;
                     }
