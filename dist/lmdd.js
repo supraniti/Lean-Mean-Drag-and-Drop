@@ -24,13 +24,55 @@ if (typeof (NodeList.prototype.forEach) === 'undefined') {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
 
-///todo: interactivity classes, touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
+
+
+var simulateMouseEvent = function(event) {
+    var simulatedType = (event.type === 'touchstart') ? 'mousedown' : (event.type === 'touchend') ? 'mouseup' : 'mousemove';
+    // Ignore multi-touch events
+    if (event.touches.length > 1) {
+        return false;
+    }
+    event.preventDefault();
+    if (event.type === 'touchend'){
+        var simulatedEvent = new MouseEvent(simulatedType, {
+            'view': window,
+            'bubbles': true,
+            'cancelable': true,
+            'button' : 0,
+            'buttons' : 1
+        });
+    }
+    else{
+        var simulatedEvent = new MouseEvent(simulatedType, {
+            'view': window,
+            'bubbles': true,
+            'cancelable': true,
+            'screenX' : event.touches[0].screenX || 0,    //
+            'screenY' : event.touches[0].screenY || 0,    //
+            'clientX' : event.touches[0].clientX || 0,    //
+            'clientY' : event.touches[0].clientY || 0,    //
+            // 'target' : event.target,
+            'button' : 0,
+            'buttons' : 1
+        });
+    }
+    // console.log(simulatedEvent);
+    if (event.type === 'touchmove') {
+        document.elementFromPoint(simulatedEvent.clientX,simulatedEvent.clientY).dispatchEvent(simulatedEvent);
+    }
+    else{
+        event.target.dispatchEvent(simulatedEvent);
+    }
+    // Dispatch the simulated event to the target element
+    // document.dispatchEvent(simulatedEvent);
+}
+window.addEventListener('touchstart',simulateMouseEvent,{passive: false});
+window.addEventListener('touchmove',simulateMouseEvent,{passive: false});
+window.addEventListener('touchend',simulateMouseEvent,{passive: false});
+///todo: touch support, wrappping it up, event triggering, vuejs app (layoutbuilder),embed options
+
 
 //scroll controller
-/**
- * Creates a scroll controller object
- * @constructor
- */
 var scrollControl = function () {
     var stop = false, nested = false, container = false, scrollSpeed = false, action = false, rect = false;
     var timeoutVar, reh, veh1, veh2, rew, vew1, vew2, cspy, cspx, cmpy, cmpx, asm, mspy, mspx;
@@ -500,6 +542,7 @@ var lmdd = (function () {
         }
     }
     var killEvent = function () {
+        console.log('killing!!!');
         scrollController.kill();
         clearInterval(calcInterval);
         calcInterval = null;
@@ -541,14 +584,6 @@ var lmdd = (function () {
             }
         }
     };
-    var unsetMirror = function(){
-        if (mirror){
-            mirror.style.transition = '1s !important';
-            mirror.style.width = 0;
-            mirror.style.height = 0;
-        console.log(mirror)
-        }
-    };
     var eventManager = function (event) {
         switch (status) {
             case 'waitDragStart':
@@ -586,6 +621,7 @@ var lmdd = (function () {
                                     draggedElement = target;
                                     updateOriginalPosition();
                                     updateCurrentContainer();
+                                    updateCurrentCoordinates();
                                     window.getSelection().removeAllRanges();//disable selection on FF and IE - JS
                                     dragOffset.x = event.clientX - target.getBoundingClientRect().left;
                                     dragOffset.y = event.clientY - target.getBoundingClientRect().top;
@@ -601,7 +637,6 @@ var lmdd = (function () {
                                     calcInterval = window.setInterval(eventTicker, scope.lmddOptions.calcInterval);//calculation interval for mouse movement
                                 }
                             }
-                            //interactive classes
                             status = 'dragStart';
                         }
                     }, scope.lmddOptions.dragstartTimeout);
@@ -612,6 +647,7 @@ var lmdd = (function () {
                 break;
             case 'dragStart':
                 if ((event.type === 'mouseup') || (event.type === 'mousemove') && (event.buttons === 0)) {//or mousemove with no buttons in case mouseup event was not fired
+                    console.log('wNT TO KILL')
                     mirror.classList.add('gf-transition');
                     var offset = getOffset(draggedElement, scope);
                     mirror.style.transform = 'scale(1,1)';
@@ -622,9 +658,11 @@ var lmdd = (function () {
                     offset = getOffset(draggedElement, draggedClone);
                     if (Math.abs(offset.x) + Math.abs(offset.y) > 0) {//wait for transition to finish
                         status = 'waitDragEnd';
+                        console.log('waiting...')
                         todo.onTransitionEnd.push(function () {
                             killEvent()
                         });
+                        window.setTimeout(killEvent(),1000);
                     }
                     else{
                         killEvent();
