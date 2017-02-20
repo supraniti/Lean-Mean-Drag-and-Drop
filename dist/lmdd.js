@@ -162,7 +162,7 @@ var lmdd = (function () {
         mirrorMaxHeight: 100,
         mirrorMaxWidth: 300,
         revert: false,
-        dragstartTimeout: 250,
+        dragstartTimeout: 50,
         calcInterval: 200,
         nativeScroll: false,
         protectedProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-right', 'padding-left', 'display', 'list-style-type', 'line-height'],
