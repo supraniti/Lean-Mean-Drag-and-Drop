@@ -24,6 +24,7 @@ if (typeof (NodeList.prototype.forEach) === 'undefined') {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
 var simulateMouseEvent = function(event) {
+    console.log(event.type);
     var simulatedType = (event.type === 'touchstart') ? 'mousedown' : (event.type === 'touchend') ? 'mouseup' : 'mousemove';
     // Ignore multi-touch events
     if (event.touches.length > 1) {
@@ -59,6 +60,7 @@ var simulateMouseEvent = function(event) {
         document.elementFromPoint(simulatedEvent.clientX,simulatedEvent.clientY).dispatchEvent(simulatedEvent);
     }
     else{
+        console.log('dispatching')
         event.target.dispatchEvent(simulatedEvent);
     }
 }
@@ -538,6 +540,7 @@ var lmdd = (function () {
         }
     }
     var killEvent = function () {
+        console.log(status);
         console.log('killing!!!');
         scrollController.kill();
         clearInterval(calcInterval);
@@ -581,10 +584,13 @@ var lmdd = (function () {
         }
     };
     var eventManager = function (event) {
+        console.log(status);
+        console.log(event.type);
         switch (status) {
             case 'waitDragStart':
                 if ((event.type === 'mousedown') && (event.button === 0)) {//trigger timeout function to enable clicking and text selection
                     scope = this;
+                    console.log('mousedown')
                     events.last = event;
                     toggleEvent(window, 'mouseup', eventManager, false, 'onDragEnd');
                     toggleEvent(document, 'mousemove', eventManager, false, 'onDragEnd');
@@ -642,8 +648,12 @@ var lmdd = (function () {
                 killEvent();
                 break;
             case 'dragStart':
-                if ((event.type === 'mouseup') || (event.type === 'mousemove') && (event.buttons === 0)) {//or mousemove with no buttons in case mouseup event was not fired
+                if ((event.type === 'mousedown')||(event.type === 'mouseup') || (event.type === 'mousemove') && (event.buttons === 0)) {//or mousemove with no buttons in case mouseup event was not fired
                     mirror.classList.add('gf-transition');
+                    if (!draggedElement){
+                        killEvent();
+                        return;
+                    }
                     var offset = getOffset(draggedElement, scope);
                     mirror.style.transform = 'scale(1,1)';
                     mirror.style.top = offset.y + 'px';
@@ -655,12 +665,13 @@ var lmdd = (function () {
                         status = 'waitDragEnd';
                         console.log('waiting...')
                         todo.onTransitionEnd.push(function () {
-                            killEvent()
+                            killEvent();
+                            return;
                         });
-                        window.setTimeout(killEvent(),1000);
                     }
                     else{
                         killEvent();
+                        return;
                     }
                 }
                 if (event.type === 'mousemove') {
