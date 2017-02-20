@@ -94,6 +94,7 @@ var scrollControl = function () {
         scroll();
     };
     var updateVars = function () {
+        console.log(container)
         reh = container.scrollHeight;//real element height
         veh1 = container.clientHeight;//visible element height without scroll bar
         veh2 = (nested) ? container.offsetHeight : window.innerHeight; //visible element height including scroll bar
@@ -102,12 +103,11 @@ var scrollControl = function () {
         vew2 = (nested) ? container.offsetWidth : window.innerWidth;// visible element width including scroll bar
         cspy = (nested) ? container.scrollTop : window.pageYOffset;//current scroll point on Y axis
         cspx = (nested) ? container.scrollLeft : window.pageXOffset;//current scroll point on X axis
-        asm = Math.max((20 / window.devicePixelRatio),20);//scroll margin (adjusted to the browser zoom level)
+        // asm = Math.max((20 / window.devicePixelRatio),20);//scroll margin (adjusted to the browser zoom level)
+        asm = 20;
         mspy = reh - veh1;//maximum scroll point on Y axis
         mspx = rew - vew1;//maximum scroll point on X axis
-        scrollSpeed = (Math.min(Math.max(asm - cmpx, asm - cmpy, cmpx + asm - vew1, cmpy + asm - veh1),20));//distance between cursor and scroll margin
-        console.log(scrollSpeed)
-
+        scrollSpeed = Math.max(asm - cmpx, asm - cmpy, cmpx + asm - vew1, cmpy + asm - veh1);//distance between cursor and scroll margin
     };
     var scroll = function () {
         clearTimeout(timeoutVar);
