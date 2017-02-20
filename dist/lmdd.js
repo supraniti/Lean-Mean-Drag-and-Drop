@@ -105,7 +105,9 @@ var scrollControl = function () {
         asm = Math.max((20 / window.devicePixelRatio),20);//scroll margin (adjusted to the browser zoom level)
         mspy = reh - veh1;//maximum scroll point on Y axis
         mspx = rew - vew1;//maximum scroll point on X axis
-        scrollSpeed = (Math.max(asm - cmpx, asm - cmpy, cmpx + asm - vew1, cmpy + asm - veh1));//distance between cursor and scroll margin
+        scrollSpeed = (Math.min(Math.max(asm - cmpx, asm - cmpy, cmpx + asm - vew1, cmpy + asm - veh1),20));//distance between cursor and scroll margin
+        console.log(scrollSpeed)
+
     };
     var scroll = function () {
         clearTimeout(timeoutVar);
