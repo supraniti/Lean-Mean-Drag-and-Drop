@@ -23,21 +23,12 @@ if (typeof Object.assign != 'function') {
 if (typeof (NodeList.prototype.forEach) === 'undefined') {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
-
-
-
 var simulateMouseEvent = function(event) {
     var simulatedType = (event.type === 'touchstart') ? 'mousedown' : (event.type === 'touchend') ? 'mouseup' : 'mousemove';
     // Ignore multi-touch events
     if (event.touches.length > 1) {
         return;
     }
-    // if (event.type === 'touchstart'){
-    //     window.setTimeout(event.preventDefault(),100);
-    // }
-    // else{
-    //     event.preventDefault();
-    // }
     if (event.type === 'touchend'){
         var simulatedEvent = new MouseEvent(simulatedType, {
             'view': window,
@@ -56,7 +47,6 @@ var simulateMouseEvent = function(event) {
             'screenY' : event.touches[0].screenY || 0,    //
             'clientX' : event.touches[0].clientX || 0,    //
             'clientY' : event.touches[0].clientY || 0,    //
-            // 'target' : event.target,
             'button' : 0,
             'buttons' : 1
         });
@@ -64,7 +54,6 @@ var simulateMouseEvent = function(event) {
     // console.log(simulatedEvent);
     if (event.type === 'touchmove') {
         if (lmdd.getStatus() === 'dragStart'){
-            console.log('ddd')
             event.preventDefault();
         }
         document.elementFromPoint(simulatedEvent.clientX,simulatedEvent.clientY).dispatchEvent(simulatedEvent);
@@ -72,8 +61,6 @@ var simulateMouseEvent = function(event) {
     else{
         event.target.dispatchEvent(simulatedEvent);
     }
-    // Dispatch the simulated event to the target element
-    // document.dispatchEvent(simulatedEvent);
 }
 window.addEventListener('touchstart',simulateMouseEvent,{passive: false});
 window.addEventListener('touchmove',simulateMouseEvent,{passive: false});
@@ -670,7 +657,7 @@ var lmdd = (function () {
                         todo.onTransitionEnd.push(function () {
                             killEvent()
                         });
-                        // window.setTimeout(killEvent(),1000);
+                        window.setTimeout(killEvent(),1000);
                     }
                     else{
                         killEvent();
