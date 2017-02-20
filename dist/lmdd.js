@@ -162,7 +162,7 @@ var lmdd = (function () {
         mirrorMaxHeight: 100,
         mirrorMaxWidth: 300,
         revert: false,
-        dragstartTimeout: 0,
+        dragstartTimeout: 250,
         calcInterval: 200,
         nativeScroll: false,
         protectedProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-right', 'padding-left', 'display', 'list-style-type', 'line-height'],
@@ -666,8 +666,11 @@ var lmdd = (function () {
                         console.log('waiting...')
                         todo.onTransitionEnd.push(function () {
                             killEvent();
-                            return;
                         });
+                        window.setTimeout(function(){
+                            killEvent();
+                        },1000);
+                        return;
                     }
                     else{
                         killEvent();
