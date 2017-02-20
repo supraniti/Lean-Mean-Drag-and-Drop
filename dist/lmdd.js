@@ -32,7 +32,14 @@ var simulateMouseEvent = function(event) {
     if (event.touches.length > 1) {
         return false;
     }
+    console.log(event);
     event.preventDefault();
+    // if (event.type === 'touchstart'){
+    //     window.setTimeout(event.preventDefault(),100);
+    // }
+    // else{
+    //     event.preventDefault();
+    // }
     if (event.type === 'touchend'){
         var simulatedEvent = new MouseEvent(simulatedType, {
             'view': window,
@@ -58,6 +65,9 @@ var simulateMouseEvent = function(event) {
     }
     // console.log(simulatedEvent);
     if (event.type === 'touchmove') {
+        // if (status === 'dragStart'){
+        //     event.preventDefault();
+        // }
         document.elementFromPoint(simulatedEvent.clientX,simulatedEvent.clientY).dispatchEvent(simulatedEvent);
     }
     else{
@@ -647,7 +657,8 @@ var lmdd = (function () {
                 break;
             case 'dragStart':
                 if ((event.type === 'mouseup') || (event.type === 'mousemove') && (event.buttons === 0)) {//or mousemove with no buttons in case mouseup event was not fired
-                    console.log('wNT TO KILL')
+                    console.log('nottarget');
+                    console.log(event);
                     mirror.classList.add('gf-transition');
                     var offset = getOffset(draggedElement, scope);
                     mirror.style.transform = 'scale(1,1)';
