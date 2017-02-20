@@ -30,7 +30,7 @@ var simulateMouseEvent = function(event) {
     var simulatedType = (event.type === 'touchstart') ? 'mousedown' : (event.type === 'touchend') ? 'mouseup' : 'mousemove';
     // Ignore multi-touch events
     if (event.touches.length > 1) {
-        return false;
+        return;
     }
     console.log(event);
     event.preventDefault();
