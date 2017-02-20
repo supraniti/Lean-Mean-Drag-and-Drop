@@ -24,7 +24,6 @@ if (typeof (NodeList.prototype.forEach) === 'undefined') {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
 var simulateMouseEvent = function(event) {
-    console.log(event.type);
     var simulatedType = (event.type === 'touchstart') ? 'mousedown' : (event.type === 'touchend') ? 'mouseup' : 'mousemove';
     // Ignore multi-touch events
     if (event.touches.length > 1) {
@@ -52,7 +51,6 @@ var simulateMouseEvent = function(event) {
             'buttons' : 1
         });
     }
-    // console.log(simulatedEvent);
     if (event.type === 'touchmove') {
         if (lmdd.getStatus() === 'dragStart'){
             event.preventDefault();
@@ -60,7 +58,6 @@ var simulateMouseEvent = function(event) {
         document.elementFromPoint(simulatedEvent.clientX,simulatedEvent.clientY).dispatchEvent(simulatedEvent);
     }
     else{
-        console.log('dispatching')
         event.target.dispatchEvent(simulatedEvent);
     }
 }
@@ -105,7 +102,7 @@ var scrollControl = function () {
         vew2 = (nested) ? container.offsetWidth : window.innerWidth;// visible element width including scroll bar
         cspy = (nested) ? container.scrollTop : window.pageYOffset;//current scroll point on Y axis
         cspx = (nested) ? container.scrollLeft : window.pageXOffset;//current scroll point on X axis
-        asm = 20 / window.devicePixelRatio;//scroll margin (adjusted to the browser zoom level)
+        asm = Math.max((20 / window.devicePixelRatio),20);//scroll margin (adjusted to the browser zoom level)
         mspy = reh - veh1;//maximum scroll point on Y axis
         mspx = rew - vew1;//maximum scroll point on X axis
         scrollSpeed = (Math.max(asm - cmpx, asm - cmpy, cmpx + asm - vew1, cmpy + asm - veh1));//distance between cursor and scroll margin
@@ -113,6 +110,9 @@ var scrollControl = function () {
     var scroll = function () {
         clearTimeout(timeoutVar);
         action = false;
+        console.log('(reh > veh2) && (cspy < mspy) && (cmpy + asm >= veh1)');
+        console.log(reh,veh2,cspy,mspy,cmpy,asm,veh1);
+        console.log(container.offsetHeight,window.innerHeight)
         if (stop) {
             return false;
         }
@@ -540,8 +540,6 @@ var lmdd = (function () {
         }
     }
     var killEvent = function () {
-        console.log(status);
-        console.log('killing!!!');
         scrollController.kill();
         clearInterval(calcInterval);
         calcInterval = null;
@@ -584,13 +582,10 @@ var lmdd = (function () {
         }
     };
     var eventManager = function (event) {
-        console.log(status);
-        console.log(event.type);
         switch (status) {
             case 'waitDragStart':
                 if ((event.type === 'mousedown') && (event.button === 0)) {//trigger timeout function to enable clicking and text selection
                     scope = this;
-                    console.log('mousedown')
                     events.last = event;
                     toggleEvent(window, 'mouseup', eventManager, false, 'onDragEnd');
                     toggleEvent(document, 'mousemove', eventManager, false, 'onDragEnd');
@@ -663,7 +658,6 @@ var lmdd = (function () {
                     offset = getOffset(draggedElement, draggedClone);
                     if (Math.abs(offset.x) + Math.abs(offset.y) > 0) {//wait for transition to finish
                         status = 'waitDragEnd';
-                        console.log('waiting...')
                         todo.onTransitionEnd.push(function () {
                             killEvent();
                         });
