@@ -1,10 +1,7 @@
-//object assign polyfill
+//global functions
+//object assign [not supported on edge]
 if (typeof Object.assign != 'function') {
     Object.assign = function (target) {
-        'use strict';
-        if (target == null) {
-            throw new TypeError('Cannot convert undefined or null to object');
-        }
         target = Object(target);
         for (var index = 1; index < arguments.length; index++) {
             var source = arguments[index];
@@ -19,137 +16,12 @@ if (typeof Object.assign != 'function') {
         return target;
     };
 }
-//nodelist foreach hack
+//nodelist foreach [not supported on edge]
 if (typeof (NodeList.prototype.forEach) === 'undefined') {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
-//convert touch events to mouse events
-var simulateMouseEvent = function(event) {
-    var simulatedType = (event.type === 'touchstart') ? 'mousedown' : (event.type === 'touchend') ? 'mouseup' : 'mousemove';
-    // Ignore multi-touch events
-    if (event.touches.length > 1) {
-        return;
-    }
-    if (event.type === 'touchend'){
-        var simulatedEvent = new MouseEvent(simulatedType, {
-            'view': window,
-            'bubbles': true,
-            'cancelable': true,
-            'button' : 0,
-            'buttons' : 1
-        });
-    }
-    else{
-        var simulatedEvent = new MouseEvent(simulatedType, {
-            'view': window,
-            'bubbles': true,
-            'cancelable': true,
-            'screenX' : event.touches[0].screenX || 0,    //
-            'screenY' : event.touches[0].screenY || 0,    //
-            'clientX' : event.touches[0].clientX || 0,    //
-            'clientY' : event.touches[0].clientY || 0,    //
-            'button' : 0,
-            'buttons' : 1
-        });
-    }
-    if (event.type === 'touchmove') {
-        if (lmdd.getStatus() === 'dragStart'){
-            event.preventDefault();
-        }
-        document.elementFromPoint(simulatedEvent.clientX,simulatedEvent.clientY).dispatchEvent(simulatedEvent);
-    }
-    else{
-        event.target.dispatchEvent(simulatedEvent);
-    }
-}
-window.addEventListener('touchstart',simulateMouseEvent,{passive: false});
-window.addEventListener('touchmove',simulateMouseEvent,{passive: false});
-window.addEventListener('touchend',simulateMouseEvent,{passive: false});
-///todo: wrappping it up,handle clone status, handle inputs, vuejs app (layoutbuilder),embed options
-
-
+///todo: wrappping it up,handle clone status, handle inputs, vuejs app (layoutbuilder)
 //scroll controller
-var scrollControl = function () {
-    var stop = false, nested = false, container = false, scrollSpeed = false, action = false, rect = false;
-    var timeoutVar, reh, veh1, veh2, rew, vew1, vew2, cspy, cspx, cmpy, cmpx, asm, mspy, mspx;
-    var setContainer = function (el) {
-        if (document.body.contains(el)) {
-            var vScroll = false, hScroll = false, cStyle = window.getComputedStyle(el, null);
-            if (el.offsetWidth > el.clientWidth && el.clientWidth > 0) {
-                var borderWidth = parseInt(cStyle.getPropertyValue('border-right-width'), 10) + parseInt(cStyle.getPropertyValue('border-left-width'), 10);
-                vScroll = (el.offsetWidth > el.clientWidth + borderWidth);
-            }
-            if (el.offsetHeight > el.clientHeight && el.clientHeight > 0) {
-                var borderHeight = parseInt(cStyle.getPropertyValue('border-right-height'), 10) + parseInt(cStyle.getPropertyValue('border-left-height'), 10);
-                hScroll = (el.offsetHeight > el.clientHeight + borderHeight);
-            }
-            return (vScroll || hScroll) ? el : setContainer(el.parentNode);
-        }
-        return (document.documentElement);
-    };
-    var newEvent = function (e) {
-        stop = false;
-        cmpy = (nested) ? e.clientY - rect.top : e.clientY;
-        cmpx = (nested) ? e.clientX - rect.left : e.clientX;
-        updateVars();
-        scroll();
-    };
-    var updateVars = function () {
-        reh = container.scrollHeight;//real element height
-        veh1 = container.clientHeight;//visible element height without scroll bar
-        veh2 = (nested) ? container.offsetHeight : window.innerHeight; //visible element height including scroll bar
-        rew = container.scrollWidth;//real element width
-        vew1 = container.clientWidth;//visible element width without scroll bar
-        vew2 = (nested) ? container.offsetWidth : window.innerWidth;// visible element width including scroll bar
-        cspy = (nested) ? container.scrollTop : window.pageYOffset;//current scroll point on Y axis
-        cspx = (nested) ? container.scrollLeft : window.pageXOffset;//current scroll point on X axis
-        asm = 20;
-        mspy = reh - veh1;//maximum scroll point on Y axis
-        mspx = rew - vew1;//maximum scroll point on X axis
-        scrollSpeed = Math.max(asm - cmpx, asm - cmpy, cmpx + asm - vew1, cmpy + asm - veh1);//distance between cursor and scroll margin
-    };
-    var scroll = function () {
-        clearTimeout(timeoutVar);
-        action = false;
-        if (stop) {
-            return false;
-        }
-        if ((cspx > 0) && (cmpx <= asm)) {//left
-            action = true;
-            (nested) ? container.scrollLeft -= scrollSpeed : window.scrollTo(cspx - scrollSpeed, cspy);
-        }
-        if ((rew > vew2) && (cspx < mspx) && (cmpx + asm >= vew1)) {//right
-            action = true;
-            (nested) ? container.scrollLeft += scrollSpeed : window.scrollTo(cspx + scrollSpeed, cspy);
-        }
-        if ((cspy > 0) && (cmpy <= asm)) {//top
-            action = true;
-            (nested) ? container.scrollTop -= scrollSpeed : window.scrollTo(cspx, cspy - scrollSpeed);
-        }
-        if ((reh > veh2) && (cspy < mspy) && (cmpy + asm >= veh1)) {//bottom
-            action = true;
-            (nested) ? container.scrollTop += scrollSpeed : window.scrollTo(cspx, cspy + scrollSpeed);
-        }
-        if (action) {
-            updateVars();
-            timeoutVar = setTimeout(scroll, 16);
-        }
-    };
-    var eventHandler = function (e) {
-        container = setContainer(e.target);
-        rect = container.getBoundingClientRect();
-        nested = (container !== document.documentElement);
-        newEvent(e);
-    }
-    return {
-        update: function (e) {
-            eventHandler(e);
-        },
-        kill: function () {
-            stop = true;
-        }
-    };
-};
 var lmdd = (function () {
     var options = {
         containerClass: false,
@@ -166,10 +38,112 @@ var lmdd = (function () {
         protectedProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-right', 'padding-left', 'display', 'list-style-type', 'line-height'],
         matchObject: false
     };
+    var simulateMouseEvent = function(event) {//convert touch to mouse events
+        if (event.touches.length > 1) {
+            return;
+        }
+        var simulatedType = (event.type === 'touchstart') ? 'mousedown' : (event.type === 'touchend') ? 'mouseup' : 'mousemove';
+        var simulatedEvent = new MouseEvent(simulatedType, {
+            'view': window,
+            'bubbles': true,
+            'cancelable': true,
+            'screenX' : (event.touches[0]) ? event.touches[0].screenX : 0,
+            'screenY' : (event.touches[0]) ? event.touches[0].screenY : 0,
+            'clientX' : (event.touches[0]) ? event.touches[0].clientX : 0,
+            'clientY' : (event.touches[0]) ? event.touches[0].clientY : 0,
+            'button' : 0,
+            'buttons' : 1
+        });
+        var eventTarget = (event.type === 'touchmove') ? document.elementFromPoint(simulatedEvent.clientX,simulatedEvent.clientY) || document.body : event.target;
+        if (status === 'dragStart'){
+            event.preventDefault();
+        }
+        eventTarget.dispatchEvent(simulatedEvent);
+    };
     var status = 'waitDragStart'; // dragStart, , waitDragEnd, dragEnd
+    var scrollControl = function () {//replaces native scroll behaviour
+        var stop = false, nested = false, container = false, scrollSpeed = false, action = false, rect = false;
+        var timeoutVar, reh, veh1, veh2, rew, vew1, vew2, cspy, cspx, cmpy, cmpx, asm, mspy, mspx;
+        var setContainer = function (el) {
+            if (document.body.contains(el)) {
+                var vScroll = false, hScroll = false, cStyle = window.getComputedStyle(el, null);
+                if (el.offsetWidth > el.clientWidth && el.clientWidth > 0) {
+                    var borderWidth = parseInt(cStyle.getPropertyValue('border-right-width'), 10) + parseInt(cStyle.getPropertyValue('border-left-width'), 10);
+                    vScroll = (el.offsetWidth > el.clientWidth + borderWidth);
+                }
+                if (el.offsetHeight > el.clientHeight && el.clientHeight > 0) {
+                    var borderHeight = parseInt(cStyle.getPropertyValue('border-right-height'), 10) + parseInt(cStyle.getPropertyValue('border-left-height'), 10);
+                    hScroll = (el.offsetHeight > el.clientHeight + borderHeight);
+                }
+                return (vScroll || hScroll) ? el : setContainer(el.parentNode);
+            }
+            return (document.documentElement);
+        };
+        var newEvent = function (e) {
+            stop = false;
+            cmpy = (nested) ? e.clientY - rect.top : e.clientY;
+            cmpx = (nested) ? e.clientX - rect.left : e.clientX;
+            updateVars();
+            scroll();
+        };
+        var updateVars = function () {
+            reh = container.scrollHeight;//real element height
+            veh1 = container.clientHeight;//visible element height without scroll bar
+            veh2 = (nested) ? container.offsetHeight : window.innerHeight; //visible element height including scroll bar
+            rew = container.scrollWidth;//real element width
+            vew1 = container.clientWidth;//visible element width without scroll bar
+            vew2 = (nested) ? container.offsetWidth : window.innerWidth;// visible element width including scroll bar
+            cspy = (nested) ? container.scrollTop : window.pageYOffset;//current scroll point on Y axis
+            cspx = (nested) ? container.scrollLeft : window.pageXOffset;//current scroll point on X axis
+            asm = 20;
+            mspy = reh - veh1;//maximum scroll point on Y axis
+            mspx = rew - vew1;//maximum scroll point on X axis
+            scrollSpeed = Math.max(asm - cmpx, asm - cmpy, cmpx + asm - vew1, cmpy + asm - veh1);//distance between cursor and scroll margin
+        };
+        var scroll = function () {
+            clearTimeout(timeoutVar);
+            action = false;
+            if (stop) {
+                return false;
+            }
+            if ((cspx > 0) && (cmpx <= asm)) {//left
+                action = true;
+                (nested) ? container.scrollLeft -= scrollSpeed : window.scrollTo(cspx - scrollSpeed, cspy);
+            }
+            if ((rew > vew2) && (cspx < mspx) && (cmpx + asm >= vew1)) {//right
+                action = true;
+                (nested) ? container.scrollLeft += scrollSpeed : window.scrollTo(cspx + scrollSpeed, cspy);
+            }
+            if ((cspy > 0) && (cmpy <= asm)) {//top
+                action = true;
+                (nested) ? container.scrollTop -= scrollSpeed : window.scrollTo(cspx, cspy - scrollSpeed);
+            }
+            if ((reh > veh2) && (cspy < mspy) && (cmpy + asm >= veh1)) {//bottom
+                action = true;
+                (nested) ? container.scrollTop += scrollSpeed : window.scrollTo(cspx, cspy + scrollSpeed);
+            }
+            if (action) {
+                updateVars();
+                timeoutVar = setTimeout(scroll, 16);
+            }
+        };
+        var eventHandler = function (e) {
+            container = setContainer(e.target);
+            rect = container.getBoundingClientRect();
+            nested = (container !== document.documentElement);
+            newEvent(e);
+        }
+        return {
+            update: function (e) {
+                eventHandler(e);
+            },
+            kill: function () {
+                stop = true;
+            }
+        };
+    };
     var scrollController = new scrollControl();
     var calcInterval = null;
-    var dataIndex = null;
     var scroll = {
         lastX: window.pageXOffset,
         lastY: window.pageYOffset,
@@ -559,7 +533,6 @@ var lmdd = (function () {
         });
         if (scope){
             scope.dispatchEvent(event);
-
         }
         console.log(event.detail);
         scope = false;
@@ -721,6 +694,9 @@ var lmdd = (function () {
                 el.addEventListener('mousedown', eventManager, false);
                 document.addEventListener('drag', muteEvent, false);
                 document.addEventListener('dragstart', muteEvent, false);
+                window.addEventListener('touchstart',simulateMouseEvent,{passive: false});
+                window.addEventListener('touchmove',simulateMouseEvent,{passive: false});
+                window.addEventListener('touchend',simulateMouseEvent,{passive: false});
             }
         },
         refresh: function (el) {
