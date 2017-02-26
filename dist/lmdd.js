@@ -20,8 +20,7 @@ if (typeof Object.assign != 'function') {
 if (typeof (NodeList.prototype.forEach) === 'undefined') {
     NodeList.prototype.forEach = Array.prototype.forEach;
 }
-///todo: wrappping it up,handle clone status, handle inputs, vuejs app (layoutbuilder)
-//scroll controller
+///todo: wrappping it up,handle clone status,vuejs app (layoutbuilder)
 var lmdd = (function () {
     var options = {
         containerClass: false,
@@ -654,7 +653,9 @@ var lmdd = (function () {
                             killEvent();
                         });
                         window.setTimeout(function(){
-                            (status !== 'waitDragStart') ? killEvent() : false;
+                            if (status !== 'waitDragStart') {
+                                killEvent()
+                            }
                             // killEvent();
                         },1000);
                         return;
