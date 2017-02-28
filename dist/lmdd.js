@@ -70,6 +70,46 @@ var lmdd = (function () {
             //container changed
         }
     }
+    var status = 'waitDragStart'; // dragStart, , waitDragEnd, dragEnd
+    var calcInterval = null;
+    var scroll = {
+        lastX: window.pageXOffset,
+        lastY: window.pageYOffset,
+        get deltaX() {
+            return window.pageXOffset - this.lastX;
+        },
+        get deltaY() {
+            return window.pageYOffset - this.lastY;
+        }
+    };
+    var dragOffset = {
+        x: 0,
+        y: 0
+    };
+    var scope = null;//html element in which drag event occurs
+    var lastEvent = null;
+    var refEvent = null;
+    var positions = {
+        currentTarget: false,
+        originalContainer: false,
+        originalNextSibling: false,
+        currentContainer: false,
+        previousContainer: false,
+        currentCoordinates: false,
+        currentPosition: false,
+        previousPosition: false
+    };
+    var todo = {
+        executeTask: function (batch) {
+            todo[batch].forEach(function (fn) {
+                fn();
+            });
+            todo[batch] = [];
+        },
+        onDragEnd: [],
+        onNextAppend: [],
+        onTransitionEnd: []
+    };
     var assignOptions = function (defaults, settings) {
         var target = {};
         Object.keys(defaults).forEach(function (key) {
@@ -99,7 +139,6 @@ var lmdd = (function () {
         }
         eventTarget.dispatchEvent(simulatedEvent);
     };
-    var status = 'waitDragStart'; // dragStart, , waitDragEnd, dragEnd
     var scrollControl = function () {//replaces native scroll behaviour
         var stop = false, nested = false, container = false, scrollSpeed = false, action = false, rect = false;
         var timeoutVar, reh, veh1, veh2, rew, vew1, vew2, cspy, cspx, cmpy, cmpx, asm, mspy, mspx;
@@ -182,45 +221,6 @@ var lmdd = (function () {
         };
     };
     var scrollController = scrollControl();
-    var calcInterval = null;
-    var scroll = {
-        lastX: window.pageXOffset,
-        lastY: window.pageYOffset,
-        get deltaX() {
-            return window.pageXOffset - this.lastX;
-        },
-        get deltaY() {
-            return window.pageYOffset - this.lastY;
-        }
-    };
-    var dragOffset = {
-        x: 0,
-        y: 0
-    };
-    var scope = null;//html element in which drag event occurs
-    var lastEvent = null;
-    var refEvent = null;
-    var positions = {
-        currentTarget: false,
-        originalContainer: false,
-        originalNextSibling: false,
-        currentContainer: false,
-        previousContainer: false,
-        currentCoordinates: false,
-        currentPosition: false,
-        previousPosition: false
-    };
-    var todo = {
-        executeTask: function (batch) {
-            todo[batch].forEach(function (fn) {
-                fn();
-            });
-            todo[batch] = [];
-        },
-        onDragEnd: [],
-        onNextAppend: [],
-        onTransitionEnd: []
-    };
     var updateOriginalPosition = function () {
         positions.originalContainer = elementManager.dragged.parentNode;
         positions.originalNextSibling = elementManager.dragged.nextSibling;
@@ -469,8 +469,6 @@ var lmdd = (function () {
             console.log(event.detail);
         }
         scope = false;
-        // draggedElement = null;
-        // draggedClone = null;
         lastEvent = false;
         status = 'waitDragStart';
     };
@@ -480,7 +478,6 @@ var lmdd = (function () {
                 scrollController.update(lastEvent)
             }
             if (refEvent === lastEvent) {
-                console.log('this is what tick is for...')
                 return false;
             }
             refEvent = lastEvent;
@@ -545,13 +542,7 @@ var lmdd = (function () {
                                     }
                                     dragOffset.x = event.clientX - target.getBoundingClientRect().left;
                                     dragOffset.y = event.clientY - target.getBoundingClientRect().top;
-                                    console.log(dragOffset)
                                     elementManager.set(target);
-                                    // updateOriginalPosition();
-                                    // updateCurrentContainer();
-                                    // updateCurrentCoordinates();
-                                    // window.getSelection().removeAllRanges();//disable selection on FF and IE - JS
-                                    // dragStarted();
                                     elementManager.shadow.addEventListener("transitionend", eventManager, false);
                                     if (document.body.setCapture) {
                                         document.body.setCapture(false);
