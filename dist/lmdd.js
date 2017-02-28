@@ -1,25 +1,3 @@
-//global functions
-//object assign [not supported on edge]
-if (typeof Object.assign != 'function') {
-    Object.assign = function (target) {
-        target = Object(target);
-        for (var index = 1; index < arguments.length; index++) {
-            var source = arguments[index];
-            if (source != null) {
-                for (var key in source) {
-                    if (Object.prototype.hasOwnProperty.call(source, key)) {
-                        target[key] = source[key];
-                    }
-                }
-            }
-        }
-        return target;
-    };
-}
-//nodelist foreach [not supported on edge]
-if (typeof (NodeList.prototype.forEach) === 'undefined') {
-    NodeList.prototype.forEach = Array.prototype.forEach;
-}
 ///todo: wrappping it up,handle clone status,vuejs app (layoutbuilder)
 var lmdd = (function () {
     var options = {
@@ -27,9 +5,8 @@ var lmdd = (function () {
         fixedItemClass: false,//fixed items can't be draggable
         draggableItemClass: false,
         handleClass: false,
-        regulateMouseOver: false,
-        mirrorMaxHeight: 100,
-        mirrorMaxWidth: 300,
+        mirrorMinHeight: 100,
+        mirrorMaxWidth: 500,
         revert: false,
         dragstartTimeout: 50,
         calcInterval: 200,
@@ -37,7 +14,70 @@ var lmdd = (function () {
         protectedProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-right', 'padding-left', 'display', 'list-style-type', 'line-height'],
         matchObject: false
     };
-    var simulateMouseEvent = function(event) {//convert touch to mouse events
+    var elementManager = {
+        dragged: null,//the dragged element
+        shadow: null,//clone of the dragged element used as a visible placeholder
+        mirror: null,//clone of the dragged element attached to the mouse cursor
+        set: function (el) {
+            createReference(scope);//create a clone reference for every element on scope
+            this.dragged = el;
+            this.shadow = this.dragged.cloneRef;
+            var cStyle = (window.getComputedStyle) ? window.getComputedStyle(this.dragged, null) : this.dragged.currentStyle;
+            for (var i = 0; i < scope.lmddOptions.protectedProperties.length; i++) {
+                this.shadow.style[scope.lmddOptions.protectedProperties[i]] = cStyle[scope.lmddOptions.protectedProperties[i]];
+            }
+            this.mirror = this.shadow.cloneNode(true);
+            toggleClass(this.dragged, 'lmdd-hidden', true, 'onDragEnd');
+            this.shadow.classList.add('lmdd-shadow');
+            this.mirror.classList.add('lmdd-mirror');
+            updateOriginalPosition();
+            updateCurrentContainer();
+            updateCurrentCoordinates();
+            window.getSelection().removeAllRanges();//disable text selection on FF and IE - JS
+            toggleClass(document.body, 'unselectable', true, 'onDragEnd');//disable text selection on CHROME - CSS
+            scope.parentNode.appendChild(scope.cloneRef); //insert the clone into the dom
+            todo.onDragEnd.push(function () {
+                scope.parentNode.removeChild(scope.cloneRef);
+                deleteReference(scope);
+            });
+            scope.cloneRef.appendChild(this.shadow);//insert the shadow into the dom
+            animateElement(scope);//take care of positioning
+            this.mirror.style.width = this.shadow.getBoundingClientRect().width + 'px';
+            this.mirror.style.height = this.shadow.getBoundingClientRect().height + 'px';
+            var scaleX = scope.lmddOptions.mirrorMaxWidth / this.shadow.getBoundingClientRect().width;
+            var scaleY = scope.lmddOptions.mirrorMinHeight / this.shadow.getBoundingClientRect().height;
+            var scale = Math.min(1, Math.max(scaleX, scaleY));
+            dragOffset.x *= scale;
+            dragOffset.y *= scale;
+            this.mirror.style.transform = 'scale(' + scale + ',' + scale + ')';
+            this.mirror.style.transformOrigin = '0 0';
+            scope.cloneRef.appendChild(this.mirror);
+            scroll.lastX = window.pageXOffset;
+            scroll.lastY = window.pageYOffset;
+            updateMirrorLocation();
+            toggleClass(scope, 'hidden-layer', true, 'onDragEnd');
+            toggleClass(scope.cloneRef, 'visible-layer', true, false);
+        },
+        unset: function () {
+            this.dragged = null;
+            this.mirror = null;
+            this.shadow = null;
+        },
+        move: function (event) {
+            //mouse move
+            //target changed
+            //position changed
+            //container changed
+        }
+    }
+    var assignOptions = function (defaults, settings) {
+        var target = {};
+        Object.keys(defaults).forEach(function (key) {
+            target[key] = (Object.prototype.hasOwnProperty.call(settings, key) ? settings[key] : defaults[key]);
+        });
+        return target;
+    };
+    var simulateMouseEvent = function (event) {//convert touch to mouse events
         if (event.touches.length > 1) {
             return;
         }
@@ -46,15 +86,15 @@ var lmdd = (function () {
             'view': window,
             'bubbles': true,
             'cancelable': true,
-            'screenX' : (event.touches[0]) ? event.touches[0].screenX : 0,
-            'screenY' : (event.touches[0]) ? event.touches[0].screenY : 0,
-            'clientX' : (event.touches[0]) ? event.touches[0].clientX : 0,
-            'clientY' : (event.touches[0]) ? event.touches[0].clientY : 0,
-            'button' : 0,
-            'buttons' : 1
+            'screenX': (event.touches[0]) ? event.touches[0].screenX : 0,
+            'screenY': (event.touches[0]) ? event.touches[0].screenY : 0,
+            'clientX': (event.touches[0]) ? event.touches[0].clientX : 0,
+            'clientY': (event.touches[0]) ? event.touches[0].clientY : 0,
+            'button': 0,
+            'buttons': 1
         });
-        var eventTarget = (event.type === 'touchmove') ? document.elementFromPoint(simulatedEvent.clientX,simulatedEvent.clientY) || document.body : event.target;
-        if (status === 'dragStart'){
+        var eventTarget = (event.type === 'touchmove') ? document.elementFromPoint(simulatedEvent.clientX, simulatedEvent.clientY) || document.body : event.target;
+        if (status === 'dragStart') {
             event.preventDefault();
         }
         eventTarget.dispatchEvent(simulatedEvent);
@@ -141,7 +181,7 @@ var lmdd = (function () {
             }
         };
     };
-    var scrollController = new scrollControl();
+    var scrollController = scrollControl();
     var calcInterval = null;
     var scroll = {
         lastX: window.pageXOffset,
@@ -157,15 +197,9 @@ var lmdd = (function () {
         x: 0,
         y: 0
     };
-    var scope = {};//html element in which drag event occurs
-    var draggedElement = false;//html element being dragged
-    var draggedClone = false;//clone of dragged element (used to animate movement)
-    var mirror = false;//clone of dragged element attached to mouse cursor while dragging
-    var events = {
-        last: null,
-        tick: null
-    };
-    var movements = [];
+    var scope = null;//html element in which drag event occurs
+    var lastEvent = null;
+    var refEvent = null;
     var positions = {
         currentTarget: false,
         originalContainer: false,
@@ -184,19 +218,18 @@ var lmdd = (function () {
             todo[batch] = [];
         },
         onDragEnd: [],
-        onDragEndGC: [],
         onNextAppend: [],
         onTransitionEnd: []
     };
     var updateOriginalPosition = function () {
-        positions.originalContainer = draggedElement.parentNode;
-        positions.originalNextSibling = draggedElement.nextSibling;
+        positions.originalContainer = elementManager.dragged.parentNode;
+        positions.originalNextSibling = elementManager.dragged.nextSibling;
     };
     var updateCurrentContainer = function () {
         positions.previousContainer = positions.currentContainer;
-        if (positions.currentTarget !== events.last.target) {
-            positions.currentTarget = events.last.target;
-            positions.currentContainer = getWrapper(events.last.target, 'lmdd-container');
+        if (positions.currentTarget !== lastEvent.target) {
+            positions.currentTarget = lastEvent.target;
+            positions.currentContainer = getWrapper(lastEvent.target, scope.lmddOptions.containerClass);
         }
     };
     var updateCurrentCoordinates = function () {
@@ -210,25 +243,24 @@ var lmdd = (function () {
     var updateCurrentPosition = function () {
         positions.previousPosition = positions.currentPosition;
         if (positions.currentContainer) {
-            positions.currentPosition = getPosition(positions.currentCoordinates, events.last.clientY, events.last.clientX);
+            positions.currentPosition = getPosition(positions.currentCoordinates, lastEvent.clientY, lastEvent.clientX);
         }
         else {
             positions.currentPosition = false;
         }
     };
     var appendDraggedElement = function () {
-        if ((positions.currentContainer) && (acceptDrop(positions.currentContainer, draggedElement))) {
-            positions.currentContainer.insertBefore(draggedElement, positions.currentContainer.childNodes[positions.currentPosition]);
+        if ((positions.currentContainer) && (acceptDrop(positions.currentContainer, elementManager.dragged))) {
+            positions.currentContainer.insertBefore(elementManager.dragged, positions.currentContainer.childNodes[positions.currentPosition]);
             todo.executeTask('onNextAppend');
         }
         else {
             if (scope.lmddOptions.revert) {
-                positions.originalContainer.insertBefore(draggedElement, positions.originalNextSibling);
+                positions.originalContainer.insertBefore(elementManager.dragged, positions.originalNextSibling);
             }
         }
         updateCurrentCoordinates();
         animateElement(scope);
-        movements.push('move');
     };
     var acceptDrop = function (container, item) {
         if (item.contains(container)) {
@@ -244,7 +276,6 @@ var lmdd = (function () {
         }
         return true;
     };
-    // helper functions
     var toggleClass = function (el, className, action, undo) {
         (action) ? el.classList.add(className) : el.classList.remove(className);
         if (undo) {
@@ -296,35 +327,20 @@ var lmdd = (function () {
         }
         return (path.indexOf(scope) > -1) ? wrapper : false;
     };
-    var setElementIndex = function (el, isRoot) {
-        el.dataset.lmddindex = (isRoot) ? 'root' : getIndex(el);
-        el.childNodes.forEach(function (node) {
-            setElementIndex(node, false);
-        });
-    };
     var deleteReference = function (el) {
         delete(el.cloneRef);
-        delete(el.original);
-        el.childNodes.forEach(function (node) {
+        Array.prototype.forEach.call(el.childNodes, function (node) {
             deleteReference(node);
         });
-    };
-    var getIndex = function (el) {
-        var index = [];
-        while (el !== scope) {
-            index.unshift(Array.prototype.indexOf.call(el.parentNode.childNodes, el));
-            el = el.parentElement;
-        }
-        return index;
     };
     var animateElement = function (el) {
         if (el.nodeType === 1) {
             animateNode(el);
-            if (el.classList.contains('lmdd-container') || (el === scope)) {
-                if (el !== draggedElement) {
+            if (el.classList.contains(scope.lmddOptions.containerClass) || (el === scope)) {
+                if (el !== elementManager.dragged) {
                     el.cloneRef.style.display = 'block';
                     el.cloneRef.style.padding = 0;
-                    el.childNodes.forEach(function (node) {
+                    Array.prototype.forEach.call(el.childNodes, function (node) {
                         animateElement(node);
                     });
                 }
@@ -343,23 +359,13 @@ var lmdd = (function () {
             cloneNode.style.top = elRect.top + window.pageYOffset + 'px';
             cloneNode.style.left = elRect.left + window.pageXOffset + 'px';
         } else {
-            offset = (elNode === draggedElement) ? getOffset(elNode, scope) : getOffset(elNode, elNode.parentNode);
+            offset = (elNode === elementManager.dragged) ? getOffset(elNode, scope) : getOffset(elNode, elNode.parentNode);
             cloneNode.style.transform = 'translate3d(' + offset.x + 'px, ' + offset.y + 'px,0px)';
-            //todo: depends on animation option (translate3d,topleft,translate2d)
-            // cloneNode.style.top =  offset.y + 'px';
-            // cloneNode.style.left = offset.x + 'px';
         }
     };
-    // var getElement = function (index, root) {
-    //     var el = root;
-    //     for (var i = 0; i < index.length; i++) {
-    //         el = el.childNodes[index[i]];
-    //     }
-    //     return el;
-    // };
     var getCoordinates = function (el) {
         var coordinates = [];
-        el.childNodes.forEach(function (node, index) { //replace with getelementbyclassname
+        Array.prototype.forEach.call(el.childNodes, function (node, index) {
             if (node.nodeType === 1) {
                 var coordinate = node.getBoundingClientRect();
                 coordinate.index = index;
@@ -409,58 +415,20 @@ var lmdd = (function () {
         }
         return coordinates[position].index;
     };
-    var dragStarted = function () {
-        toggleClass(document.body, 'unselectable', true, 'onDragEnd');
-        toggleClass(draggedElement, 'lmdd-hidden', true, 'onDragEnd');
-        scroll.lastX = window.pageXOffset;
-        scroll.lastY = window.pageYOffset;
-        setAnimationLayer();
-        setDraggedClone();
-        animateElement(scope);//take care of positioning
-        setMirror();//reverseVV
-        toggleClass(scope, 'hidden-layer', true, 'onDragEnd');
-        toggleClass(scope.cloneRef, 'visible-layer', true, false);
-    };
-    var setDraggedClone = function () {
-        draggedClone = draggedElement.cloneRef;//use a copy of the dragged element to act as shadow/ghost
-        var cStyle = (window.getComputedStyle) ? window.getComputedStyle(draggedElement, null) : draggedElement.currentStyle;
-        for (var i = 0; i < scope.lmddOptions.protectedProperties.length; i++) {
-            draggedClone.style[scope.lmddOptions.protectedProperties[i]] = cStyle[scope.lmddOptions.protectedProperties[i]];
-        }
-        draggedClone.classList.add('lmdd-dragged');//reverse
-        draggedClone.classList.remove('lmdd-hidden');//reverse
-        scope.cloneRef.appendChild(draggedClone);//insert the shadow into the dom
-    };
     var updateMirrorLocation = function () {
-        if (mirror) {
-            mirror.style.top = (events.last.pageY - parseInt(mirror.parentNode.style.top, 10) + scroll.deltaY - dragOffset.y) + 'px';
-            mirror.style.left = (events.last.pageX - parseInt(mirror.parentNode.style.left, 10) + scroll.deltaX - dragOffset.x) + 'px';
+        if (elementManager.mirror) {
+            elementManager.mirror.style.top = (lastEvent.pageY - parseInt(elementManager.mirror.parentNode.style.top, 10) + scroll.deltaY - dragOffset.y) + 'px';
+            elementManager.mirror.style.left = (lastEvent.pageX - parseInt(elementManager.mirror.parentNode.style.left, 10) + scroll.deltaX - dragOffset.x) + 'px';
         }
     };
-    var setMirror = function () {
-        mirror = draggedClone.cloneNode(true);
-        mirror.classList.add('lmdd-mirror');
-        mirror.classList.remove('lmdd-dragged');
-        mirror.style.width = draggedClone.getBoundingClientRect().width + 'px';
-        mirror.style.height = draggedClone.getBoundingClientRect().height + 'px';
-        var minHeight = 100;
-        var maxWidth = 500;
-        var scaleX = maxWidth / draggedClone.getBoundingClientRect().width;
-        var scaleY = minHeight / draggedClone.getBoundingClientRect().height;
-        var scale = Math.min(1, Math.max(scaleX, scaleY));
-        dragOffset.x *= scale;
-        dragOffset.y *= scale;
-        mirror.style.transform = 'scale(' + scale + ',' + scale + ')';
-        mirror.style.transformOrigin = '0 0';
-        scope.cloneRef.appendChild(mirror);
-        updateMirrorLocation();
-    };
-    var createReference = function (el, clone) {
+    var createReference = function (el) {
+        var clone = el.cloneNode(true);
+        clone.id += '-lmddClone';
         var elArray = [];
         var cloneArray = [];
         var traverse = function (el, refArray) {
             refArray.push(el);
-            el.childNodes.forEach(function (node) {
+            Array.prototype.forEach.call(el.childNodes, function (node) {
                 traverse(node, refArray);
             });
         };
@@ -468,7 +436,6 @@ var lmdd = (function () {
         traverse(clone, cloneArray);
         for (var i = 0; i < elArray.length; i++) {
             elArray[i].cloneRef = cloneArray[i];
-            elArray[i].original = true;
         }
     };
     var muteEvent = function (event) {
@@ -476,79 +443,47 @@ var lmdd = (function () {
         event.stopPropagation();
         return false;
     };
-    var setAnimationLayer = function () {
-        var clone = scope.cloneNode(true);
-        clone.id += '-lmddClone';
-        createReference(scope, clone);//create a clone reference for every element on scope
-        scope.parentNode.appendChild(scope.cloneRef); //insert the clone into the dom
-        todo.onDragEnd.push(function () {
-            scope.parentNode.removeChild(scope.cloneRef);
-            deleteReference(scope);
-        })
-    };
-    var setLmddClasses = function (el) {
-        var containers = el.getElementsByClassName(el.lmddOptions.containerClass);
-        if (el.classList.contains(el.lmddOptions.containerClass)) {
-            el.classList.add('lmdd-container');
-        }
-        for (var i = 0; i < containers.length; i++) {
-            containers[i].classList.add('lmdd-container');
-        }
-        var draggables = el.getElementsByClassName(el.lmddOptions.draggableItemClass);
-        for (i = 0; i < draggables.length; i++) {
-            draggables[i].classList.add('lmdd-draggable');
-        }
-    };
-    var unsetLmddClasses = function (el) {
-        var containers = el.getElementsByClassName(el.lmddOptions.containerClass);
-        el.classList.remove('lmdd-container');
-        for (var i = 0; i < containers.length; i++) {
-            containers[i].classList.remove('lmdd-container');
-        }
-        var draggables = el.getElementsByClassName(el.lmddOptions.draggableItemClass);
-        for (i = 0; i < draggables.length; i++) {
-            draggables[i].classList.remove('lmdd-draggable');
-        }
-    }
     var killEvent = function () {
         scrollController.kill();
         clearInterval(calcInterval);
         calcInterval = null;
-        if (scope.check){
+        if (scope.check) {
             toggleClass(scope.cloned, 'no-display', false, false);
-           if(scope.check.parentNode){
-               scope.check.parentNode.removeChild(scope.check);
-           };
+            if (scope.check.parentNode) {
+                scope.check.parentNode.removeChild(scope.check);
+            }
+            ;
         }
         todo.executeTask('onDragEnd');
-        var event = new CustomEvent('lmddend', {
-            'detail':{
-                'draggedElement': draggedElement,
-                'originalContainer': positions.originalContainer,
-                'originalNextSibling': positions.originalNextSibling,
-                'currentContainer': draggedElement.parentNode,
-                'currentNextSibling': draggedElement.nextSibling
-            }
-        });
-        if (scope){
+        if (status !== 'dragStartTimeout') {
+            var event = new CustomEvent('lmddend', {
+                'detail': {
+                    'draggedElement': elementManager.dragged,
+                    'originalContainer': positions.originalContainer,
+                    'originalNextSibling': positions.originalNextSibling,
+                    'currentContainer': elementManager.dragged.parentNode,
+                    'currentNextSibling': elementManager.dragged.nextSibling
+                }
+            });
             scope.dispatchEvent(event);
+            console.log(event.detail);
         }
-        console.log(event.detail);
         scope = false;
-        draggedElement = false;
-        draggedClone = false;
-        events.last = false;
+        // draggedElement = null;
+        // draggedClone = null;
+        lastEvent = false;
         status = 'waitDragStart';
     };
     var eventTicker = function () {
         if (scope) {
             if (!scope.lmddOptions.nativeScroll) {
-                scrollController.update(events.last)
+                scrollController.update(lastEvent)
             }
-            if (events.tick === events.last) {
+            if (refEvent === lastEvent) {
+                console.log('this is what tick is for...')
                 return false;
             }
-            events.tick = events.last;
+            refEvent = lastEvent;
             updateCurrentContainer();
             if (!positions.currentContainer) {//no container found
                 if (positions.previousContainer && scope.lmddOptions.revert) {//execute once (revert)
@@ -575,7 +510,7 @@ var lmdd = (function () {
             case 'waitDragStart':
                 if ((event.type === 'mousedown') && (event.button === 0)) {//trigger timeout function to enable clicking and text selection
                     scope = this;
-                    events.last = event;
+                    lastEvent = event;
                     toggleEvent(window, 'mouseup', eventManager, false, 'onDragEnd');
                     toggleEvent(document, 'mousemove', eventManager, false, 'onDragEnd');
                     toggleEvent(document, 'scroll', eventManager, false, 'onDragEnd');
@@ -584,11 +519,13 @@ var lmdd = (function () {
                         if (status === 'dragStartTimeout') {//no events fired during the timeout
                             if ((scope.lmddOptions.handleClass) && (!event.target.classList.contains(scope.lmddOptions.handleClass))) {//not dragging with handle
                                 killEvent();
+                                return;
                             }
                             else {
-                                var target = getWrapper(event.target, 'lmdd-draggable');
+                                var target = getWrapper(event.target, scope.lmddOptions.draggableItemClass);
                                 if (!target) {//not dragging a draggable
                                     killEvent();
+                                    return;
                                 }
                                 else {
                                     if (!scope.lmddOptions.nativeScroll) {
@@ -600,21 +537,22 @@ var lmdd = (function () {
                                         target.classList.remove('lmdd-clonner');
                                         toggleClass(scope.cloned, 'no-display', true, 'onNextAppend');
                                         todo.onNextAppend.push(function () {
-                                            toggleClass(scope.cloned.cloneRef, 'no-display', false);
+                                            toggleClass(scope.cloned.cloneRef, 'no-display', false, false);
                                             toggleClass(scope.cloned.cloneRef, 'no-transition', true, 'onDragEnd');
                                             updateOriginalPosition();
                                             scope.check = false;
                                         });
                                     }
-                                    draggedElement = target;
-                                    updateOriginalPosition();
-                                    updateCurrentContainer();
-                                    updateCurrentCoordinates();
-                                    window.getSelection().removeAllRanges();//disable selection on FF and IE - JS
                                     dragOffset.x = event.clientX - target.getBoundingClientRect().left;
                                     dragOffset.y = event.clientY - target.getBoundingClientRect().top;
-                                    dragStarted();
-                                    draggedClone.addEventListener("transitionend", eventManager, false);
+                                    console.log(dragOffset)
+                                    elementManager.set(target);
+                                    // updateOriginalPosition();
+                                    // updateCurrentContainer();
+                                    // updateCurrentCoordinates();
+                                    // window.getSelection().removeAllRanges();//disable selection on FF and IE - JS
+                                    // dragStarted();
+                                    elementManager.shadow.addEventListener("transitionend", eventManager, false);
                                     if (document.body.setCapture) {
                                         document.body.setCapture(false);
                                         todo.onDragEnd.push(function () {
@@ -634,39 +572,39 @@ var lmdd = (function () {
                 killEvent();
                 break;
             case 'dragStart':
-                if ((event.type === 'mousedown')||(event.type === 'mouseup') || (event.type === 'mousemove') && (event.buttons === 0)) {//or mousemove with no buttons in case mouseup event was not fired
-                    mirror.classList.add('gf-transition');
-                    if (!draggedElement){
+                if ((event.type === 'mousedown') || (event.type === 'mouseup') || (event.type === 'mousemove') && (event.buttons === 0)) {//or mousemove with no buttons in case mouseup event was not fired
+                    elementManager.mirror.classList.add('gf-transition');
+                    if (!elementManager.dragged) {
                         killEvent();
                         return;
                     }
-                    var offset = getOffset(draggedElement, scope);
-                    mirror.style.transform = 'scale(1,1)';
-                    mirror.style.top = offset.y + 'px';
-                    mirror.style.left = offset.x + 'px';
-                    mirror.style.width = draggedElement.getBoundingClientRect().width + 'px';
-                    mirror.style.height = draggedElement.getBoundingClientRect().height + 'px';
-                    offset = getOffset(draggedElement, draggedClone);
+                    var offset = getOffset(elementManager.dragged, scope);
+                    elementManager.mirror.style.transform = 'scale(1,1)';
+                    elementManager.mirror.style.top = offset.y + 'px';
+                    elementManager.mirror.style.left = offset.x + 'px';
+                    elementManager.mirror.style.width = elementManager.dragged.getBoundingClientRect().width + 'px';
+                    elementManager.mirror.style.height = elementManager.dragged.getBoundingClientRect().height + 'px';
+                    offset = getOffset(elementManager.dragged, elementManager.shadow);
                     if (Math.abs(offset.x) + Math.abs(offset.y) > 0) {//wait for transition to finish
                         status = 'waitDragEnd';
                         todo.onTransitionEnd.push(function () {
                             killEvent();
                         });
-                        window.setTimeout(function(){
+                        window.setTimeout(function () {
                             if (status !== 'waitDragStart') {
                                 killEvent()
                             }
                             // killEvent();
-                        },1000);
+                        }, 1000);
                         return;
                     }
-                    else{
+                    else {
                         killEvent();
                         return;
                     }
                 }
                 if (event.type === 'mousemove') {
-                    events.last = event;
+                    lastEvent = event;
                     scroll.lastX = window.pageXOffset;
                     scroll.lastY = window.pageYOffset;
                     updateMirrorLocation();
@@ -678,7 +616,7 @@ var lmdd = (function () {
                 break;
             case'waitDragEnd':
                 if (event.type === 'transitionend') {
-                    if (event.propertyName === 'transform'){
+                    if (event.propertyName === 'transform') {
                         todo.executeTask('onTransitionEnd');
                     }
                 }
@@ -690,25 +628,20 @@ var lmdd = (function () {
             if (!el.lmdd) {
                 cleanNode(el);//get rid of whitespaces
                 el.lmdd = true;
-                el.lmddOptions = Object.assign({}, options, lmddOptions);//create options object
-                setLmddClasses(el);
+                el.lmddOptions = assignOptions(options, lmddOptions);//create options object
+                console.log(el.lmddOptions);
                 el.addEventListener('mousedown', eventManager, false);
                 document.addEventListener('drag', muteEvent, false);
                 document.addEventListener('dragstart', muteEvent, false);
-                window.addEventListener('touchstart',simulateMouseEvent,{passive: false});
-                window.addEventListener('touchmove',simulateMouseEvent,{passive: false});
-                window.addEventListener('touchend',simulateMouseEvent,{passive: false});
+                window.addEventListener('touchstart', simulateMouseEvent);
+                window.addEventListener('touchmove', simulateMouseEvent, {passive: false});
+                window.addEventListener('touchend', simulateMouseEvent);
             }
         },
         refresh: function (el) {
-            if (el.lmdd) {
-                unsetLmddClasses(el);
-                setLmddClasses(el);
-            }
         },
         unset: function (el) {
             if (el.lmdd) {
-                unsetLmddClasses(el);
                 el.removeEventListener('mousedown', eventManager, false);
                 el.lmdd = false;
                 delete(el.lmddOptions);
@@ -718,7 +651,7 @@ var lmdd = (function () {
             document.removeEventListener('drag', muteEvent, false);
             document.removeEventListener('dragstart', muteEvent, false);
         },
-        getStatus: function(){
+        getStatus: function () {
             return status;
         }
     };
