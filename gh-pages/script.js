@@ -2,7 +2,7 @@
  * Created by יאיר on 18/01/2017.
  */
 lmdd.set(document.getElementById('simple-example'), {
-    falseNegative:'check',
+    falseNegative: 'check',
     containerClass: 'nestable',
     fixedItemClass: false,
     draggableItemClass: 'item',
@@ -53,5 +53,3 @@ lmdd.set(document.getElementById('markup-example'), {
     revert: true,
     clone: false
 });
-
-
