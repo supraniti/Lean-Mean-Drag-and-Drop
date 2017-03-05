@@ -1,17 +1,16 @@
-///todo: wrappping it up,handle clone status,vuejs app (layoutbuilder)
 var lmdd = (function () {
     "use strict";
     var options = {//default settings
-        containerClass: false,
-        fixedItemClass: false,//fixed items will be ignored while sorting
-        draggableItemClass: false,
+        containerClass: 'lmdd-container',
+        draggableItemClass: 'lmdd-draggable',
+        fixedItemClass: false,
         handleClass: false,
-        mirrorMinHeight: 100,
-        mirrorMaxWidth: 500,
-        revert: false,
         dragstartTimeout: 50,
         calcInterval: 200,
+        revert: true,
         nativeScroll: false,
+        mirrorMinHeight: 100,
+        mirrorMaxWidth: 500,
         protectedProperties: ["padding", "padding-top", "padding-bottom", "padding-right", "padding-left", "display", "list-style-type", "line-height"],
         matchObject: false
     };
@@ -36,11 +35,11 @@ var lmdd = (function () {
             return window.pageYOffset - scrollDelta.lastY;
         }
     };
-    var dragOffset = {
+    var dragOffset = {//holds mouse pointer offset from dragged element top-left point while dragging
         x: 0,
         y: 0
     };
-    var positions = {
+    var positions = {//html element references to element position
         currentTarget: false,
         originalContainer: false,
         originalNextSibling: false,
@@ -65,7 +64,12 @@ var lmdd = (function () {
         (action) ? el.classList.add(className) : el.classList.remove(className);
         if (undo) {
             tasks[undo].push(function () {
-                (action) ? el.classList.remove(className) : el.classList.add(className)
+                if (action){
+                    el.classList.remove(className);
+                }
+                else{
+                    el.classList.add(className);
+                }
             });
         }
     }
@@ -103,17 +107,17 @@ var lmdd = (function () {
         get canScroll(){
             var mspx = this.el.scrollWidth - this.el.clientWidth, mspy = this.el.scrollHeight - this.el.clientHeight;//maximum scroll point on each axis
             return {
-                top: (this.nested) ? (this.el.scrollTop > 0) : (window.pageYOffset > 0),
-                left: (this.nested) ? (this.el.scrollLeft > 0) : (window.pageXOffset > 0),
-                bottom: (this.nested) ? (this.el.scrollTop < mspy) : (window.pageYOffset < mspy),
-                right: (this.nested) ? (this.el.scrollLeft < mspx) : (window.pageXOffset < mspx)
-            }
+                top: (this.nested) ? this.el.scrollTop > 0 : window.pageYOffset > 0,
+                left: (this.nested) ? this.el.scrollLeft > 0 : window.pageXOffset > 0,
+                bottom: (this.nested) ? this.el.scrollTop < mspy : window.pageYOffset < mspy,
+                right: (this.nested) ? this.el.scrollLeft < mspx : window.pageXOffset < mspx
+            };
         },
         get cmp(){//current mouse position relative to container
             return{
                 x: (this.nested) ? this.event.clientX - this.el.getBoundingClientRect().left : this.event.clientX,
                 y: (this.nested) ? this.event.clientY - this.el.getBoundingClientRect().top : this.event.clientY
-            }
+            };
         },
         get willScroll(){
             return{
@@ -121,7 +125,7 @@ var lmdd = (function () {
                 left: (this.cmp.x <= this.sm)&&(this.canScroll.left),
                 bottom: (this.cmp.y >= this.el.clientHeight - this.sm)&&(this.canScroll.bottom),
                 right: (this.cmp.x >= this.el.clientWidth - this.sm)&&(this.canScroll.right)
-            }
+            };
         },
         get speed(){
             return this.sm + (Math.max(0 - this.cmp.y,0 - this.cmp.x,this.cmp.y - this.el.clientHeight ,this.cmp.x - this.el.clientWidth));
@@ -197,7 +201,7 @@ var lmdd = (function () {
             }
         });
     }
-    function getOffset(el1, el2) {
+    function getOffset(el1, el2) {//get horizontal and vertical offset between two elements
         var rect1 = el1.getBoundingClientRect(),
             rect2 = el2.getBoundingClientRect();
         var borderWidth = {
@@ -209,7 +213,7 @@ var lmdd = (function () {
             y: rect1.top - rect2.top - borderWidth.top
         };
     }
-    function getWrapper(el, wrapperClass) {
+    function getWrapper(el, wrapperClass) {//get wrapper element by class name
         var path = [];
         var wrapper = false;
         for (; el && el !== document; el = el.parentNode) {
@@ -242,7 +246,22 @@ var lmdd = (function () {
         }
         eventTarget.dispatchEvent(simulatedEvent);
     }
-    function muteEvent(event) {
+    function createLmddEvent (type){//custom app event
+        var event = new CustomEvent(type, {
+            "bubbles": true,
+            "detail": {
+                "dragType": (cloning) ? "clone" : "move",
+                "draggedElement": dragged,
+                "originalContainer": positions.originalContainer,
+                "originalNextSibling": positions.originalNextSibling,
+                "container": dragged.parentNode,
+                "nextSibling": dragged.nextSibling,
+                "positioned": positioned
+            }
+        });
+        scope.dispatchEvent(event);
+    }
+    function muteEvent(event) {//mute unwanted events
         event.preventDefault();
         event.stopPropagation();
         return false;
@@ -336,8 +355,8 @@ var lmdd = (function () {
                 toggleClass(clone.cloneRef, "no-display", false, false);
                 toggleClass(clone.cloneRef, "no-transition", true, false);
                 updateOriginalPosition();
-                positioned = true;
             }
+            positioned = true;
         }
         else if (scope.lmddOptions.revert) {
             positions.originalContainer.insertBefore(dragged, positions.originalNextSibling);
@@ -418,7 +437,7 @@ var lmdd = (function () {
         mirror.style.left = (lastEvent.pageX - parseInt(mirror.parentNode.style.left, 10) + scrollDelta.x - dragOffset.x) + "px";
     }
     //main
-    function eventManager(event) {
+    function eventManager(event) {//handle events lifecycle and app status
         switch (status) {
             case "waitDragStart":
                 if ((event.type === "mousedown") && (event.button === 0)) {//trigger timeout function to enable clicking and text selection
@@ -455,6 +474,7 @@ var lmdd = (function () {
                                 }
                             }
                             status = "dragStart";
+                            createLmddEvent ("lmddstart");
                             scrollManager.active = true;
                         }
                     }, scope.lmddOptions.dragstartTimeout);
@@ -564,7 +584,7 @@ var lmdd = (function () {
         updateMirrorLocation();
         toggleClass(scope, "hidden-layer", true, "onDragEnd");
         toggleClass(scope.cloneRef, "visible-layer", true, false);
-    };
+    }
     function eventTicker() {//interval function for updating and handling mouse movements while dragging
         if (!scope.lmddOptions.nativeScroll) {
             scrollManager.updateEvent(lastEvent);
@@ -593,32 +613,23 @@ var lmdd = (function () {
             }
         }
     }
-    function killEvent() {
+    function killEvent() {//end current drag event
         clearInterval(calcInterval);
-        scrollManager.active = false;
         calcInterval = null;
+        scrollManager.active = false;
         if (cloning && !positioned){
             clone.classList.remove("no-display");
             dragged.parentNode.removeChild(dragged);
         }
-        positioned = false;
-        cloning = false;
         tasks.executeTask("onDragEnd");
         if (status !== "dragStartTimeout") {
-            var event = new CustomEvent("lmddend", {
-                "detail": {
-                    "draggedElement": dragged,
-                    "originalContainer": positions.originalContainer,
-                    "originalNextSibling": positions.originalNextSibling,
-                    "currentContainer": dragged.parentNode,
-                    "currentNextSibling": dragged.nextSibling
-                }
-            });
-            scope.dispatchEvent(event);
+            createLmddEvent ("lmddend");
         }
+        positioned = false;
+        cloning = false;
         status = "waitDragStart";
     }
-    return {
+    return {//exposed methods
         set: function (el, lmddOptions) {
             if (!el.lmdd) {
                 cleanNode(el);//get rid of whitespaces

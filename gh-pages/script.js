@@ -20,7 +20,7 @@ lmdd.set(document.getElementById('first-example'), {
     regulateMouseOver: false,
     mirrorMinHeight: 100,
     mirrorMaxWidth: 500,
-    revert: true,
+    revert: false,
     clone: false
 });
 lmdd.set(document.getElementById('clone-example'), {
@@ -53,3 +53,11 @@ lmdd.set(document.getElementById('markup-example'), {
     revert: true,
     clone: false
 });
+var message = document.getElementById('message');
+document.addEventListener('lmddend',updateMessage,false);
+document.addEventListener('lmddstart',updateMessage,false);
+function updateMessage(event){
+    var paragraph = document.createElement('p');
+    paragraph.appendChild(document.createTextNode(event.type + ' , ' + JSON.stringify(event.detail, null, 2)))
+    message.appendChild(paragraph);
+}
