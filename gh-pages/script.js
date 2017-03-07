@@ -21,7 +21,8 @@ lmdd.set(document.getElementById('first-example'), {
     mirrorMinHeight: 100,
     mirrorMaxWidth: 500,
     revert: false,
-    clone: false
+    clone: false,
+    dataMode:true
 });
 lmdd.set(document.getElementById('clone-example'), {
     containerClass: 'nestable',
@@ -53,11 +54,7 @@ lmdd.set(document.getElementById('markup-example'), {
     revert: true,
     clone: false
 });
-var message = document.getElementById('message');
-document.addEventListener('lmddend',updateMessage,false);
-document.addEventListener('lmddstart',updateMessage,false);
-function updateMessage(event){
-    var paragraph = document.createElement('p');
-    paragraph.appendChild(document.createTextNode(event.type + ' , ' + JSON.stringify(event.detail, null, 2)))
-    message.appendChild(paragraph);
+document.addEventListener('lmddend',handleDrag,false);
+function handleDrag(event){
+    console.log(event.detail);
 }

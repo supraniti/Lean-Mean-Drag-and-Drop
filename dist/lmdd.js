@@ -12,7 +12,8 @@ var lmdd = (function () {
         mirrorMinHeight: 100,
         mirrorMaxWidth: 500,
         protectedProperties: ["padding", "padding-top", "padding-bottom", "padding-right", "padding-left", "display", "list-style-type", "line-height"],
-        matchObject: false
+        matchObject: false,
+        dataMode: false
     };
     var scope = null;//html element in which the current drag event occurs
     var dragged = null;//the dragged element
@@ -43,7 +44,9 @@ var lmdd = (function () {
         currentTarget: false,
         originalContainer: false,
         originalNextSibling: false,
+        originalIndex:false,
         currentContainer: false,
+        currentIndex: false,
         previousContainer: false,
         currentCoordinates: false,
         currentPosition: false,
@@ -191,15 +194,26 @@ var lmdd = (function () {
         });
         return target;
     }
-    function cleanNode(el) {//clean empty nodes
-        Array.prototype.forEach.call(el.childNodes, function (node) {
-            if (node.nodeType === 8 || (node.nodeType === 3 && !(/\S/).test(node.nodeValue))) {
-                el.removeChild(node);
+    function clean(node)//todo:reference code source
+    {
+        for(var n = 0; n < node.childNodes.length; n ++)
+        {
+            var child = node.childNodes[n];
+            if
+            (
+                child.nodeType === 8
+                ||
+                (child.nodeType === 3 && !/\S/.test(child.nodeValue))
+            )
+            {
+                node.removeChild(child);
+                n --;
             }
-            else if (node.nodeType === 1) {
-                cleanNode(node);
+            else if(child.nodeType === 1)
+            {
+                clean(child);
             }
-        });
+        }
     }
     function getOffset(el1, el2) {//get horizontal and vertical offset between two elements
         var rect1 = el1.getBoundingClientRect(),
@@ -252,14 +266,17 @@ var lmdd = (function () {
             "detail": {
                 "dragType": (cloning) ? "clone" : "move",
                 "draggedElement": dragged,
-                "originalContainer": positions.originalContainer,
-                "originalNextSibling": positions.originalNextSibling,
-                "container": dragged.parentNode,
-                "nextSibling": dragged.nextSibling,
-                "positioned": positioned
+                "from":{
+                    "container": positions.originalContainer,
+                    "index": positions.originalIndex
+                },
+                "to":{
+                    "container": positions.currentContainer,
+                    "index": positions.currentIndex
+                }
             }
         });
-        scope.dispatchEvent(event);
+        return event;
     }
     function muteEvent(event) {//mute unwanted events
         event.preventDefault();
@@ -322,6 +339,7 @@ var lmdd = (function () {
     function updateOriginalPosition() {
         positions.originalContainer = dragged.parentNode;
         positions.originalNextSibling = dragged.nextSibling;
+        positions.originalIndex = Array.prototype.indexOf.call(dragged.parentNode.childNodes, dragged)
     }
     function updateCurrentContainer() {
         positions.previousContainer = positions.currentContainer;
@@ -350,6 +368,7 @@ var lmdd = (function () {
     function appendDraggedElement() {
         if ((positions.currentContainer) && (acceptDrop(positions.currentContainer, dragged))) {
             positions.currentContainer.insertBefore(dragged, positions.currentContainer.childNodes[positions.currentPosition]);
+            positions.currentIndex = Array.prototype.indexOf.call(dragged.parentNode.childNodes, dragged);
             if (cloning && !positioned){
                 clone.classList.remove("no-display");
                 toggleClass(clone.cloneRef, "no-display", false, false);
@@ -360,6 +379,7 @@ var lmdd = (function () {
         }
         else if (scope.lmddOptions.revert) {
             positions.originalContainer.insertBefore(dragged, positions.originalNextSibling);
+            positions.currentIndex = positions.originalIndex;
         }
         updateCurrentCoordinates();
         animateElement(scope);
@@ -474,7 +494,7 @@ var lmdd = (function () {
                                 }
                             }
                             status = "dragStart";
-                            createLmddEvent ("lmddstart");
+                            scope.dispatchEvent(createLmddEvent ("lmddstart"));
                             scrollManager.active = true;
                         }
                     }, scope.lmddOptions.dragstartTimeout);
@@ -506,7 +526,6 @@ var lmdd = (function () {
                             if (status !== "waitDragStart") {
                                 killEvent()
                             }
-                            // killEvent();
                         }, 1000);
                         return;
                     }
@@ -622,8 +641,20 @@ var lmdd = (function () {
             dragged.parentNode.removeChild(dragged);
         }
         tasks.executeTask("onDragEnd");
-        if (status !== "dragStartTimeout") {
-            createLmddEvent ("lmddend");
+        // if (status !== "dragStartTimeout") {
+        if (positioned) {
+            var event = createLmddEvent ("lmddend");
+            scope.dispatchEvent(event);
+        }
+        if (scope.lmddOptions.dataMode){//undo DOM mutations
+            if (positioned){
+                if (cloning){
+                    dragged.parentNode.removeChild(dragged);
+                }
+                else{
+                    positions.originalContainer.insertBefore(dragged,positions.originalNextSibling);
+                }
+            }
         }
         positioned = false;
         cloning = false;
@@ -632,7 +663,7 @@ var lmdd = (function () {
     return {//exposed methods
         set: function (el, lmddOptions) {
             if (!el.lmdd) {
-                cleanNode(el);//get rid of whitespaces
+                clean(document.body);//get rid of whitespaces
                 el.lmdd = true;
                 el.lmddOptions = assignOptions(options, lmddOptions);//create options object
                 el.addEventListener("mousedown", eventManager, false);
