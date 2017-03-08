@@ -37,7 +37,7 @@
     opacity:0.5;
 }
 .no-display{
-    display:none;
+    display:none !important;
 }
 .no-transition, .no-transition *{
     transition:none !important;

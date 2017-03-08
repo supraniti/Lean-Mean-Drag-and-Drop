@@ -265,7 +265,7 @@ var lmdd = (function () {
             "bubbles": true,
             "detail": {
                 "dragType": (cloning) ? "clone" : "move",
-                "draggedElement": dragged,
+                "draggedElement": (cloning) ? clone.elref : dragged,
                 "from":{
                     "container": positions.originalContainer,
                     "index": positions.originalIndex
@@ -336,10 +336,10 @@ var lmdd = (function () {
         }
         return coordinates[position].index;
     }
-    function updateOriginalPosition() {
-        positions.originalContainer = dragged.parentNode;
-        positions.originalNextSibling = dragged.nextSibling;
-        positions.originalIndex = Array.prototype.indexOf.call(dragged.parentNode.childNodes, dragged)
+    function updateOriginalPosition(el) {
+        positions.originalContainer = el.parentNode;
+        positions.originalNextSibling = el.nextSibling;
+        positions.originalIndex = Array.prototype.indexOf.call(el.parentNode.childNodes, el)
     }
     function updateCurrentContainer() {
         positions.previousContainer = positions.currentContainer;
@@ -370,10 +370,10 @@ var lmdd = (function () {
             positions.currentContainer.insertBefore(dragged, positions.currentContainer.childNodes[positions.currentPosition]);
             positions.currentIndex = Array.prototype.indexOf.call(dragged.parentNode.childNodes, dragged);
             if (cloning && !positioned){
-                clone.classList.remove("no-display");
-                toggleClass(clone.cloneRef, "no-display", false, false);
-                toggleClass(clone.cloneRef, "no-transition", true, false);
-                updateOriginalPosition();
+                clone.elref.classList.remove("no-display");
+                clone.elref.cloneRef.classList.remove("no-display");
+                clone.elref.cloneRef.classList.add("no-transition");
+                updateOriginalPosition(dragged);
             }
             positioned = true;
         }
@@ -561,11 +561,12 @@ var lmdd = (function () {
         if (el.classList.contains("lmdd-clonner")) {//clone the target
             cloning = true;
             clone = el.parentNode.insertBefore(el.cloneNode(true), el);
-            el.classList.remove("lmdd-clonner");//prevent the clone from acting as a clonner
-            clone.classList.add("no-display");//hide the cloned target until the original target will be positioned
+            clone.classList.remove("lmdd-clonner");//prevent the clone from acting as a clonner
+            el.classList.add("no-display");//hide the cloned target until the original target will be positioned
+            clone.elref = el;//create a reference to the original clonner
         }
         createReference(scope);//create a clone reference for every element on scope
-        dragged = el;
+        dragged = (cloning) ? clone : el;
         shadow = dragged.cloneRef;
         var cStyle = (window.getComputedStyle) ? window.getComputedStyle(dragged, null) : dragged.currentStyle;
         scope.lmddOptions.protectedProperties.forEach(function (prop) {
@@ -575,7 +576,7 @@ var lmdd = (function () {
         toggleClass(dragged, "lmdd-hidden", true, "onDragEnd");
         shadow.classList.add("lmdd-shadow");
         mirror.classList.add("lmdd-mirror");
-        updateOriginalPosition();
+        updateOriginalPosition(dragged);
         updateCurrentContainer();
         updateCurrentCoordinates();
         window.getSelection().removeAllRanges();//disable text selection on FF and IE - JS
@@ -636,24 +637,24 @@ var lmdd = (function () {
         clearInterval(calcInterval);
         calcInterval = null;
         scrollManager.active = false;
-        if (cloning && !positioned){
-            clone.classList.remove("no-display");
-            dragged.parentNode.removeChild(dragged);
+        if (cloning && !positioned) {
+            clone.elref.classList.remove("no-display");
+            clone.parentNode.removeChild(clone);
+        }
+        if (cloning){
+            updateOriginalPosition(clone.elref)
         }
         tasks.executeTask("onDragEnd");
-        // if (status !== "dragStartTimeout") {
         if (positioned) {
             var event = createLmddEvent ("lmddend");
             scope.dispatchEvent(event);
         }
         if (scope.lmddOptions.dataMode){//undo DOM mutations
-            if (positioned){
-                if (cloning){
-                    dragged.parentNode.removeChild(dragged);
-                }
-                else{
-                    positions.originalContainer.insertBefore(dragged,positions.originalNextSibling);
-                }
+            if (positioned && cloning) {
+                dragged.parentNode.removeChild(dragged);
+            }
+            else if (positioned){
+                positions.originalContainer.insertBefore(dragged,positions.originalNextSibling);
             }
         }
         positioned = false;
@@ -663,7 +664,7 @@ var lmdd = (function () {
     return {//exposed methods
         set: function (el, lmddOptions) {
             if (!el.lmdd) {
-                clean(document.body);//get rid of whitespaces
+                clean(el);//get rid of whitespaces
                 el.lmdd = true;
                 el.lmddOptions = assignOptions(options, lmddOptions);//create options object
                 el.addEventListener("mousedown", eventManager, false);
