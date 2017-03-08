@@ -1,3 +1,28 @@
+.rectangle p{
+    position:relative;
+    top:50%;
+    left:50%;
+}
+.img-item{
+    margin:16px;
+    height:64px;
+    width:64px;
+    border:none !important;
+    cursor:move;
+}
+.img-grid{
+    min-height:80px;
+    width:100%;
+    display: flex;
+    flex-flow:row wrap;
+    margin-top:15px;
+    margin-bottom:15px;
+}
+.img-grid .title{
+    width:100%;
+    padding:5px;
+
+}
 #message{
     font-size:10px;
 }

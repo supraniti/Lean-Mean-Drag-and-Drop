@@ -2,15 +2,8 @@
  * Created by יאיר on 18/01/2017.
  */
 lmdd.set(document.getElementById('simple-example'), {
-    falseNegative: 'check',
     containerClass: 'nestable',
-    fixedItemClass: false,
-    draggableItemClass: 'item',
-    handleClass: false,
-    regulateMouseOver: false,
-    mirrorMaxHeight: 100,
-    revert: true,
-    clone: false
+    draggableItemClass: 'rectangle'
 });
 lmdd.set(document.getElementById('first-example'), {
     containerClass: 'example-container',
@@ -26,7 +19,6 @@ lmdd.set(document.getElementById('first-example'), {
 });
 lmdd.set(document.getElementById('clone-example'), {
     containerClass: 'nestable',
-    fixedItemClass: false,
     draggableItemClass: 'item',
     handleClass: false,
     regulateMouseOver: false,
@@ -53,6 +45,24 @@ lmdd.set(document.getElementById('markup-example'), {
     mirrorMinHeight: 100,
     revert: true,
     clone: false
+});
+lmdd.set(document.getElementById('match-example'), {
+    containerClass: 'img-grid',
+    fixedItemClass: false,
+    draggableItemClass: 'img-item',
+    handleClass: false,
+    revert: true,
+    matchObject: {
+        "default":true,
+        "yellow":{
+            "default": true,
+            "yellow": true
+        },
+        "red":{
+            "default": false,
+            "red": true
+        }
+    }
 });
 document.addEventListener('lmddend',handleDrag,false);
 function handleDrag(event){

@@ -97,8 +97,20 @@ var lmdd = (function () {
             right:false
         },
         getScrollContainer : function (el) {
-            if (document.body.contains(el)) {
-                return ((el.scrollWidth > el.clientWidth && el.clientWidth > 0) || (el.scrollHeight > el.clientHeight && el.clientHeight > 0)) ? el : this.getScrollContainer(el.parentNode);
+            if (document.body.contains(el) && document.body !== el) {
+                var y1 = el.scrollTop;
+                el.scrollTop+=1;
+                var y2 = el.scrollTop;
+                el.scrollTop-=1;
+                var y3 = el.scrollTop;
+                el.scrollTop = y1;
+                var x1 = el.scrollLeft;
+                el.scrollTop+=1;
+                var x2 = el.scrollLeft;
+                el.scrollTop-=1;
+                var x3 = el.scrollLeft;
+                el.scrollLeft = x1;
+                return (y1 === y2 && y2 === y3 && x1 === x2 && x2 === x3) ? this.getScrollContainer(el.parentNode): el;
             }
             return document.documentElement;
         },
