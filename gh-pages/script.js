@@ -46,6 +46,10 @@ lmdd.set(document.getElementById('markup-example'), {
     revert: true,
     clone: false
 });
+lmdd.set(document.getElementById('simple-grid-example'), {
+    containerClass: 'simple-grid',
+    draggableItemClass: 'grid-item'
+});
 lmdd.set(document.getElementById('match-example'), {
     containerClass: 'img-grid',
     fixedItemClass: false,
@@ -64,7 +68,16 @@ lmdd.set(document.getElementById('match-example'), {
         }
     }
 });
+lmdd.set(document.getElementById('nested-example'), {
+    containerClass: 'nestable',
+    draggableItemClass: 'nested-item'
+});
+lmdd.set(document.getElementById('nested-tree-example'), {
+    containerClass: 'nestable-ul',
+    draggableItemClass: 'nested-li'
+});
 document.addEventListener('lmddend',handleDrag,false);
 function handleDrag(event){
     console.log(event.detail);
 }
+

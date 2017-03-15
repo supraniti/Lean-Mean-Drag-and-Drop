@@ -44,7 +44,7 @@ var lmdd = (function () {
         currentTarget: false,
         originalContainer: false,
         originalNextSibling: false,
-        originalIndex:false,
+        originalIndex: false,
         currentContainer: false,
         currentIndex: false,
         previousContainer: false,
@@ -67,10 +67,10 @@ var lmdd = (function () {
         (action) ? el.classList.add(className) : el.classList.remove(className);
         if (undo) {
             tasks[undo].push(function () {
-                if (action){
+                if (action) {
                     el.classList.remove(className);
                 }
-                else{
+                else {
                     el.classList.add(className);
                 }
             });
@@ -85,117 +85,56 @@ var lmdd = (function () {
     //scroll controller for replacing the native scroll behaviour
     var scrollManager = {
         event: null,
-        active:true,
-        refTarget: false,
+        active: true,
         sm: 20,//scroll margin
         el: document.documentElement,//scroll scope
-        nested: false,//true when scrolling an element, false when scrolling the window
-        scrollInvoked:{
-            top:false,
-            left:false,
-            bottom:false,
-            right:false
+        scrollInvoked: {
+            top: false,
+            left: false,
+            bottom: false,
+            right: false
         },
-        getScrollContainer : function (el) {
-            if (document.body.contains(el) && document.body !== el) {
-                var y1 = el.scrollTop;
-                el.scrollTop+=1;
-                var y2 = el.scrollTop;
-                el.scrollTop-=1;
-                var y3 = el.scrollTop;
-                el.scrollTop = y1;
-                var x1 = el.scrollLeft;
-                el.scrollTop+=1;
-                var x2 = el.scrollLeft;
-                el.scrollTop-=1;
-                var x3 = el.scrollLeft;
-                el.scrollLeft = x1;
-                return (y1 === y2 && y2 === y3 && x1 === x2 && x2 === x3) ? this.getScrollContainer(el.parentNode): el;
-            }
-            return document.documentElement;
-        },
-        targetUpdated: function () {
-            this.refTarget = this.event.target;
-            this.el = this.getScrollContainer(this.event.target);
-            this.nested = (this.el !== document.documentElement);
-        },
-        get canScroll(){
-            var mspx = this.el.scrollWidth - this.el.clientWidth, mspy = this.el.scrollHeight - this.el.clientHeight;//maximum scroll point on each axis
+        get willScroll() {
             return {
-                top: (this.nested) ? this.el.scrollTop > 0 : window.pageYOffset > 0,
-                left: (this.nested) ? this.el.scrollLeft > 0 : window.pageXOffset > 0,
-                bottom: (this.nested) ? this.el.scrollTop < mspy : window.pageYOffset < mspy,
-                right: (this.nested) ? this.el.scrollLeft < mspx : window.pageXOffset < mspx
+                top: (this.event.clientY <= this.sm) && (window.pageYOffset > 0),
+                left: (this.event.clientX <= this.sm) && (window.pageXOffset > 0),
+                bottom: (this.event.clientY >= this.el.clientHeight - this.sm) && (window.pageYOffset < this.el.scrollHeight - this.el.clientHeight),
+                right: (this.event.clientX >= this.el.clientWidth - this.sm) && (window.pageXOffset < this.el.scrollWidth - this.el.clientWidth)
             };
         },
-        get cmp(){//current mouse position relative to container
-            return{
-                x: (this.nested) ? this.event.clientX - this.el.getBoundingClientRect().left : this.event.clientX,
-                y: (this.nested) ? this.event.clientY - this.el.getBoundingClientRect().top : this.event.clientY
-            };
-        },
-        get willScroll(){
-            return{
-                top: (this.cmp.y <= this.sm)&&(this.canScroll.top),
-                left: (this.cmp.x <= this.sm)&&(this.canScroll.left),
-                bottom: (this.cmp.y >= this.el.clientHeight - this.sm)&&(this.canScroll.bottom),
-                right: (this.cmp.x >= this.el.clientWidth - this.sm)&&(this.canScroll.right)
-            };
-        },
-        get speed(){
-            return this.sm + (Math.max(0 - this.cmp.y,0 - this.cmp.x,this.cmp.y - this.el.clientHeight ,this.cmp.x - this.el.clientWidth));
+        get speed() {
+            return Math.max(0, this.sm + (Math.max(0 - this.event.clientY, 0 - this.event.clientX, this.event.clientY - this.el.clientHeight, this.event.clientX - this.el.clientWidth)));
         },
         updateEvent: function (e) {
             this.event = e;
-            if (e.target !== this.refTarget) {
-                this.targetUpdated();
-            }
-            for (var key in this.willScroll){
-                if ((this.willScroll[key])&&(!this.scrollInvoked[key])){
+            for (var key in this.willScroll) {
+                if ((this.willScroll[key]) && (!this.scrollInvoked[key])) {
                     this.move(key);
                 }
             }
         },
-        move:function(key){
+        move: function (key) {
             var self = this;
-            this.scrollInvoked[key] = window.setInterval(function(){
-                if (self.nested) {
-                    switch (key) {
-                        case "top":
-                            self.el.scrollTop -= self.speed;
-                            break;
-                        case "left":
-                            self.el.scrollLeft -= self.speed;
-                            break;
-                        case "bottom":
-                            self.el.scrollTop += self.speed;
-                            break;
-                        case"right":
-                            self.el.scrollLeft += self.speed;
-                            break;
-                    }
+            this.scrollInvoked[key] = window.setInterval(function () {
+                switch (key) {
+                    case "top":
+                        window.scrollTo(window.pageXOffset, window.pageYOffset - self.speed);
+                        break;
+                    case "left":
+                        window.scrollTo(window.pageXOffset - self.speed, window.pageYOffset);
+                        break;
+                    case "bottom":
+                        window.scrollTo(window.pageXOffset, window.pageYOffset + self.speed);
+                        break;
+                    case"right":
+                        window.scrollTo(window.pageXOffset + self.speed, window.pageYOffset);
+                        break;
                 }
-                else {
-                    switch (key) {
-                        case "top":
-                            window.scrollTo(window.pageXOffset, window.pageYOffset - self.speed);
-                            break;
-                        case "left":
-                            window.scrollTo(window.pageXOffset - self.speed, window.pageYOffset);
-                            break;
-                        case "bottom":
-                            window.scrollTo(window.pageXOffset, window.pageYOffset + self.speed);
-                            break;
-                        case"right":
-                            window.scrollTo(window.pageXOffset + self.speed, window.pageYOffset);
-                            break;
-                    }
-                }
-                if ((!self.willScroll[key])||(!self.active)){
+                if ((!self.willScroll[key]) || (!self.active)) {
                     clearInterval(self.scrollInvoked[key]);
-                    self.scrollInvoked[key]=false;
+                    self.scrollInvoked[key] = false;
                 }
-            },16);
+            }, 16);
         }
     };
     //helper functions
@@ -206,28 +145,32 @@ var lmdd = (function () {
         });
         return target;
     }
-    function clean(node)//todo:reference code source
-    {
-        for(var n = 0; n < node.childNodes.length; n ++)
-        {
+    function clean(node) {
+        for (var n = 0; n < node.childNodes.length; n++) {
             var child = node.childNodes[n];
             if
             (
                 child.nodeType === 8
                 ||
                 (child.nodeType === 3 && !/\S/.test(child.nodeValue))
-            )
-            {
+            ) {
                 node.removeChild(child);
-                n --;
+                n--;
             }
-            else if(child.nodeType === 1)
-            {
+            else if (child.nodeType === 1) {
                 clean(child);
             }
         }
     }
     function getOffset(el1, el2) {//get horizontal and vertical offset between two elements
+        var style1 = window.getComputedStyle ? getComputedStyle(el1, null) : el1.currentStyle;
+        var style2 = window.getComputedStyle ? getComputedStyle(el2, null) : el2.currentStyle;
+        var style3 = window.getComputedStyle ? getComputedStyle(shadow, null) : shadow.currentStyle;
+        var style4 = window.getComputedStyle ? getComputedStyle(shadow.parentNode, null) : shadow.parentNode.currentStyle;
+        var mpbx = parseInt(style2.borderLeftWidth, 10) + parseInt(style2.paddingLeft, 10) + parseInt(style1.marginLeft, 10);
+        var mpby = parseInt(style2.borderTopWidth, 10) + parseInt(style2.paddingTop, 10) + parseInt(style1.marginTop, 10);
+        var mpbx2 = parseInt(style4.borderLeftWidth, 10) + parseInt(style4.paddingLeft, 10) + parseInt(style3.marginLeft, 10);
+        var mpby2 = parseInt(style4.borderTopWidth, 10) + parseInt(style4.paddingTop, 10) + parseInt(style3.marginTop, 10);
         var rect1 = el1.getBoundingClientRect(),
             rect2 = el2.getBoundingClientRect();
         var borderWidth = {
@@ -236,7 +179,13 @@ var lmdd = (function () {
         };
         return {
             x: rect1.left - rect2.left - borderWidth.left,
-            y: rect1.top - rect2.top - borderWidth.top
+            y: rect1.top - rect2.top - borderWidth.top,
+            xt: rect1.left - rect2.left,
+            yt: rect1.top - rect2.top,
+            x0: rect1.left - rect2.left - mpbx,
+            y0: rect1.top - rect2.top - mpby,
+            x1: rect1.left - rect2.left - mpbx2,
+            y1: rect1.top - rect2.top - mpby2
         };
     }
     function getWrapper(el, wrapperClass) {//get wrapper element by class name
@@ -272,17 +221,17 @@ var lmdd = (function () {
         }
         eventTarget.dispatchEvent(simulatedEvent);
     }
-    function createLmddEvent (type){//custom app event
+    function createLmddEvent(type) {//custom app event
         var event = new CustomEvent(type, {
             "bubbles": true,
             "detail": {
                 "dragType": (cloning) ? "clone" : "move",
                 "draggedElement": (cloning) ? clone.elref : dragged,
-                "from":{
+                "from": {
                     "container": positions.originalContainer,
                     "index": positions.originalIndex
                 },
-                "to":{
+                "to": {
                     "container": positions.currentContainer,
                     "index": positions.currentIndex
                 }
@@ -302,7 +251,7 @@ var lmdd = (function () {
             if (node.nodeType === 1) {
                 var coordinate = node.getBoundingClientRect();
                 coordinate.index = index;
-                if (!node.classList.contains("fixed")) {
+                if (node.classList.contains(scope.lmddOptions.draggableItemClass)) {
                     coordinates.push(coordinate);
                 }
             }
@@ -381,7 +330,7 @@ var lmdd = (function () {
         if ((positions.currentContainer) && (acceptDrop(positions.currentContainer, dragged))) {
             positions.currentContainer.insertBefore(dragged, positions.currentContainer.childNodes[positions.currentPosition]);
             positions.currentIndex = Array.prototype.indexOf.call(dragged.parentNode.childNodes, dragged);
-            if (cloning && !positioned){
+            if (cloning && !positioned) {
                 clone.elref.classList.remove("no-display");
                 clone.elref.cloneRef.classList.remove("no-display");
                 clone.elref.cloneRef.classList.add("no-transition");
@@ -394,7 +343,7 @@ var lmdd = (function () {
             positions.currentIndex = positions.originalIndex;
         }
         updateCurrentCoordinates();
-        animateElement(scope);
+        animate(scope);
     }
     function acceptDrop(container, item) {
         if (item.contains(container)) {
@@ -434,34 +383,40 @@ var lmdd = (function () {
             deleteReference(node);
         });
     }
-    function animateElement(el) {
-        if (el.nodeType === 1) {
-            animateNode(el);
-            if (el.classList.contains(scope.lmddOptions.containerClass) || (el === scope)) {
-                if (el !== dragged) {
-                    el.cloneRef.style.display = "block";
-                    el.cloneRef.style.padding = 0;
-                    Array.prototype.forEach.call(el.childNodes, function (node) {
-                        animateElement(node);
-                    });
+    function animate(el) {
+        animateNode(el);
+        if (!el.classList.contains('lmdd-block')) {
+            Array.prototype.forEach.call(el.childNodes, function (node) {
+                if (node.nodeType === 1) {
+                    animate(node);
                 }
-            }
+                else if ((node.cloneRef.parentNode.childNodes.length > 1) && (!node.cloneRef.wrapper)) {
+                    var wrapper = document.createElement('div');
+                    node.cloneRef.parentNode.insertBefore(wrapper, node.cloneRef);
+                    wrapper.appendChild(node.cloneRef);
+                    node.cloneRef = wrapper;
+                    wrapper.style.position = 'absolute';
+                    var range = document.createRange();
+                    range.selectNode(node);
+                    wrapper.style.top = range.getClientRects()[0].top - wrapper.parentNode.getBoundingClientRect().top + 'px';
+                    wrapper.wrapper = true;
+                }
+            })
         }
     }
     function animateNode(elNode) {
         var cloneNode = elNode.cloneRef;
         var elRect = elNode.getBoundingClientRect();
-        var offset;
         cloneNode.style.position = "absolute";
         cloneNode.style.width = (elRect.width) + "px";
         cloneNode.style.height = (elRect.height) + "px";
-        cloneNode.style.margin = 0;
+        cloneNode.style.display = "block";
         if (elNode === scope) {
             cloneNode.style.top = elRect.top + window.pageYOffset + "px";
             cloneNode.style.left = elRect.left + window.pageXOffset + "px";
         } else {
-            offset = (elNode === dragged) ? getOffset(elNode, scope) : getOffset(elNode, elNode.parentNode);
-            cloneNode.style.transform = "translate3d(" + offset.x + "px, " + offset.y + "px,0px)";
+            var offset = (elNode === dragged) ? getOffset(elNode, positions.originalContainer) : getOffset(elNode, elNode.parentNode);
+            cloneNode.style.transform = (elNode === dragged) ? "translate3d(" + offset.x1 + "px, " + offset.y1 + "px,0px)" : "translate3d(" + offset.x0 + "px, " + offset.y0 + "px,0px)";
         }
     }
     function updateMirrorLocation() {
@@ -505,8 +460,11 @@ var lmdd = (function () {
                                     calcInterval = window.setInterval(eventTicker, scope.lmddOptions.calcInterval);//calculation interval for mouse movement
                                 }
                             }
+                            if (!scope.lmddOptions.nativeScroll) {//disable native scrolling on mouse down
+                                event.preventDefault();
+                            }
                             status = "dragStart";
-                            scope.dispatchEvent(createLmddEvent ("lmddstart"));
+                            scope.dispatchEvent(createLmddEvent("lmddstart"));
                             scrollManager.active = true;
                         }
                     }, scope.lmddOptions.dragstartTimeout);
@@ -523,13 +481,13 @@ var lmdd = (function () {
                         return;
                     }
                     var offset = getOffset(dragged, scope);
+                    mirror.style.width = dragged.getBoundingClientRect().width + "px";
+                    mirror.style.height = dragged.getBoundingClientRect().height + "px";
                     mirror.style.transform = "scale(1,1)";
                     mirror.style.top = offset.y + "px";
                     mirror.style.left = offset.x + "px";
-                    mirror.style.width = dragged.getBoundingClientRect().width + "px";
-                    mirror.style.height = dragged.getBoundingClientRect().height + "px";
                     offset = getOffset(dragged, shadow);
-                    if (Math.abs(offset.x) + Math.abs(offset.y) > 0) {//wait for transition to finish
+                    if (Math.abs(offset.xt) + Math.abs(offset.yt) > 1) {//wait for transition to finish
                         status = "waitDragEnd";
                         tasks.onTransitionEnd.push(function () {
                             killEvent();
@@ -569,7 +527,7 @@ var lmdd = (function () {
                 break;
         }
     }
-    function setElements (el) {//set animated and cloned elements
+    function setElements(el) {//set animated and cloned elements
         if (el.classList.contains("lmdd-clonner")) {//clone the target
             cloning = true;
             clone = el.parentNode.insertBefore(el.cloneNode(true), el);
@@ -580,14 +538,14 @@ var lmdd = (function () {
         createReference(scope);//create a clone reference for every element on scope
         dragged = (cloning) ? clone : el;
         shadow = dragged.cloneRef;
-        var cStyle = (window.getComputedStyle) ? window.getComputedStyle(dragged, null) : dragged.currentStyle;
-        scope.lmddOptions.protectedProperties.forEach(function (prop) {
-            shadow.style[prop] = cStyle[prop];
-        });
         mirror = shadow.cloneNode(true);
+        if (mirror.tagName === 'LI') {
+            var wrapper = document.createElement('ul');
+            wrapper.appendChild(mirror);
+            mirror = wrapper;
+        }
         toggleClass(dragged, "lmdd-hidden", true, "onDragEnd");
         shadow.classList.add("lmdd-shadow");
-        mirror.classList.add("lmdd-mirror");
         updateOriginalPosition(dragged);
         updateCurrentContainer();
         updateCurrentCoordinates();
@@ -599,8 +557,13 @@ var lmdd = (function () {
             deleteReference(scope);
         });
         shadow.addEventListener("transitionend", eventManager, false);
-        scope.cloneRef.appendChild(shadow);//insert the shadow into the dom
-        animateElement(scope);//take care of positioning
+        var temp = shadow;
+        while (scope.cloneRef.contains(temp)) {
+            temp.style.zIndex = 0;
+            temp = temp.parentNode;
+        }
+        animate(scope);
+        mirror.classList.add("lmdd-mirror");
         mirror.style.width = shadow.getBoundingClientRect().width + "px";
         mirror.style.height = shadow.getBoundingClientRect().height + "px";
         var scaleX = scope.lmddOptions.mirrorMaxWidth / shadow.getBoundingClientRect().width;
@@ -653,20 +616,20 @@ var lmdd = (function () {
             clone.elref.classList.remove("no-display");
             clone.parentNode.removeChild(clone);
         }
-        if (cloning){
+        if (cloning) {
             updateOriginalPosition(clone.elref)
         }
         tasks.executeTask("onDragEnd");
         if (positioned) {
-            var event = createLmddEvent ("lmddend");
+            var event = createLmddEvent("lmddend");
             scope.dispatchEvent(event);
         }
-        if (scope.lmddOptions.dataMode){//undo DOM mutations
+        if (scope.lmddOptions.dataMode) {//undo DOM mutations
             if (positioned && cloning) {
                 dragged.parentNode.removeChild(dragged);
             }
-            else if (positioned){
-                positions.originalContainer.insertBefore(dragged,positions.originalNextSibling);
+            else if (positioned) {
+                positions.originalContainer.insertBefore(dragged, positions.originalNextSibling);
             }
         }
         positioned = false;

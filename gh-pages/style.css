@@ -1,14 +1,31 @@
-.rectangle p{
-    position:relative;
-    top:50%;
-    left:50%;
+#simple-grid-example{
+    margin-top:15px;
+    margin-bottom:15px;
 }
-.img-item{
-    margin:16px;
-    height:64px;
-    width:64px;
-    border:none !important;
+.simple-grid{
+    display:flex;
+    padding:10px;
+    max-width: 350px;
+    flex-flow: row wrap;
+    border:5px solid pink;
+    justify-content:space-around;
+}
+.grid-item{
+    text-align: center;
+    vertical-align: middle;
+    line-height:100px;
+    margin:5px;
+    width:100px;
+    height:100px;
+    color:white;
+    font-size:15px;
+    border:7px solid pink;
     cursor:move;
+}
+
+#match-example{
+    margin-top:15px;
+    margin-bottom:15px;
 }
 .img-grid{
     min-height:80px;
@@ -17,12 +34,70 @@
     flex-flow:row wrap;
     margin-top:15px;
     margin-bottom:15px;
+    justify-content: center;
 }
 .img-grid .title{
     width:100%;
     padding:5px;
-
 }
+.img-item{
+    margin:16px;
+    height:64px;
+    width:64px;
+    border:none !important;
+    cursor:move;
+}
+
+#nested-example{
+    margin-top:15px;
+    margin-bottom:15px;
+}
+.nestable{
+    display:flex;
+    flex-flow:row wrap;
+}
+.nested-item,.jitem{
+    min-height:15vh;
+}
+.w-1-1{
+    flex: 0 0 100%;
+}
+.w-1-3{
+    flex: 0 0 30.3333%;
+    /*max-width: 30.3333%;*/
+    margin:1.5%;
+}
+
+#nested-tree-example{
+    margin-top:15px;
+    margin-bottom:15px;
+}
+
+.nestable-ul{
+    min-height:10px;
+    margin:5px;
+    padding:5px;
+    border:3px solid blue;
+}
+.nested-li{
+    background-color:rgba(1,1,1,0.2);
+    padding:15px;
+    border:4px double red;
+    margin:5px;
+}
+.title{
+    margin:2px;
+    border:2px solid white;
+    padding:3px;
+}
+#nested-tree-example-lmddClone li{
+    /*background-color:pink;*/
+    /*display: block !important;*/
+}
+#nested-tree-example-lmddClone{
+}
+
+
 #message{
     font-size:10px;
 }

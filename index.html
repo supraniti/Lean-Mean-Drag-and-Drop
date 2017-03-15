@@ -85,7 +85,99 @@
             <pre><code
                     class="language-css">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
         </div>
-        <div id="message" style="height:100px; overflow:scroll;"></div>
+        <div id="simple-grid-example">
+            <div class="simple-grid z-depth-2">
+                <div class="light-green z-depth-3 grid-item">Green</div>
+                <div class="pink z-depth-3 grid-item">Pink</div>
+                <div class="deep-purple z-depth-3 grid-item">Purple</div>
+                <div class="light-blue z-depth-3 grid-item">Blue</div>
+                <div class="lime z-depth-3 grid-item">Lime</div>
+                <div class="teal z-depth-3 grid-item">Teal</div>
+                <div class="amber z-depth-3 grid-item">Amber</div>
+                <div class="deep-orange z-depth-3 grid-item">Orange</div>
+                <div class="black z-depth-3 grid-item">Black</div>
+            </div>
+        </div>
+
+        <div id="match-example">
+            <div class="img-grid z-depth-2">
+                <div class="fixed title lmdd-block">
+                    <p>I am a container with no <code class="language-html">container-type</code> data attribute
+                        assigned, therefore I will accept any item</p>
+                    <div class="divider"></div>
+                </div>
+                <img class="img-item" src="gh-pages/images/yellow-carrot.png" data-item-type="yellow">
+                <img class="img-item" src="gh-pages/images/red-carrot.png" data-item-type="red">
+                <img class="img-item" src="gh-pages/images/red-chili.png" data-item-type="red">
+                <img class="img-item" src="gh-pages/images/yellow-chili.png" data-item-type="yellow">
+                <img class="img-item" src="gh-pages/images/red-tomato.png" data-item-type="red">
+                <img class="img-item" src="gh-pages/images/yellow-tomato.png" data-item-type="yellow">
+                <img class="img-item" src="gh-pages/images/yellow-lemon.png" data-item-type="yellow">
+                <img class="img-item" src="gh-pages/images/green-lemon.png">
+            </div>
+            <div class="img-grid red lighten-4 z-depth-2" data-container-type="red">
+                <div class="fixed title lmdd-block">
+                    <p>I will accept any item with the data attribute <code
+                            class="language-html">item-type="red"</code> assigned, Items with no <code
+                            class="language-html">item-type</code> data attribute will be rejected</p>
+                    <div class="divider"></div>
+                </div>
+                <img class="img-item" src="gh-pages/images/red-strawberry.png" data-item-type="red">
+            </div>
+            <div class="img-grid yellow lighten-3 z-depth-2" data-container-type="yellow">
+                <div class="fixed title lmdd-block">
+                    <p>I will accept any item with the data attribute <code
+                            class="language-html">item-type="yellow"</code> assigned , Items with no <code
+                            class="language-html">item-type</code> data attribute will be accepted</p>
+                    <div class="divider"></div>
+                </div>
+                <img class="img-item" src="gh-pages/images/yellow-strawberry.png" data-item-type="yellow">
+            </div>
+        </div>
+
+        <div id="nested-example">
+            <div class="nestable w-1-1 z-depth-3">
+                <div class="nestable w-1-3 nested-item indigo lighten-4 z-depth-2">
+                    <div class="nested-item w-1-3 indigo z-depth-1"></div>
+                    <div class="nested-item w-1-3 indigo z-depth-1"></div>
+                    <div class="nested-item w-1-3 indigo z-depth-1"></div>
+                    <div class="nested-item w-1-3 indigo z-depth-1"></div>
+                </div>
+                <div class="nestable w-1-3 nested-item purple lighten-4 z-depth-2">
+                    <div class="nested-item w-1-3 purple z-depth-1"></div>
+                    <div class="nested-item w-1-3 purple z-depth-1"></div>
+                    <div class="nested-item w-1-3 purple z-depth-1"></div>
+                    <div class="nested-item w-1-3 purple z-depth-1"></div>
+                </div>
+                <div class="w-1-3 nested-item green lighten-4 z-depth-2">
+                    <div class="jitem w-1-3 green z-depth-1"></div>
+                    <div class="jitem w-1-3 green z-depth-1"></div>
+                    <div class="jitem w-1-3 green z-depth-1"></div>
+                    <div class="jitem w-1-3 green z-depth-1"></div>
+                </div>
+                <div class="nestable w-1-3 nested-item deep-purple lighten-4 z-depth-2">
+                    <div class="nested-item w-1-3 deep-purple z-depth-1"></div>
+                    <div class="nested-item w-1-3 deep-purple z-depth-1"></div>
+                    <div class="nested-item w-1-3 deep-purple z-depth-1"></div>
+                    <div class="nested-item w-1-3 deep-purple z-depth-1"></div>
+                </div>
+            </div>
+        </div>
+        <div class="browser-default" id="nested-tree-example">
+            <ul class="browser-default nestable-ul">
+                <li class="browser-default nested-li">
+                    <div class="title">Header A</div>JUST SOME TEXT FOR INTERRUPTIONM!!!
+                    <ul class="browser-default nestable-ul">
+                        <li class="browser-default nested-li"><div class="title">Header A.1</div><ul class="browser-default nestable-ul"></ul><div class="title">Footer A.1</div></li>
+                        <li class="browser-default nested-li"><div class="title">Header A.2</div><div class="title">Footer A.2</div></li>
+                        <li class="browser-default nested-li"><div class="title">Header A.3</div><div class="title">Footer A.3</div></li>
+                    </ul>
+                    <div class="title">Footer A</div>
+                </li>
+                <li class="browser-default nested-li"><div class="title">Header B</div><ul class="browser-default nestable-ul"></ul><div class="title">Footer B</div></li>
+                <li class="browser-default nested-li"><div class="title">Header C</div><ul class="browser-default nestable-ul"></ul><div class="title">Footer C</div></li>
+            </ul>
+        </div>
         <div id="first-example">
             <div class="example-container lmdd-dispatcher palette white z-depth-3">
                 <div class="example-item lmdd-clonner red darken-3 z-depth-1"></div>
@@ -192,41 +284,6 @@
                 </div>
             </div>
 
-            <div id="match-example">
-                <div class="img-grid z-depth-2">
-                    <div class="fixed title">
-                        <p>I am a container with no <code class="language-html">container-type</code> data attribute
-                            assigned, therefore I will accept any item</p>
-                        <div class="divider"></div>
-                    </div>
-                    <img class="img-item" src="gh-pages/images/yellow-carrot.png" data-item-type="yellow">
-                    <img class="img-item" src="gh-pages/images/red-carrot.png" data-item-type="red">
-                    <img class="img-item" src="gh-pages/images/red-chili.png" data-item-type="red">
-                    <img class="img-item" src="gh-pages/images/yellow-chili.png" data-item-type="yellow">
-                    <img class="img-item" src="gh-pages/images/red-tomato.png" data-item-type="red">
-                    <img class="img-item" src="gh-pages/images/yellow-tomato.png" data-item-type="yellow">
-                    <img class="img-item" src="gh-pages/images/yellow-lemon.png" data-item-type="yellow">
-                    <img class="img-item" src="gh-pages/images/green-lemon.png">
-                </div>
-                <div class="img-grid red lighten-4 z-depth-2" data-container-type="red">
-                    <div class="fixed title">
-                        <p>I will accept any item with the data attribute <code
-                                class="language-html">item-type="red"</code> assigned, Items with no <code
-                                class="language-html">item-type</code> data attribute will be rejected</p>
-                        <div class="divider"></div>
-                    </div>
-                    <img class="img-item" src="gh-pages/images/red-strawberry.png" data-item-type="red">
-                </div>
-                <div class="img-grid yellow lighten-3 z-depth-2" data-container-type="yellow">
-                    <div class="fixed title">
-                        <p>I will accept any item with the data attribute <code
-                                class="language-html">item-type="yellow"</code> assigned , Items with no <code
-                                class="language-html">item-type</code> data attribute will be accepted</p>
-                        <div class="divider"></div>
-                    </div>
-                    <img class="img-item" src="gh-pages/images/yellow-strawberry.png" data-item-type="yellow">
-                </div>
-            </div>
 
             <div id="clone-example">
                 <div class="flex-grid xxx flex-align-space-around z-depth-2">
@@ -243,14 +300,14 @@
         </div>
         <div id="simple-example-2">
             <ul class="collection xxx  nestable">
-                <li class="collection-item  xxx light-blue item animation-block">
+                <li class="collection-item  xxx light-blue item lmdd-block">
                     <div class="chts">
                         <div class="chts">
                             <div class="chts"><i class="material-icons handle">reorder</i></div>
                         </div>
                     </div>
                     <span>collection-item light-blue item</span><b>collection-item light-blue item</b></li>
-                <li class="collection-item  xxx lime item animation-block"><i
+                <li class="collection-item  xxx lime item lmdd-block"><i
                         class="material-icons handle">reorder</i>
                     <div class="chts">
                         <div class="chts">
@@ -258,7 +315,7 @@
                         </div>
                     </div>
                     <p>collection-item light-blue item</p><span>collection-item light-blue item</span></li>
-                <li class="collection-item  xxx pink item animation-block"><i
+                <li class="collection-item  xxx pink item lmdd-block"><i
                         class="material-icons handle">reorder</i>
                     <div class="chts">
                         <div class="chts">
@@ -266,7 +323,7 @@
                         </div>
                     </div>
                     <b>collection-item light-blue item</b><span>collection-item light-blue item</span></li>
-                <li class="collection-item  xxx amber item animation-block"><i
+                <li class="collection-item  xxx amber item lmdd-block"><i
                         class="material-icons handle">reorder</i>
                     <div class="chts">
                         <div class="chts">

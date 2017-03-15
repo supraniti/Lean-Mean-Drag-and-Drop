@@ -8,33 +8,25 @@
 .visible-layer * {
     opacity:1;
     z-index:-1;
-    transition: 1s;
-}
-.unselectable{
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
-    user-select: none !important;
-    cursor:not-allowed;
-}
-.lmdd-dragged{
-    opacity:0.5 !important;
-    margin:0;
-}
-.lmdd-shadow{
-    opacity:0.5 !important;
-    margin:0 !important;
+    pointer-events: none;
+    transition: 0.8s;
 }
 .visible-layer .lmdd-mirror.gf-transition{
     transition:all 0.5s !important;
 }
 .visible-layer .lmdd-mirror{
+    z-index:1;
     position:absolute;
     margin:0;
-    border: 1px dashed pink;
     pointer-events:none;
     transition:top 0s, left 0s;
     opacity:0.5;
+}
+.lmdd-shadow{
+    opacity:0.5;
+}
+.lmdd-hidden{
+    visibility:hidden;
 }
 .no-display{
     display:none !important;
@@ -42,6 +34,10 @@
 .no-transition, .no-transition *{
     transition:none !important;
 }
-.lmdd-hidden{
-    visibility:hidden;
+.unselectable{
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    cursor:not-allowed;
 }
