@@ -3,7 +3,6 @@ var lmdd = (function () {
     var options = {//default settings
         containerClass: 'lmdd-container',
         draggableItemClass: 'lmdd-draggable',
-        fixedItemClass: false,
         handleClass: false,
         dragstartTimeout: 50,
         calcInterval: 200,
@@ -11,7 +10,6 @@ var lmdd = (function () {
         nativeScroll: false,
         mirrorMinHeight: 100,
         mirrorMaxWidth: 500,
-        protectedProperties: ["padding", "padding-top", "padding-bottom", "padding-right", "padding-left", "display", "list-style-type", "line-height"],
         matchObject: false,
         dataMode: false
     };
@@ -52,6 +50,14 @@ var lmdd = (function () {
         currentPosition: false,
         previousPosition: false
     };
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length > 0){
+                createRectRefs(scope);
+                animate(scope);
+            }
+        });
+    });
     //tasks manager (makes sure we don't forget to undo whatever we do)
     var tasks = {
         executeTask: function (batch) {
@@ -163,29 +169,15 @@ var lmdd = (function () {
         }
     }
     function getOffset(el1, el2) {//get horizontal and vertical offset between two elements
-        var style1 = window.getComputedStyle ? getComputedStyle(el1, null) : el1.currentStyle;
-        var style2 = window.getComputedStyle ? getComputedStyle(el2, null) : el2.currentStyle;
-        var style3 = window.getComputedStyle ? getComputedStyle(shadow, null) : shadow.currentStyle;
-        var style4 = window.getComputedStyle ? getComputedStyle(shadow.parentNode, null) : shadow.parentNode.currentStyle;
-        var mpbx = parseInt(style2.borderLeftWidth, 10) + parseInt(style2.paddingLeft, 10) + parseInt(style1.marginLeft, 10);
-        var mpby = parseInt(style2.borderTopWidth, 10) + parseInt(style2.paddingTop, 10) + parseInt(style1.marginTop, 10);
-        var mpbx2 = parseInt(style4.borderLeftWidth, 10) + parseInt(style4.paddingLeft, 10) + parseInt(style3.marginLeft, 10);
-        var mpby2 = parseInt(style4.borderTopWidth, 10) + parseInt(style4.paddingTop, 10) + parseInt(style3.marginTop, 10);
-        var rect1 = el1.getBoundingClientRect(),
-            rect2 = el2.getBoundingClientRect();
+        var rect1 = el1.cloneRef.rectRef,
+            rect2 = el2.cloneRef.rectRef;
         var borderWidth = {
-            left: parseInt(window.getComputedStyle(el2, null).getPropertyValue("border-left-width"), 10),
-            top: parseInt(window.getComputedStyle(el2, null).getPropertyValue("border-top-width"), 10)
+            left: el2.cloneRef.styleRef.left.border,
+            top: el2.cloneRef.styleRef.top.border
         };
         return {
             x: rect1.left - rect2.left - borderWidth.left,
             y: rect1.top - rect2.top - borderWidth.top,
-            xt: rect1.left - rect2.left,
-            yt: rect1.top - rect2.top,
-            x0: rect1.left - rect2.left - mpbx,
-            y0: rect1.top - rect2.top - mpby,
-            x1: rect1.left - rect2.left - mpbx2,
-            y1: rect1.top - rect2.top - mpby2
         };
     }
     function getWrapper(el, wrapperClass) {//get wrapper element by class name
@@ -343,7 +335,6 @@ var lmdd = (function () {
             positions.currentIndex = positions.originalIndex;
         }
         updateCurrentCoordinates();
-        animate(scope);
     }
     function acceptDrop(container, item) {
         if (item.contains(container)) {
@@ -358,6 +349,29 @@ var lmdd = (function () {
             return ((cType) ? ((iType) ? scope.lmddOptions.matchObject [cType][iType] : scope.lmddOptions.matchObject[cType]["default"]) : scope.lmddOptions.matchObject["default"]);
         }
         return true;
+    }
+    function createRectRefs(el){
+        el.cloneRef.rectRef = el.getBoundingClientRect();
+        var style = window.getComputedStyle ? getComputedStyle(el, null) : el.currentStyle;
+        el.cloneRef.styleRef = {
+            top:{
+                padding: parseInt(style.paddingTop,10),
+                margin: parseInt(style.marginTop,10),
+                border: parseInt(style.borderTopWidth,10)
+            },
+            left:{
+                padding: parseInt(style.paddingLeft,10),
+                margin: parseInt(style.marginLeft,10),
+                border: parseInt(style.borderLeftWidth,10)
+            }
+        };
+        if (!el.classList.contains('lmdd-block')){
+            Array.prototype.forEach.call(el.childNodes,function(node){
+                if (node.nodeType === 1){
+                    createRectRefs(node);
+                }
+            })
+        }
     }
     //helper functions for managing the animation layer
     function createReference(el) {
@@ -406,17 +420,20 @@ var lmdd = (function () {
     }
     function animateNode(elNode) {
         var cloneNode = elNode.cloneRef;
-        var elRect = elNode.getBoundingClientRect();
+        var parentCloneNode = elNode.parentNode.cloneRef;
         cloneNode.style.position = "absolute";
-        cloneNode.style.width = (elRect.width) + "px";
-        cloneNode.style.height = (elRect.height) + "px";
+        cloneNode.style.width = cloneNode.rectRef.width + "px";
+        cloneNode.style.height =  cloneNode.rectRef.height + "px";
         cloneNode.style.display = "block";
         if (elNode === scope) {
-            cloneNode.style.top = elRect.top + window.pageYOffset + "px";
-            cloneNode.style.left = elRect.left + window.pageXOffset + "px";
+            cloneNode.style.top = cloneNode.rectRef.top + window.pageYOffset + "px";
+            cloneNode.style.left = cloneNode.rectRef.left + window.pageXOffset + "px";
         } else {
-            var offset = (elNode === dragged) ? getOffset(elNode, positions.originalContainer) : getOffset(elNode, elNode.parentNode);
-            cloneNode.style.transform = (elNode === dragged) ? "translate3d(" + offset.x1 + "px, " + offset.y1 + "px,0px)" : "translate3d(" + offset.x0 + "px, " + offset.y0 + "px,0px)";
+            var offsetX = cloneNode.rectRef.left - ((cloneNode === shadow) ? positions.originalContainer.cloneRef.rectRef.left : parentCloneNode.rectRef.left);
+            var offsetY = cloneNode.rectRef.top - ((cloneNode === shadow) ? positions.originalContainer.cloneRef.rectRef.top : parentCloneNode.rectRef.top);
+            var fixX = parentCloneNode.styleRef.left.border + parentCloneNode.styleRef.left.padding + ((cloneNode === shadow) ? shadow.offsetFix.left : cloneNode.styleRef.left.margin);
+            var fixY = parentCloneNode.styleRef.top.border + parentCloneNode.styleRef.top.padding + ((cloneNode === shadow) ? shadow.offsetFix.top : cloneNode.styleRef.top.margin);
+            cloneNode.style.transform = "translate3d(" + (offsetX - fixX) + "px, " + (offsetY - fixY) + "px,0px)";
         }
     }
     function updateMirrorLocation() {
@@ -458,6 +475,7 @@ var lmdd = (function () {
                                     }
                                     clearInterval(calcInterval);//make sure interval was not set already
                                     calcInterval = window.setInterval(eventTicker, scope.lmddOptions.calcInterval);//calculation interval for mouse movement
+                                    observer.observe(scope, {childList: true, subtree:true });
                                 }
                             }
                             if (!scope.lmddOptions.nativeScroll) {//disable native scrolling on mouse down
@@ -475,31 +493,28 @@ var lmdd = (function () {
                 break;
             case "dragStart":
                 if ((event.type === "mousedown") || (event.type === "mouseup") || (event.type === "mousemove") && (event.buttons === 0)) {//or mousemove with no buttons in case mouseup event was not fired
-                    mirror.classList.add("gf-transition");
                     if (!dragged) {
                         killEvent();
                         return;
                     }
+                    scrollManager.active = false;
+                    mirror.classList.add("gf-transition");
+                    var mirrorRect = mirror.getBoundingClientRect();
+                    var offsetX = mirrorRect.left - shadow.rectRef.left;
+                    var offsetY = mirrorRect.top - shadow.rectRef.top;
                     var offset = getOffset(dragged, scope);
-                    mirror.style.width = dragged.getBoundingClientRect().width + "px";
-                    mirror.style.height = dragged.getBoundingClientRect().height + "px";
+                    mirror.style.width = shadow.rectRef.width + "px";
+                    mirror.style.height = shadow.rectRef.height + "px";
                     mirror.style.transform = "scale(1,1)";
                     mirror.style.top = offset.y + "px";
                     mirror.style.left = offset.x + "px";
-                    offset = getOffset(dragged, shadow);
-                    if (Math.abs(offset.xt) + Math.abs(offset.yt) > 1) {//wait for transition to finish
+                    if (Math.abs(offsetX) + Math.abs(offsetY) > 3) {//make a graceful finish...
                         status = "waitDragEnd";
                         tasks.onTransitionEnd.push(function () {
                             killEvent();
                         });
-                        window.setTimeout(function () {
-                            if (status !== "waitDragStart") {
-                                killEvent()
-                            }
-                        }, 1000);
-                        return;
                     }
-                    else {
+                    else{
                         killEvent();
                         return;
                     }
@@ -518,11 +533,12 @@ var lmdd = (function () {
                     updateCurrentCoordinates();
                 }
                 break;
-            case"waitDragEnd":
+            case "waitDragEnd":
                 if (event.type === "transitionend") {
-                    if (event.propertyName === "transform") {
-                        tasks.executeTask("onTransitionEnd");
-                    }
+                    tasks.executeTask("onTransitionEnd");
+                }
+                if (event.type === "mouseup"){
+                    console.log('mouseup');
                 }
                 break;
         }
@@ -542,7 +558,10 @@ var lmdd = (function () {
         if (mirror.tagName === 'LI') {
             var wrapper = document.createElement('ul');
             wrapper.appendChild(mirror);
+            wrapper.style.padding = 0;
+            mirror.style.margin = 0;
             mirror = wrapper;
+            mirror.wrapped = true;
         }
         toggleClass(dragged, "lmdd-hidden", true, "onDragEnd");
         shadow.classList.add("lmdd-shadow");
@@ -556,16 +575,28 @@ var lmdd = (function () {
             scope.parentNode.removeChild(scope.cloneRef);
             deleteReference(scope);
         });
-        shadow.addEventListener("transitionend", eventManager, false);
         var temp = shadow;
         while (scope.cloneRef.contains(temp)) {
             temp.style.zIndex = 0;
             temp = temp.parentNode;
         }
+        var cStyle = window.getComputedStyle ? getComputedStyle(shadow, null) : shadow.currentStyle;
+        shadow.offsetFix = {
+            left : parseInt(cStyle.marginLeft, 10),
+            top : parseInt(cStyle.marginLeft, 10)
+        };
+        createRectRefs(scope);
         animate(scope);
         mirror.classList.add("lmdd-mirror");
-        mirror.style.width = shadow.getBoundingClientRect().width + "px";
-        mirror.style.height = shadow.getBoundingClientRect().height + "px";
+        var props = ['width','height','padding','paddingTop','paddingBottom','paddingLeft','paddingRight','lineHeight'];
+        props.forEach(function(prop){
+            if (mirror.wrapped){
+                mirror.childNodes[0].style[prop] = cStyle[prop];
+            }
+            else{
+                mirror.style[prop] = cStyle[prop];
+            }
+        })
         var scaleX = scope.lmddOptions.mirrorMaxWidth / shadow.getBoundingClientRect().width;
         var scaleY = scope.lmddOptions.mirrorMinHeight / shadow.getBoundingClientRect().height;
         var scale = Math.min(1, Math.max(scaleX, scaleY));
@@ -574,6 +605,7 @@ var lmdd = (function () {
         mirror.style.transform = "scale(" + scale + "," + scale + ")";
         mirror.style.transformOrigin = "0 0";
         scope.cloneRef.appendChild(mirror);
+        mirror.addEventListener("transitionend", eventManager, false);
         scrollDelta.lastX = window.pageXOffset;
         scrollDelta.lastY = window.pageYOffset;
         updateMirrorLocation();
@@ -588,6 +620,9 @@ var lmdd = (function () {
             return false;
         }
         refEvent = lastEvent;
+        if (status !== "dragStart"){
+            return false;
+        }
         updateCurrentContainer();
         if (!positions.currentContainer) {//no container found
             if (positions.previousContainer && scope.lmddOptions.revert) {//execute once (revert)
@@ -609,6 +644,7 @@ var lmdd = (function () {
         }
     }
     function killEvent() {//end current drag event
+        observer.disconnect();
         clearInterval(calcInterval);
         calcInterval = null;
         scrollManager.active = false;

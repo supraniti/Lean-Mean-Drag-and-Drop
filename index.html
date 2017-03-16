@@ -85,6 +85,7 @@
             <pre><code
                     class="language-css">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
         </div>
+
         <div id="simple-grid-example">
             <div class="simple-grid z-depth-2">
                 <div class="light-green z-depth-3 grid-item">Green</div>
@@ -149,12 +150,6 @@
                     <div class="nested-item w-1-3 purple z-depth-1"></div>
                     <div class="nested-item w-1-3 purple z-depth-1"></div>
                 </div>
-                <div class="w-1-3 nested-item green lighten-4 z-depth-2">
-                    <div class="jitem w-1-3 green z-depth-1"></div>
-                    <div class="jitem w-1-3 green z-depth-1"></div>
-                    <div class="jitem w-1-3 green z-depth-1"></div>
-                    <div class="jitem w-1-3 green z-depth-1"></div>
-                </div>
                 <div class="nestable w-1-3 nested-item deep-purple lighten-4 z-depth-2">
                     <div class="nested-item w-1-3 deep-purple z-depth-1"></div>
                     <div class="nested-item w-1-3 deep-purple z-depth-1"></div>
@@ -163,6 +158,7 @@
                 </div>
             </div>
         </div>
+
         <div class="browser-default" id="nested-tree-example">
             <ul class="browser-default nestable-ul">
                 <li class="browser-default nested-li">
@@ -178,7 +174,8 @@
                 <li class="browser-default nested-li"><div class="title">Header C</div><ul class="browser-default nestable-ul"></ul><div class="title">Footer C</div></li>
             </ul>
         </div>
-        <div id="first-example">
+
+        <div id="clonner-example">
             <div class="example-container lmdd-dispatcher palette white z-depth-3">
                 <div class="example-item lmdd-clonner red darken-3 z-depth-1"></div>
                 <div class="example-item lmdd-clonner pink darken-2 z-depth-1"></div>
@@ -196,18 +193,7 @@
                 <div class="example-item blue lighten-3 z-depth-1"></div>
             </div>
         </div>
-        <div id="dimension">
-            <div class="child"></div>
-            <div class="child"></div>
-            <div class="child"></div>
-            <div class="child"></div>
-            <div class="child"></div>
-        </div>
-        <div id="gparent" class="chts">
-            <div id="parent" class="chts">
-                <div id="child" class="chts"></div>
-            </div>
-        </div>
+
         <div id="example1" class="section scrollspy">
             <h4 class="deep-orange-text text-darken-3">Example #1 - Simple Sortable Lists</h4>
             <p class="flow-text">Note LMDD is markup oriented, meaning your HTML markup determines the way drag and
@@ -229,110 +215,6 @@
             <p class="deep-orange-text text-darken-3">Javascript:</p>
             <pre><code class="language-javascript">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
             <p class="deep-orange-text text-darken-3">Result:</p>
-            <div id="eventExample" class="check">
-                <div class="check chts">
-                    <div class="chts">
-                        <div class="chts"></div>
-                    </div>
-                </div>
-                <div class="chts">
-                    <div class="check chts">
-                        <div class="chts"></div>
-                    </div>
-                </div>
-            </div>
-            <div id="markup-example">
-                <div class="flex-grid nestable z-depth-3 w12 ">
-                    <div class="flex-grid lime w4 nestable z-depth-3 item">
-                        <div class="light-green z-depth-3 item rectangle animation-block"></div>
-                        <div class="pink z-depth-3 item rectangle animation-block"></div>
-                        <div class="deep-purple z-depth-3 item rectangle animation-block"></div>
-                        <div class="light-blue z-depth-3 item rectangle animation-block"></div>
-                    </div>
-                    <div class="flex-grid lime lighten-3 w13 z-depth-3 nestable item">
-                        <div class="light-green z-depth-3  rectangle "></div>
-                        <div class="pink z-depth-3 rectangle"></div>
-                        <div class="deep-purple z-depth-3  rectangle "></div>
-                        <div class="light-blue z-depth-3  rectangle "></div>
-                    </div>
-                    <div class="flex-grid lime darken-1 w4 nestable z-depth-3 item ">
-                        <div class="light-green z-depth-3 item rectangle"></div>
-                        <div class="pink z-depth-3 item rectangle "></div>
-                        <div class="deep-purple z-depth-3 item rectangle "></div>
-                        <div class="light-blue z-depth-3 item rectangle "></div>
-                    </div>
-                    <div class="flex-grid lime darken-2 w4 nestable z-depth-3 item ">
-                        <div class="light-green z-depth-3 item rectangle "></div>
-                        <div class="pink z-depth-3 item rectangle"></div>
-                        <div class="deep-purple z-depth-3 item rectangle "></div>
-                        <div class="light-blue z-depth-3 item rectangle "></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="simple-example">
-                <div class="flex-grid flex-align-space-around nestable z-depth-2">
-                    <div class="light-green z-depth-3 rectangle"><p>A</p></div>
-                    <div class="pink z-depth-3 rectangle"><p>A</p></div>
-                    <div class="deep-purple xxx z-depth-3 rectangle"><p>A</p></div>
-                    <div class="light-blue xxx z-depth-3 rectangle"><p>A</p></div>
-                    <div class="lime xxx z-depth-3 rectangle"><p>A</p></div>
-                    <div class="teal xxx z-depth-3 rectangle"><p>A</p></div>
-                    <div class="amber xxx z-depth-3 rectangle"><p>A</p></div>
-                    <div class="blue-grey z-depth-3 rectangle"><p>A</p></div>
-                    <div class="green z-depth-3 rectangle"><p>A</p></div>
-                </div>
-            </div>
-
-
-            <div id="clone-example">
-                <div class="flex-grid xxx flex-align-space-around z-depth-2">
-                    <div class="light-green item z-depth-3 rectangle"></div>
-                    <div class="pink item z-depth-3 rectangle"></div>
-                    <div class="deep-purple xxx z-depth-3 item rectangle"></div>
-                </div>
-                <div class="flex-grid xxx flex-align-space-around nestable z-depth-2">
-                    <div class="light-green item z-depth-3 rectangle"></div>
-                    <div class="pink item z-depth-3 rectangle"></div>
-                    <div class="deep-purple xxx z-depth-3 item rectangle"></div>
-                </div>
-            </div>
-        </div>
-        <div id="simple-example-2">
-            <ul class="collection xxx  nestable">
-                <li class="collection-item  xxx light-blue item lmdd-block">
-                    <div class="chts">
-                        <div class="chts">
-                            <div class="chts"><i class="material-icons handle">reorder</i></div>
-                        </div>
-                    </div>
-                    <span>collection-item light-blue item</span><b>collection-item light-blue item</b></li>
-                <li class="collection-item  xxx lime item lmdd-block"><i
-                        class="material-icons handle">reorder</i>
-                    <div class="chts">
-                        <div class="chts">
-                            <div class="chts"></div>
-                        </div>
-                    </div>
-                    <p>collection-item light-blue item</p><span>collection-item light-blue item</span></li>
-                <li class="collection-item  xxx pink item lmdd-block"><i
-                        class="material-icons handle">reorder</i>
-                    <div class="chts">
-                        <div class="chts">
-                            <div class="chts"></div>
-                        </div>
-                    </div>
-                    <b>collection-item light-blue item</b><span>collection-item light-blue item</span></li>
-                <li class="collection-item  xxx amber item lmdd-block"><i
-                        class="material-icons handle">reorder</i>
-                    <div class="chts">
-                        <div class="chts">
-                            <div class="chts"></div>
-                        </div>
-                    </div>
-                    <a>collection-item light-blue item</a><span>collection-item light-blue item</span><b>collection-item
-                        light-blue item</b></li>
-            </ul>
         </div>
         <div id="example2" class="section scrollspy">
             <h4 class="deep-orange-text text-darken-3">Example #2 - Containers, sortable, and draggable items</h4>
@@ -364,7 +246,7 @@
 <!--  Scripts-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="gh-pages/prism.js"></script>
-<script src="dist/lmdd.min.js"></script>
+<script src="dist/lmdd.js"></script>
 <script src="gh-pages/script.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.9/vue.min.js"></script>
