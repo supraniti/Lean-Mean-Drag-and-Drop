@@ -12,7 +12,7 @@
     transition: 0.7s;
 }
 .visible-layer .lmdd-mirror.gf-transition{
-    transition:all 0.5s !important;
+    transition:all 0.3s !important;
 }
 .visible-layer .lmdd-mirror{
     z-index:1;

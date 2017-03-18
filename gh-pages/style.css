@@ -46,6 +46,7 @@
     width:64px;
     border:none !important;
     cursor:move;
+    -webkit-touch-callout: none;
 }
 
 #nested-example{
@@ -56,17 +57,25 @@
     display:flex;
     flex-flow:row wrap;
 }
-.nested-item,.jitem{
-    min-height:15vh;
+.nested-item{
+    min-height:65px;
+    min-width:65px;
+    margin:7px;
 }
 .w-1-1{
-    flex: 0 0 100%;
+    flex: 1 1 100%;
+    border: 5px solid black;
+    padding: 7px;
 }
 .w-1-3{
-    flex: 0 0 30.3333%;
-    margin:1.5%;
+    flex: 1 1 calc(33.3333% - 14px);
+    border: 5px solid white;
+    padding: 7px;
 }
-
+.w-1-9{
+    flex: 1 1 calc(11.1111% - 14px);
+    border: 5px solid white;
+}
 #nested-tree-example{
     margin-top:15px;
     margin-bottom:15px;

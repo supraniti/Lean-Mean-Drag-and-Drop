@@ -48,7 +48,8 @@ var lmdd = (function () {
         previousContainer: false,
         currentCoordinates: false,
         currentPosition: false,
-        previousPosition: false
+        previousPosition: false,
+        referenceContainer:false
     };
     var observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
@@ -429,10 +430,15 @@ var lmdd = (function () {
             cloneNode.style.top = cloneNode.rectRef.top + window.pageYOffset + "px";
             cloneNode.style.left = cloneNode.rectRef.left + window.pageXOffset + "px";
         } else {
-            var offsetX = cloneNode.rectRef.left - ((cloneNode === shadow) ? positions.originalContainer.cloneRef.rectRef.left : parentCloneNode.rectRef.left);
-            var offsetY = cloneNode.rectRef.top - ((cloneNode === shadow) ? positions.originalContainer.cloneRef.rectRef.top : parentCloneNode.rectRef.top);
-            var fixX = parentCloneNode.styleRef.left.border + parentCloneNode.styleRef.left.padding + ((cloneNode === shadow) ? shadow.offsetFix.left : cloneNode.styleRef.left.margin);
-            var fixY = parentCloneNode.styleRef.top.border + parentCloneNode.styleRef.top.padding + ((cloneNode === shadow) ? shadow.offsetFix.top : cloneNode.styleRef.top.margin);
+            var refContainer = (cloning) ? positions.referenceContainer.cloneRef : positions.originalContainer.cloneRef;
+            console.log(refContainer)
+            var offsetX = cloneNode.rectRef.left - ((cloneNode === shadow) ? refContainer.rectRef.left : parentCloneNode.rectRef.left);
+            var offsetY = cloneNode.rectRef.top - ((cloneNode === shadow) ? refContainer.rectRef.top : parentCloneNode.rectRef.top);
+            var fixX = (cloneNode === shadow) ? refContainer.styleRef.left.border + refContainer.styleRef.left.padding + shadow.offsetFix.left :  parentCloneNode.styleRef.left.border + parentCloneNode.styleRef.left.padding + cloneNode.styleRef.left.margin;
+            var fixY = (cloneNode === shadow) ? refContainer.styleRef.top.border + refContainer.styleRef.top.padding + shadow.offsetFix.top :  parentCloneNode.styleRef.top.border + parentCloneNode.styleRef.top.padding + cloneNode.styleRef.top.margin;
+            if (cloneNode === shadow){
+                console.log(fixX,fixY);
+            }
             cloneNode.style.transform = "translate3d(" + (offsetX - fixX) + "px, " + (offsetY - fixY) + "px,0px)";
         }
     }
@@ -566,6 +572,7 @@ var lmdd = (function () {
         toggleClass(dragged, "lmdd-hidden", true, "onDragEnd");
         shadow.classList.add("lmdd-shadow");
         updateOriginalPosition(dragged);
+        positions.referenceContainer = positions.originalContainer;
         updateCurrentContainer();
         updateCurrentCoordinates();
         window.getSelection().removeAllRanges();//disable text selection on FF and IE - JS
@@ -583,7 +590,8 @@ var lmdd = (function () {
         var cStyle = window.getComputedStyle ? getComputedStyle(shadow, null) : shadow.currentStyle;
         shadow.offsetFix = {
             left : parseInt(cStyle.marginLeft, 10),
-            top : parseInt(cStyle.marginLeft, 10)
+            top : parseInt(cStyle.marginTop, 10),
+            parent : dragged.parentNode.cloneRef
         };
         createRectRefs(scope);
         animate(scope);
