@@ -424,6 +424,7 @@ var lmdd = (function () {
         var cloneNode = elNode.cloneRef;
         var parentCloneNode = elNode.parentNode.cloneRef;
         cloneNode.style.position = "absolute";
+        cloneNode.style.webkitBackfaceVisibility = "hidden";
         cloneNode.style.width = cloneNode.rectRef.width + "px";
         cloneNode.style.height =  cloneNode.rectRef.height + "px";
         cloneNode.style.display = "block";
