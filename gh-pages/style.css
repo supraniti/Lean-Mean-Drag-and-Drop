@@ -7,7 +7,6 @@
     padding:10px;
     max-width: 350px;
     flex-flow: row wrap;
-    border:5px solid pink;
     justify-content:space-around;
 }
 .grid-item{
@@ -19,7 +18,7 @@
     height:90px;
     color:white;
     font-size:15px;
-    border:7px solid pink;
+    border: 5px solid lightgoldenrodyellow;
     cursor:move;
 }
 
@@ -56,12 +55,12 @@
 .nestable{
     display:flex;
     flex-flow:row wrap;
+    border:3px double black !important;
 }
 .nested-item{
-    min-height:75px;
-    min-width:30px;
-    flex: 1 1 calc(50% - 14px);
-    border: 5px solid white;
+    flex: 1 1 calc(33.3333% - 14px);
+    min-height:50px;
+    border: 1px solid black;
     padding: 7px;
     margin:7px;
 }

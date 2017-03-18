@@ -336,6 +336,7 @@ var lmdd = (function () {
             positions.currentIndex = positions.originalIndex;
         }
         updateCurrentCoordinates();
+        refEvent = lastEvent;
     }
     function acceptDrop(container, item) {
         if (item.contains(container)) {
@@ -625,7 +626,6 @@ var lmdd = (function () {
                 return false;
             }
         }
-        refEvent = lastEvent;
         if (status !== "dragStart"){
             return false;
         }
