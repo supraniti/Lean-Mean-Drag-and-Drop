@@ -431,14 +431,10 @@ var lmdd = (function () {
             cloneNode.style.left = cloneNode.rectRef.left + window.pageXOffset + "px";
         } else {
             var refContainer = (cloning) ? positions.referenceContainer.cloneRef : positions.originalContainer.cloneRef;
-            console.log(refContainer)
             var offsetX = cloneNode.rectRef.left - ((cloneNode === shadow) ? refContainer.rectRef.left : parentCloneNode.rectRef.left);
             var offsetY = cloneNode.rectRef.top - ((cloneNode === shadow) ? refContainer.rectRef.top : parentCloneNode.rectRef.top);
             var fixX = (cloneNode === shadow) ? refContainer.styleRef.left.border + refContainer.styleRef.left.padding + shadow.offsetFix.left :  parentCloneNode.styleRef.left.border + parentCloneNode.styleRef.left.padding + cloneNode.styleRef.left.margin;
             var fixY = (cloneNode === shadow) ? refContainer.styleRef.top.border + refContainer.styleRef.top.padding + shadow.offsetFix.top :  parentCloneNode.styleRef.top.border + parentCloneNode.styleRef.top.padding + cloneNode.styleRef.top.margin;
-            if (cloneNode === shadow){
-                console.log(fixX,fixY);
-            }
             cloneNode.style.transform = "translate3d(" + (offsetX - fixX) + "px, " + (offsetY - fixY) + "px,0px)";
         }
     }
@@ -543,9 +539,6 @@ var lmdd = (function () {
                 if (event.type === "transitionend") {
                     tasks.executeTask("onTransitionEnd");
                 }
-                if (event.type === "mouseup"){
-                    console.log('mouseup');
-                }
                 break;
         }
     }
@@ -626,6 +619,11 @@ var lmdd = (function () {
         }
         if (refEvent === lastEvent) {
             return false;
+        }
+        if(refEvent){
+            if(lastEvent.timeStamp - refEvent.timeStamp < scope.lmddOptions.calcInterval){
+                return false;
+            }
         }
         refEvent = lastEvent;
         if (status !== "dragStart"){
