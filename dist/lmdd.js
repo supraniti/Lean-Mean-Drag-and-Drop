@@ -11,6 +11,7 @@ var lmdd = (function () {
         mirrorMinHeight: 100,
         mirrorMaxWidth: 500,
         matchObject: false,
+        positionDelay: false,
         dataMode: false
     };
     var scope = null;//html element in which the current drag event occurs
@@ -51,6 +52,7 @@ var lmdd = (function () {
         previousPosition: false,
         referenceContainer:false
     };
+    var mousemoveCounter = 0;//used to handle a bug in chrome when mousemove event is fired when mouse has not moved
     var observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.addedNodes.length > 0){
@@ -178,7 +180,7 @@ var lmdd = (function () {
         };
         return {
             x: rect1.left - rect2.left - borderWidth.left,
-            y: rect1.top - rect2.top - borderWidth.top,
+            y: rect1.top - rect2.top - borderWidth.top
         };
     }
     function getWrapper(el, wrapperClass) {//get wrapper element by class name
@@ -215,22 +217,15 @@ var lmdd = (function () {
         eventTarget.dispatchEvent(simulatedEvent);
     }
     function createLmddEvent(type) {//custom app event
-        var event = new CustomEvent(type, {
+        return new CustomEvent(type, {
             "bubbles": true,
             "detail": {
                 "dragType": (cloning) ? "clone" : "move",
                 "draggedElement": (cloning) ? clone.elref : dragged,
-                "from": {
-                    "container": positions.originalContainer,
-                    "index": positions.originalIndex
-                },
-                "to": {
-                    "container": positions.currentContainer,
-                    "index": positions.currentIndex
-                }
+                "from": {"container": positions.originalContainer,"index": positions.originalIndex},
+                "to": (positioned) ? {"container": positions.currentContainer,"index": positions.currentIndex} : false
             }
         });
-        return event;
     }
     function muteEvent(event) {//mute unwanted events
         event.preventDefault();
@@ -406,17 +401,6 @@ var lmdd = (function () {
                 if (node.nodeType === 1) {
                     animate(node);
                 }
-                else if ((node.cloneRef.parentNode.childNodes.length > 1) && (!node.cloneRef.wrapper)) {
-                    var wrapper = document.createElement('div');
-                    node.cloneRef.parentNode.insertBefore(wrapper, node.cloneRef);
-                    wrapper.appendChild(node.cloneRef);
-                    node.cloneRef = wrapper;
-                    wrapper.style.position = 'absolute';
-                    var range = document.createRange();
-                    range.selectNode(node);
-                    wrapper.style.top = range.getClientRects()[0].top - wrapper.parentNode.getBoundingClientRect().top + 'px';
-                    wrapper.wrapper = true;
-                }
             })
         }
     }
@@ -468,6 +452,7 @@ var lmdd = (function () {
                                     return;
                                 }
                                 else {
+                                    scope.dispatchEvent(new CustomEvent('lmddbeforestart', {"bubbles": true}));
                                     dragOffset.x = event.clientX - target.getBoundingClientRect().left;
                                     dragOffset.y = event.clientY - target.getBoundingClientRect().top;
                                     setElements(target);
@@ -480,19 +465,23 @@ var lmdd = (function () {
                                     clearInterval(calcInterval);//make sure interval was not set already
                                     calcInterval = window.setInterval(eventTicker, scope.lmddOptions.calcInterval);//calculation interval for mouse movement
                                     observer.observe(scope, {childList: true, subtree:true });
+                                    if (!scope.lmddOptions.nativeScroll) {//disable native scrolling on mouse down
+                                        event.preventDefault();
+                                    }
+                                    scope.dispatchEvent(createLmddEvent("lmddstart"));
+                                    status = "dragStart";
+                                    scrollManager.active = true;
                                 }
                             }
-                            if (!scope.lmddOptions.nativeScroll) {//disable native scrolling on mouse down
-                                event.preventDefault();
-                            }
-                            status = "dragStart";
-                            scope.dispatchEvent(createLmddEvent("lmddstart"));
-                            scrollManager.active = true;
                         }
                     }, scope.lmddOptions.dragstartTimeout);
                 }
                 break;
             case "dragStartTimeout":
+                if(mousemoveCounter === 0){
+                    mousemoveCounter ++;
+                    return;
+                }
                 killEvent();
                 break;
             case "dragStart":
@@ -540,6 +529,9 @@ var lmdd = (function () {
             case "waitDragEnd":
                 if (event.type === "transitionend") {
                     tasks.executeTask("onTransitionEnd");
+                }
+                if (event.type === "mouseup"){
+                    killEvent();
                 }
                 break;
         }
@@ -622,7 +614,7 @@ var lmdd = (function () {
         if (refEvent === lastEvent) {
             return false;
         }
-        if(refEvent){
+        if(refEvent && scope.lmddOptions.positionDelay){
             if(lastEvent.timeStamp - refEvent.timeStamp < scope.lmddOptions.calcInterval){
                 return false;
             }
@@ -654,6 +646,7 @@ var lmdd = (function () {
         observer.disconnect();
         clearInterval(calcInterval);
         calcInterval = null;
+        mousemoveCounter = 0;
         scrollManager.active = false;
         if (cloning && !positioned) {
             clone.elref.classList.remove("no-display");

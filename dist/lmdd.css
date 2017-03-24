@@ -9,7 +9,7 @@
     opacity:1;
     z-index:-1;
     pointer-events: none;
-    transition: 0.7s;
+    transition: all 0.7s;
 }
 .visible-layer .lmdd-mirror.gf-transition{
     transition:all 0.3s !important;

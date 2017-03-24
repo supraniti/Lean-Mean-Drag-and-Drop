@@ -37,7 +37,7 @@
 </head>
 <body>
 <header>
-    <nav class="deep-orange lighten-1" role="navigation">
+    <nav class="black" role="navigation">
         <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">LMDD</a>
             <ul class="right hide-on-med-and-down">
                 <li><a href="#about">About</a></li>
@@ -46,12 +46,7 @@
                 <li><a href="#example2">Example 2</a></li>
                 <li><a href="#example3">Example 3</a></li>
             </ul>
-            <ul id="nav-mobile" class="side-nav deep-orange lighten-1 white-text">
-                <li>
-                    <div class="background">
-                        <img src="gh-pages/images/logo-250.png">
-                    </div>
-                </li>
+            <ul id="nav-mobile" class="side-nav">
                 <li><a class="waves-effect" href="#about"><i class="material-icons">announcement</i>About</a></li>
                 <li><a class="waves-effect" href="#installation"><i class="material-icons">lightbulb_outline</i>Installation</a>
                 </li>
@@ -69,8 +64,9 @@
     </nav>
 </header>
 <main>
+    <a href="https://github.com/supraniti/Lean-Mean-Drag-and-Drop" class="github-link"><img src="gh-pages/images/GitHub-Mark-32px.png"></a>
     <div class="container">
-        <div id="about" class="section scrollspy">
+        <div id="about" class="section scrollspy flow-text">
             <h4 class="deep-orange-text text-darken-3">About</h4>
             <p><b>Lean & Mean Drag and Drop</b> is a small script making drag and drop for re-ordering complex html
                 layout a breeze</p>
@@ -85,9 +81,8 @@
             <pre><code
                     class="language-css">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
         </div>
-
         <div id="simple-grid-example">
-            <div class="simple-grid z-depth-2">
+            <div class="simple-grid z-depth-5">
                 <div class="light-green z-depth-3 grid-item">Green</div>
                 <div class="pink z-depth-3 grid-item">Pink</div>
                 <div class="deep-purple z-depth-3 grid-item">Purple</div>
@@ -99,101 +94,261 @@
                 <div class="black z-depth-3 grid-item">Black</div>
             </div>
         </div>
+        <div id="handle-example" class="z-depth-5">
+            <div class="handle-grid">
+                <div class="title z-depth-2">TODO</div>
+                <div class="z-depth-3 handle-item">
+                    <div class="content lmdd-block">
+                        <i class="material-icons handle">reorder</i>
+                        <div class="task">Code refactoring & optimizations</div>
+                    </div>
+                </div>
+                <div class="z-depth-3 handle-item">
+                    <div class="content lmdd-block">
+                        <i class="material-icons handle">reorder</i>
+                        <div class="task">Cross browser testing</div>
+                    </div>
+                </div>
+                <div class="z-depth-3 important handle-item">
+                    <div class="content lmdd-block">
+                        <i class="material-icons handle">reorder</i>
+                        <div class="task">Call mom</div>
+                    </div>
+                </div>
+            </div>
+            <div class="handle-grid done">
+                <div class="title z-depth-2">DONE</div>
+                <div class="z-depth-3 handle-item">
+                    <div class="content lmdd-block">
+                        <i class="material-icons handle">reorder</i>
+                        <div class="task">Basic Drag & Drop script</div>
+                    </div>
+                </div>
+                <div class="z-depth-3 handle-item">
+                    <div class="content lmdd-block">
+                        <i class="material-icons handle">reorder</i>
+                        <div class="task">Smooth transitions</div>
+                    </div>
+                </div>
+                <div class="z-depth-3 handle-item">
+                    <div class="content lmdd-block">
+                        <i class="material-icons handle">reorder</i>
+                        <div class="task">Support nested structures</div>
+                    </div>
+                </div>
+                <div class="z-depth-3 handle-item">
+                    <div class="content lmdd-block">
+                        <i class="material-icons handle">reorder</i>
+                        <div class="task">Scroll while dragging</div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="nested-example">
             <div class="nestable w-1-1 grey lighten-5 z-depth-5">
                 <div class="nestable w-1-3 nested-item red accent-1 z-depth-3">
-                    <div class="nested-item w-1-9 red z-depth-1"><p>Red</p></div>
-                    <div class="nested-item w-1-9 red z-depth-1"><p>Red</p></div>
-                    <div class="nested-item w-1-9 red z-depth-1"><p>Red</p></div>
-                    <div class="nested-item w-1-9 red z-depth-1"><p>Red</p></div>
+                    <div class="nested-item red z-depth-1"><p>Red</p></div>
+                    <div class="nested-item red z-depth-1"><p>Red</p></div>
+                    <div class="nested-item red z-depth-1"><p>Red</p></div>
                 </div>
                 <div class="nestable w-1-3 nested-item green accent-1 z-depth-3">
-                    <div class="nested-item w-1-9 green z-depth-1"><p>Green</p></div>
-                    <div class="nested-item w-1-9 green z-depth-1"><p>Green</p></div>
-                    <div class="nested-item w-1-9 green z-depth-1"><p>Green</p></div>
-                    <div class="nested-item w-1-9 green z-depth-1"><p>Green</p></div>
+                    <div class="nested-item green z-depth-1"><p>Green</p></div>
+                    <div class="nested-item green z-depth-1"><p>Green</p></div>
+                    <div class="nested-item green z-depth-1"><p>Green</p></div>
                 </div>
-                <div class="nestable w-1-3 nested-item blue accent-1 z-depth-3"><span>container!</span>
-                    <div class="nested-item w-1-9 blue z-depth-1"><p>Blue</p></div>
-                    <div class="nested-item w-1-9 blue z-depth-1"><p>Blue</p></div>
-                    <div class="nested-item w-1-9 blue z-depth-1"><p>Blue</p></div>
-                    <div class="nested-item w-1-9 blue z-depth-1"><p>Blue</p></div>
+                <div class="nestable w-1-3 nested-item blue accent-1 z-depth-3">
+                    <div class="nested-item blue z-depth-1"><p>Blue</p></div>
+                    <div class="nested-item blue z-depth-1"><p>Blue</p></div>
+                    <div class="nested-item blue z-depth-1"><p>Blue</p></div>
                 </div>
             </div>
         </div>
-
-        <div id="match-example">
-            <div class="img-grid z-depth-2">
-                <div class="fixed title lmdd-block">
-                    <p>I am a container with no <code class="language-html">container-type</code> data attribute
-                        assigned, therefore I will accept any item</p>
-                    <div class="divider"></div>
-                </div>
-                <img class="img-item" src="gh-pages/images/yellow-carrot.png" data-item-type="yellow">
-                <img class="img-item" src="gh-pages/images/red-carrot.png" data-item-type="red">
-                <img class="img-item" src="gh-pages/images/red-chili.png" data-item-type="red">
-                <img class="img-item" src="gh-pages/images/yellow-chili.png" data-item-type="yellow">
-                <img class="img-item" src="gh-pages/images/red-tomato.png" data-item-type="red">
-                <img class="img-item" src="gh-pages/images/yellow-tomato.png" data-item-type="yellow">
-                <img class="img-item" src="gh-pages/images/yellow-lemon.png" data-item-type="yellow">
-                <img class="img-item" src="gh-pages/images/green-lemon.png">
-            </div>
-            <div class="img-grid red lighten-4 z-depth-2" data-container-type="red">
-                <div class="fixed title lmdd-block">
-                    <p>I will accept any item with the data attribute <code
-                            class="language-html">item-type="red"</code> assigned, Items with no <code
-                            class="language-html">item-type</code> data attribute will be rejected</p>
-                    <div class="divider"></div>
-                </div>
-                <img class="img-item" src="gh-pages/images/red-strawberry.png" data-item-type="red">
-            </div>
-            <div class="img-grid yellow lighten-3 z-depth-2" data-container-type="yellow">
-                <div class="fixed title lmdd-block">
-                    <p>I will accept any item with the data attribute <code
-                            class="language-html">item-type="yellow"</code> assigned , Items with no <code
-                            class="language-html">item-type</code> data attribute will be accepted</p>
-                    <div class="divider"></div>
-                </div>
-                <img class="img-item" src="gh-pages/images/yellow-strawberry.png" data-item-type="yellow">
-            </div>
-        </div>
-
-
         <div class="browser-default" id="nested-tree-example">
             <ul class="browser-default nestable-ul">
                 <li class="browser-default nested-li">
-                    <div class="title">Header A</div>JUST SOME TEXT FOR INTERRUPTIONM!!!
+                    <div class="title-li">Header A</div>
                     <ul class="browser-default nestable-ul">
-                        <li class="browser-default nested-li"><div class="title">Header A.1</div><ul class="browser-default nestable-ul"></ul><div class="title">Footer A.1</div></li>
-                        <li class="browser-default nested-li"><div class="title">Header A.2</div><div class="title">Footer A.2</div></li>
-                        <li class="browser-default nested-li"><div class="title">Header A.3</div><div class="title">Footer A.3</div></li>
+                        <li class="browser-default nested-li">
+                            <div class="title-li">Header A.1</div>
+                            <ul class="browser-default nestable-ul"></ul>
+                        </li>
+                        <li class="browser-default nested-li">
+                            <div class="title-li">Header A.2</div>
+                            <ul class="browser-default nestable-ul"></ul>
+                        </li>
                     </ul>
-                    <div class="title">Footer A</div>
                 </li>
-                <li class="browser-default nested-li"><div class="title">Header B</div><ul class="browser-default nestable-ul"></ul><div class="title">Footer B</div></li>
-                <li class="browser-default nested-li"><div class="title">Header C</div><ul class="browser-default nestable-ul"></ul><div class="title">Footer C</div></li>
+                <li class="browser-default nested-li">
+                    <div class="title-li">Header B</div>
+                    <ul class="browser-default nestable-ul"></ul>
+                </li>
+                <li class="browser-default nested-li">
+                    <div class="title-li">Header C</div>
+                    <ul class="browser-default nestable-ul"></ul>
+                </li>
             </ul>
         </div>
-
-        <div id="clonner-example">
-            <div class="example-container lmdd-dispatcher palette white z-depth-3">
-                <div class="example-item lmdd-clonner red darken-3 z-depth-1"></div>
-                <div class="example-item lmdd-clonner pink darken-2 z-depth-1"></div>
-                <div class="example-item lmdd-clonner purple darken-1 z-depth-1"></div>
-                <div class="example-item lmdd-clonner deep-purple lighten-1 z-depth-1"></div>
-                <div class="example-item lmdd-clonner indigo lighten-2 z-depth-1"></div>
-                <div class="example-item lmdd-clonner blue lighten-3 z-depth-1"></div>
+        <div id="hanoi-tower" class="white z-depth-5">
+            <div class="panel">
+                <a class="btn-floating btn waves-effect waves-light black" title="Reset tower" onclick="resetTower()"><i class="material-icons">power_settings_new</i></a>
+                <a id="play" class="btn-floating btn waves-effect waves-light green disabled" title="Play batch" onclick="runBatch()"><i class="material-icons">play_circle_filled</i></a>
+                <a class="btn-floating btn waves-effect waves-light red" title ="Clear Batch" onclick="clearBatch()"><i class="material-icons">clear</i></a>
             </div>
-            <div class="example-container canvas white z-depth-3">
-                <div class="example-item red darken-3 z-depth-1"></div>
-                <div class="example-item pink darken-2 z-depth-1"></div>
-                <div class="example-item purple darken-1 z-depth-1"></div>
-                <div class="example-item deep-purple lighten-1 z-depth-1"></div>
-                <div class="example-item indigo lighten-2 z-depth-1"></div>
-                <div class="example-item blue lighten-3 z-depth-1"></div>
+            <div id="first" class="tower">A</div>
+            <div id="second" class="tower">B</div>
+            <div id="third" class="tower">C</div>
+            <div class="red disk" id="d1" data-width="3"></div>
+            <div class="green disk" id="d2" data-width="2"></div>
+            <div class="blue disk" id="d3" data-width="1"></div>
+        </div>
+        <div id="clonner-example">
+            <div class="example-container lmdd-dispatcher palette green z-depth-5">
+                <div class="example-item lmdd-clonner z-depth-2 lmdd-block" data-from="first" data-to="second">A &rarr; B</div>
+                <div class="example-item lmdd-clonner z-depth-2" data-from="first" data-to="third">A &rarr; C</div>
+                <div class="example-item lmdd-clonner z-depth-2" data-from="second" data-to="first">B &rarr; A</div>
+                <div class="example-item lmdd-clonner z-depth-2" data-from="second" data-to="third">B &rarr; C</div>
+                <div class="example-item lmdd-clonner z-depth-2" data-from="third" data-to="first">C &rarr; A</div>
+                <div class="example-item lmdd-clonner z-depth-2" data-from="third" data-to="second">C &rarr; B</div>
+            </div>
+            <div id="batch" class="example-container canvas black z-depth-5">
             </div>
         </div>
-
+        <script>//hanoi tower script
+        var ready = false;
+        var getCoordinates = function (towerID, diskID) {
+            var tower = document.getElementById(towerID).getBoundingClientRect();
+            var disk = document.getElementById(diskID).getBoundingClientRect();
+            return {
+                top: tower.top - disk.top,
+                center: tower.left - disk.left + (tower.width - disk.width) / 2,
+                diskHeight: disk.height,
+                towerHeight: tower.height
+            }
+        }
+        var coordinates = {};
+        var towers = ['first', 'second', 'third'];
+        var disks = ['d1', 'd2', 'd3'];
+        towers.forEach(function (tower) {
+            coordinates[tower] = {}
+            disks.forEach(function (disk) {
+                coordinates[tower][disk] = getCoordinates(tower, disk);
+            });
+        });
+        var sequence = [];
+        function compareDisks(from, to) {
+            var _from = document.getElementById(from);
+            var _to = document.getElementById(to);
+            return (_from.dataset.width < _to.dataset.width)
+        }
+        function move() {
+            if (sequence.length > 0) {
+                var command = sequence.splice(0, 1)[0];
+                document.getElementById(command.disk).addEventListener('transitionend', move, false);
+                animateMove(command.tower, command.disk, command.level);
+            }
+        }
+        function animateMove(tower, disk, level, check) {
+            var el = document.getElementById(disk);
+            var cords = coordinates[tower][disk];
+            if (level < 0) {
+                el.style.transform = "translate3d(" + cords.center + "px," + cords.top + "px,0px)";
+            } else {
+                level++;
+                el.style.transform = "translate3d(" + cords.center + "px," + (cords.towerHeight + cords.top - (cords.diskHeight * level)) + "px,0px)";
+            }
+        }
+        function getDisk(tower) {
+            var level = -1;
+            var returnDisk = false;
+            disks.forEach(function (disk) {
+                if (coordinates[tower][disk].level > level) {
+                    level = coordinates[tower][disk].level;
+                    returnDisk = disk;
+                }
+            });
+            return {
+                level: level,
+                disk: returnDisk
+            }
+        }
+        function resetTower() {
+            animateMove('first', 'd1', 0);
+            animateMove('first', 'd2', 1);
+            animateMove('first', 'd3', 2);
+            towers.forEach(function (tower) {
+                disks.forEach(function (disk) {
+                    coordinates[tower][disk].level = -1;
+                });
+            });
+            coordinates['first']['d1'].level = 0;
+            coordinates['first']['d2'].level = 1;
+            coordinates['first']['d3'].level = 2;
+            sequence = [];
+            ready = true;
+            document.getElementById('play').classList.remove('disabled');
+        }
+        function checkResult(){
+            if ( coordinates['third']['d1'].level === 0 && coordinates['third']['d2'].level === 1 && coordinates['third']['d3'].level === 2){
+                var itrs = document.getElementById('batch').childNodes.length;
+                alert('Hooray! you have smashed the towers of Hanoi challenge. The minimum steps needed for this task is 7, you have done it in ' + itrs + '.')
+            };
+        }
+        function clearBatch(){
+            var el = document.getElementById('batch');
+            while (el.firstChild) {
+                el.removeChild(el.firstChild);
+            }
+            resetTower();
+        }
+        function runBatch(){
+            if (ready){
+                var el = document.getElementById('batch');
+                Array.prototype.forEach.call(el.childNodes,function(node) {
+                    node.classList.remove('alert');
+                    node.classList.remove('processing');
+                });
+                for (var i = 0; i<el.childNodes.length; i++){
+                    var node = el.childNodes[i];
+                    node.classList.add('processing');
+                    var getFrom = getDisk(node.dataset.from);
+                    var getTo = getDisk(node.dataset.to);
+                    if (getFrom.level > -1) {
+                        if (getTo.level > -1) {
+                            if (!compareDisks(getFrom.disk, getTo.disk)) {
+                                node.classList.add('alert');
+                                break;
+                            }
+                        }
+                        sequence.push({
+                            tower: node.dataset.from,
+                            disk: getFrom.disk,
+                            level: -1
+                        });
+                        sequence.push({
+                            tower: node.dataset.to,
+                            disk: getFrom.disk,
+                            level: -1
+                        });
+                        sequence.push({
+                            tower: node.dataset.to,
+                            disk: getFrom.disk,
+                            level: getTo.level + 1
+                        });
+                        coordinates[node.dataset.from][getFrom.disk].level = -1;
+                        coordinates[node.dataset.to][getFrom.disk].level = getTo.level +1;
+                    }else{
+                        node.classList.add('alert');
+                        break;
+                    }
+                }
+                move();
+                ready = false;
+                document.getElementById('play').classList.add('disabled');
+                checkResult();
+            }
+        }
+        resetTower();
+        </script>
         <div id="example1" class="section scrollspy">
             <h4 class="deep-orange-text text-darken-3">Example #1 - Simple Sortable Lists</h4>
             <p class="flow-text">Note LMDD is markup oriented, meaning your HTML markup determines the way drag and
@@ -234,10 +389,10 @@
         </div>
     </div>
 </main>
-<footer class="page-footer deep-orange">
+<footer class="page-footer black">
     <div class="footer-copyright">
         <div class="container">
-            © 2017 Supraniti, All rights reserved.
+            2017 © Supraniti, All rights reserved.
             <a class="grey-text text-lighten-4 right"
                href="https://github.com/supraniti/Lean-Mean-Drag-and-Drop/blob/master/LICENSE">MIT License</a>
         </div>
@@ -245,10 +400,10 @@
 </footer>
 <!--  Scripts-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 <script src="gh-pages/prism.js"></script>
 <script src="dist/lmdd.js"></script>
 <script src="gh-pages/script.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.9/vue.min.js"></script>
 <script>
     $(document).ready(function () {

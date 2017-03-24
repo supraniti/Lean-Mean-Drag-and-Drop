@@ -3,47 +3,28 @@
  */
 lmdd.set(document.getElementById('clonner-example'), {
     containerClass: 'example-container',
-    fixedItemClass: false,
-    draggableItemClass: 'example-item',
-    handleClass: false,
-    regulateMouseOver: false,
-    mirrorMinHeight: 100,
-    mirrorMaxWidth: 500,
-    revert: false,
-    clone: false,
-    dataMode:true
+    draggableItemClass: 'example-item'
 });
 lmdd.set(document.getElementById('simple-grid-example'), {
     containerClass: 'simple-grid',
     draggableItemClass: 'grid-item'
 });
-lmdd.set(document.getElementById('match-example'), {
-    containerClass: 'img-grid',
-    fixedItemClass: false,
-    draggableItemClass: 'img-item',
-    handleClass: false,
-    revert: true,
-    matchObject: {
-        "default":true,
-        "yellow":{
-            "default": true,
-            "yellow": true
-        },
-        "red":{
-            "default": false,
-            "red": true
-        }
-    }
-});
 lmdd.set(document.getElementById('nested-example'), {
     containerClass: 'nestable',
-    draggableItemClass: 'nested-item'
+    draggableItemClass: 'nested-item',
+    positionDelay:true
 });
 lmdd.set(document.getElementById('nested-tree-example'), {
     containerClass: 'nestable-ul',
     draggableItemClass: 'nested-li'
 });
-document.addEventListener('lmddend',handleDrag,false);
-function handleDrag(event){
-    console.log(event.detail);
-}
+lmdd.set(document.getElementById('handle-example'), {
+    containerClass: 'handle-grid',
+    draggableItemClass: 'handle-item',
+    handleClass:'handle'
+});
+
+
+
+
+
