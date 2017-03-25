@@ -28,7 +28,8 @@
     <meta name="theme-color" content="#ef5423">
     <!-- CSS-->
     <link href="gh-pages/style.css" type="text/css" rel="stylesheet">
-    <link href="gh-pages/prism.css" rel="stylesheet">
+    <!--<link href="gh-pages/prism.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/agate.min.css">
     <link href="dist/lmdd.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" type="text/css"
           rel="stylesheet" media="screen,projection">
@@ -66,21 +67,73 @@
 <main>
     <a href="https://github.com/supraniti/Lean-Mean-Drag-and-Drop" class="github-link"><img src="gh-pages/images/GitHub-Mark-32px.png"></a>
     <div class="container">
-        <div id="about" class="section scrollspy flow-text">
-            <h4 class="deep-orange-text text-darken-3">About</h4>
-            <p><b>Lean & Mean Drag and Drop</b> is a small script making drag and drop for re-ordering complex html
-                layout a breeze</p>
-            <p>LMDD is light weighted (~3kb gzipped) and has zero dependencies. It can work with any type of layout,
-                including flex-box, and produce beautiful looking UI with smooth transitions on sorting.</p>
+        <div id="about" class="section scrollspy">
+            <p class="flow-text"><i>Lean & Mean Drag and Drop is a small script for dragging, dropping, sorting and reordering html structures</i></p>
+            <h5>Features</h5>
+            <div id="features">
+                <div class="feature-grid">
+                    <div class="z-depth-3 black lmdd-block feature-item">
+                        <div class="feature">Support for deep nested structures ('nestable sortables')</div>
+                    </div>
+                    <div class="z-depth-3 black lmdd-block feature-item">
+                        <div class="feature">Smooth transitions</div>
+                    </div>
+                    <div class="z-depth-3 black lmdd-block feature-item">
+                        <div class="feature">Auto scroll while dragging</div>
+                    </div>
+                    <div class="z-depth-3 black lmdd-block feature-item">
+                        <div class="feature">Lightweight (~3.5kb gzipped)</div>
+                    </div>
+                    <div class="z-depth-3 black lmdd-block feature-item">
+                        <div class="feature">No dependencies</div>
+                    </div>
+                    <div class="z-depth-3 black lmdd-block feature-item">
+                        <div class="feature">Super easy to integrate with your own app</div>
+                    </div>
+                    <div class="z-depth-3 black lmdd-block feature-item">
+                        <div class="feature">Supports touch events</div>
+                    </div>
+
+                    <div class="z-depth-3 black lmdd-block feature-item">
+                        <div class="feature">Compatible with all modern browsers</div>
+                    </div>
+                    <div class="z-depth-3 black lmdd-block feature-item">
+                        <div class="feature">Can work with any type of layout</div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="installation" class="section scrollspy">
-            <h4 class="deep-orange-text text-darken-3">Installation</h4>
-            <p>Add <a class="deep-orange-text" href="#">mldd.min.js</a> to your project and load it.</p>
+            <h5>Installation</h5>
+            <p>Add <a href="#">mldd.min.js</a> to your project and load it.</p>
             <p>Initialize LMDD instance with your preferred options, and make sure to listen to the relevant events
                 and respond accordingly</p>
             <pre><code
-                    class="language-css">lmdd.init(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
+                    class="hljs javascript">lmdd.set(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
         </div>
+        <div id="options" class="section scrollspy">
+            <h5>Options</h5>
+            <pre><code class="hljs javascript">
+lmdd.set(document.getElementById('someID'), {
+    containerClass:'lmdd-container',//choose any class to act as a container class, a container can nest draggable items inside
+    draggableItemClass: 'lmdd-draggable',//choose any class to act as a draggable item, a draggable can be moved inside and between containers
+    handleClass: false,//if you want a handle, just specify its class
+    dragstartTimeout: 50,//small delay on initial execution to let the user select text
+    calcInterval: 200,//interval between position calculations(ms), small amount of time means faster reaction and more CPU
+    revert: true,//when revert is set to true the draggable will maintain its original position when the cursor is out of container bounds
+    nativeScroll: false,//lmdd uses a scroll control function, you can eliminate it and use the native browser scroll
+    mirrorMinHeight: 100,//
+    mirrorMaxWidth: 500,//set the maximum width and minimum height of the draggable mirror (lmdd will scale the mirror to this size for better UX while dragging large items)
+    matchObject: false,//explain please... :-)
+    positionDelay: false,//setting to 'true' will make dragging a bit less responsive but will prevent flickering when moving nested structures
+    dataMode: false//setting to 'true' will undo all DOM manipulations on drag end, this is useful when integrating with react/angular/vue
+});
+            </code></pre>
+        </div>
+        <h5>Examples</h5>
+        <h5>Integrations</h5>
+        <h5>Events</h5>
+
         <div id="simple-grid-example">
             <div class="simple-grid z-depth-5">
                 <div class="light-green z-depth-3 grid-item">Green</div>
@@ -401,7 +454,10 @@
 <!--  Scripts-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
-<script src="gh-pages/prism.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!--<script src="gh-pages/prism.js"></script>-->
 <script src="dist/lmdd.js"></script>
 <script src="gh-pages/script.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.9/vue.min.js"></script>

@@ -1,3 +1,28 @@
+#features{
+    margin-bottom:15px;
+}
+.feature-grid{
+    display:flex;
+    padding:7px;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+.feature-item{
+    padding:5px;
+    margin:5px;
+    font-size:15px;
+    border: 3px solid white;
+    flex: 1 1 auto;
+    vertical-align: middle;
+    cursor:move;
+}
+.feature{
+    color:white;
+    text-align:center;
+    padding: 5px;
+}
+
+
 #simple-grid-example{
     margin-top:15px;
     margin-bottom:15px;
@@ -211,7 +236,9 @@
 }
 
 
-
+.large-font{
+    font-size:1.2rem;
+}
 
 
 /*.side-nav a,.side-nav li>a>i.material-icons {*/

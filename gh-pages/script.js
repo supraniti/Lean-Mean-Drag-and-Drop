@@ -23,6 +23,10 @@ lmdd.set(document.getElementById('handle-example'), {
     draggableItemClass: 'handle-item',
     handleClass:'handle'
 });
+lmdd.set(document.getElementById('features'), {
+    containerClass: 'feature-grid',
+    draggableItemClass: 'feature-item'
+});
 
 
 
