@@ -6,6 +6,7 @@
     padding:7px;
     flex-flow: row wrap;
     justify-content: space-between;
+    border: 1px dashed black;
 }
 .feature-item{
     padding:5px;
@@ -24,8 +25,7 @@
 
 
 #simple-grid-example{
-    margin-top:15px;
-    margin-bottom:15px;
+    background-color: white;
 }
 .simple-grid{
     display:flex;
@@ -49,8 +49,6 @@
 
 
 #nested-example{
-    margin-top:15px;
-    margin-bottom:15px;
 }
 .nestable{
     display:flex;
@@ -96,10 +94,9 @@
 
 
 #handle-example{
-    margin-top:15px;
-    margin-bottom:15px;
     display:flex;
     justify-content: space-around;
+    background-color: white;
 }
 .handle-grid{
     flex: 1 1 50%;
@@ -107,11 +104,6 @@
     padding:7px;
     max-width: 350px;
     flex-flow: column nowrap;
-    border-right: 3px solid lightgray;
-    border-left: 3px solid lightgrey;
-}
-.important.handle-item{
-    background-color: #E57373;
 }
 .handle-item{
     padding:3px;
@@ -120,6 +112,9 @@
     background-color: #8bc34a;
     font-size:15px;
     border: 3px solid lightgoldenrodyellow;
+}
+.priority .handle-item{
+    background-color: #E57373;
 }
 .done .handle-item{
     background-color: lightgrey;
@@ -249,13 +244,23 @@
 /*}*/
 .github-link{
     position:absolute;
-    top:16px;
-    right:16px;
+    top:12px;
+    right:32px;
     height:32px;
     width:32px;
     filter:invert(100%);
     transition:0.3s;
 }
+@media only screen and (min-width: 601px){
+    .github-link {
+        top: 16px;
+    }
+}
+
 .github-link:hover {
     transform: rotate(360deg);
+}
+
+#nested-example,.collapsible.popout>li{
+    background-color: #F0F0F0;
 }

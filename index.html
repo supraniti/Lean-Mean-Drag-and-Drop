@@ -29,7 +29,7 @@
     <!-- CSS-->
     <link href="gh-pages/style.css" type="text/css" rel="stylesheet">
     <!--<link href="gh-pages/prism.css" rel="stylesheet">-->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/agate.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/default.min.css">
     <link href="dist/lmdd.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" type="text/css"
           rel="stylesheet" media="screen,projection">
@@ -73,7 +73,7 @@
             <div id="features">
                 <div class="feature-grid">
                     <div class="z-depth-3 black lmdd-block feature-item">
-                        <div class="feature">Support for deep nested structures ('nestable sortables')</div>
+                        <div class="feature">Supports nested structures ('nestable sortables')</div>
                     </div>
                     <div class="z-depth-3 black lmdd-block feature-item">
                         <div class="feature">Smooth transitions</div>
@@ -105,117 +105,245 @@
         </div>
         <div id="installation" class="section scrollspy">
             <h5>Installation</h5>
-            <p>Add <a href="#">mldd.min.js</a> to your project and load it.</p>
-            <p>Initialize LMDD instance with your preferred options, and make sure to listen to the relevant events
-                and respond accordingly</p>
-            <pre><code
-                    class="hljs javascript">lmdd.set(document.getElementById('yourMarkupID'),{yourOptionsObject});</code></pre>
+            <pre>
+                <code class="hljs html">
+//Load LMDD css and js files
+&lt;link href="../css/lmdd.min.css" rel="stylesheet">
+&lt;script src="../js/lmdd.min.js">&lt;/script>
+
+//Initialize LMDD instance with your preferred options
+&lt;script>lmdd.set(document.getElementById('markupID'),{optionsObject});&lt;/script>
+                </code>
+            </pre>
         </div>
+        <div id="examples">
+            <h5>Examples</h5>
+            <ul class="collapsible popout" data-collapsible="accordion">
+                <li>
+                    <div class="collapsible-header active"><i class="material-icons">remove_red_eye</i>Simple Grid</div>
+                    <div class="collapsible-body">
+                        <div id="simple-grid-example">
+                            <div class="simple-grid">
+                                <div class="light-green z-depth-3 grid-item">Green</div>
+                                <div class="pink z-depth-3 grid-item">Pink</div>
+                                <div class="deep-purple z-depth-3 grid-item">Purple</div>
+                                <div class="light-blue z-depth-3 grid-item">Blue</div>
+                                <div class="lime z-depth-3 grid-item">Lime</div>
+                                <div class="teal z-depth-3 grid-item">Teal</div>
+                                <div class="amber z-depth-3 grid-item">Amber</div>
+                                <div class="deep-orange z-depth-3 grid-item">Orange</div>
+                                <div class="black z-depth-3 grid-item">Black</div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="collapsible-header active"><i class="material-icons">remove_red_eye</i>Multiple containers and handle</div>
+                    <div class="collapsible-body">
+                        <div id="handle-example">
+                            <div class="handle-grid">
+                                <div class="title z-depth-2">Tasks</div>
+                                <div class="z-depth-3 handle-item">
+                                    <div class="content lmdd-block">
+                                        <i class="material-icons handle">reorder</i>
+                                        <div class="task">Code refactoring & optimizations</div>
+                                    </div>
+                                </div>
+                                <div class="z-depth-3 handle-item">
+                                    <div class="content lmdd-block">
+                                        <i class="material-icons handle">reorder</i>
+                                        <div class="task">Cross browser testing</div>
+                                    </div>
+                                </div>
+                                <div class="z-depth-3 important handle-item">
+                                    <div class="content lmdd-block">
+                                        <i class="material-icons handle">reorder</i>
+                                        <div class="task">Call mom</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="handle-grid priority">
+                                <div class="title z-depth-2">Important Tasks</div>
+                                <div class="z-depth-3 handle-item">
+                                    <div class="content lmdd-block">
+                                        <i class="material-icons handle">reorder</i>
+                                        <div class="task">Call mom</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="handle-grid done">
+                                <div class="title z-depth-2">Done</div>
+                                <div class="z-depth-3 handle-item">
+                                    <div class="content lmdd-block">
+                                        <i class="material-icons handle">reorder</i>
+                                        <div class="task">Basic Drag & Drop script</div>
+                                    </div>
+                                </div>
+                                <div class="z-depth-3 handle-item">
+                                    <div class="content lmdd-block">
+                                        <i class="material-icons handle">reorder</i>
+                                        <div class="task">Smooth transitions</div>
+                                    </div>
+                                </div>
+                                <div class="z-depth-3 handle-item">
+                                    <div class="content lmdd-block">
+                                        <i class="material-icons handle">reorder</i>
+                                        <div class="task">Support nested structures</div>
+                                    </div>
+                                </div>
+                                <div class="z-depth-3 handle-item">
+                                    <div class="content lmdd-block">
+                                        <i class="material-icons handle">reorder</i>
+                                        <div class="task">Scroll while dragging</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="collapsible-header active"><i class="material-icons">remove_red_eye</i>Nested Grid</div>
+                    <div class="collapsible-body">
+                        <div id="nested-example">
+                            <div class="nestable w-1-1">
+                                <div class="nestable w-1-3 nested-item red accent-1 z-depth-3">
+                                    <div class="nested-item red z-depth-1"><p>Red</p></div>
+                                    <div class="nested-item red z-depth-1"><p>Red</p></div>
+                                    <div class="nested-item red z-depth-1"><p>Red</p></div>
+                                </div>
+                                <div class="nestable w-1-3 nested-item green accent-1 z-depth-3">
+                                    <div class="nested-item green z-depth-1"><p>Green</p></div>
+                                    <div class="nested-item green z-depth-1"><p>Green</p></div>
+                                    <div class="nested-item green z-depth-1"><p>Green</p></div>
+                                </div>
+                                <div class="nestable w-1-3 nested-item blue accent-1 z-depth-3">
+                                    <div class="nested-item blue z-depth-1"><p>Blue</p></div>
+                                    <div class="nested-item blue z-depth-1"><p>Blue</p></div>
+                                    <div class="nested-item blue z-depth-1"><p>Blue</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="collapsible-header"><i class="material-icons">code</i>Markup & Code</div>
+                    <div class="collapsible-body">
+                    <pre><code class="hljs HTML">
+&lt;script>
+    lmdd.set(document.getElementById('example'), {
+        containerClass: 'grid',
+        draggableItemClass: 'item',
+        handleClass:'handle'
+    });
+&lt;/script>
+
+Simple grid markup:
+&lt;div id="example"> (scope)
+    &lt;div class="grid"> (container)
+        &lt;div class="item">&lt;/div> (draggable)
+    &lt;/div>
+&lt;/div>
+
+Multiple Containers and handle markup:
+&lt;div id="handle-example"> (scope)
+    &lt;div class="grid"> (container)
+        &lt;div class="item"> (draggable)
+            &lt;div class="handle">&lt;/div> (handle)
+        &lt;/div>
+    &lt;/div>
+    &lt;div class="grid"> (another container)
+    &lt;/div>
+&lt;/div>
+
+Nested grid markup:
+&lt;div id="nested-example"> (scope)
+    &lt;div class="grid"> (container)
+        &lt;div class="grid item"> (container AND draggable)
+            &lt;div class="item">&lt;/div> (draggable)
+            &lt;div class="item">&lt;/div> (draggable)
+            &lt;div class="item">&lt;/div> (draggable)
+        &lt;/div>
+        &lt;div class="grid item"> (container AND draggable)
+            &lt;div class="item">&lt;/div> (draggable)
+            &lt;div class="item">&lt;/div> (draggable)
+            &lt;div class="item">&lt;/div> (draggable)
+        &lt;/div>
+    &lt;/div>
+&lt;/div>
+                    </code></pre>
+                    </div>
+                </li>
+                <li>
+                    <div class="collapsible-header"><i class="material-icons">speaker_notes</i>Notes</div>
+                    <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+                </li>
+            </ul>
+
         <div id="options" class="section scrollspy">
             <h5>Options</h5>
             <pre><code class="hljs javascript">
+//LMDD Options default values:
 lmdd.set(document.getElementById('someID'), {
-    containerClass:'lmdd-container',//choose any class to act as a container class, a container can nest draggable items inside
-    draggableItemClass: 'lmdd-draggable',//choose any class to act as a draggable item, a draggable can be moved inside and between containers
-    handleClass: false,//if you want a handle, just specify its class
-    dragstartTimeout: 50,//small delay on initial execution to let the user select text
-    calcInterval: 200,//interval between position calculations(ms), small amount of time means faster reaction and more CPU
-    revert: true,//when revert is set to true the draggable will maintain its original position when the cursor is out of container bounds
-    nativeScroll: false,//lmdd uses a scroll control function, you can eliminate it and use the native browser scroll
-    mirrorMinHeight: 100,//
-    mirrorMaxWidth: 500,//set the maximum width and minimum height of the draggable mirror (lmdd will scale the mirror to this size for better UX while dragging large items)
-    matchObject: false,//explain please... :-)
-    positionDelay: false,//setting to 'true' will make dragging a bit less responsive but will prevent flickering when moving nested structures
-    dataMode: false//setting to 'true' will undo all DOM manipulations on drag end, this is useful when integrating with react/angular/vue
+    containerClass:'lmdd-container',
+    draggableItemClass: 'lmdd-draggable',
+    handleClass: false,
+    dragstartTimeout: 50,
+    calcInterval: 200,
+    revert: true,
+    nativeScroll: false,
+    mirrorMinHeight: 100,
+    mirrorMaxWidth: 500,
+    positionDelay: false,
+    dataMode: false
 });
             </code></pre>
         </div>
+        <table>
+            <thead>
+            <tr>
+                <th>Option</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>containerClass</td>
+                <td>Containers act as drop zones for draggable items</td>
+            </tr><tr>
+                <td>draggableItemClass</td>
+                <td>Draggable items can be moved inside and between containers</td>
+            </tr><tr>
+                <td>handleClass</td>
+                <td>Restricts drag start to a specific element which acts as a drag "handle" </td>
+            </tr><tr>
+                <td>dragstartTimeout</td>
+                <td>Delays the drag operation for a short time to distinct it from other user intentions (such as selecting text)</td>
+            </tr><tr>
+                <td>calcInterval</td>
+                <td>Time interval in which LMDD evaluates the dragged element position, Short interval means more responsive experience (and more CPU...)</td>
+            </tr><tr>
+                <td>revert</td>
+                <td>When set to true the draggable will revert to its original position when the cursor is out of the container bounds</td>
+            </tr><tr>
+                <td>nativeScroll</td>
+                <td>LMDD uses its own auto-scroll function, you can eliminate it and use the native browser scroll</td>
+            </tr><tr>
+                <td>mirrorMinHeight,
+                    mirrorMaxWidth</td>
+                <td>Scale down the mirror size when it exceeds the maximum width set</td>
+            </tr><tr>
+                <td>positionDelay</td>
+                <td>When set to true - position will not be recalculated when the mouse stops moving (Prevents flickering on deep nested structures)</td>
+            </tr><tr>
+                <td>dataMode</td>
+                <td>When set to 'true' LMDD will undo all DOM mutations when the drag event ends, This is useful for integrating LMDD with Angule/React/Vue etc.</td>
+            </tr></tbody>
+        </table>
         <h5>Examples</h5>
         <h5>Integrations</h5>
         <h5>Events</h5>
 
-        <div id="simple-grid-example">
-            <div class="simple-grid z-depth-5">
-                <div class="light-green z-depth-3 grid-item">Green</div>
-                <div class="pink z-depth-3 grid-item">Pink</div>
-                <div class="deep-purple z-depth-3 grid-item">Purple</div>
-                <div class="light-blue z-depth-3 grid-item">Blue</div>
-                <div class="lime z-depth-3 grid-item">Lime</div>
-                <div class="teal z-depth-3 grid-item">Teal</div>
-                <div class="amber z-depth-3 grid-item">Amber</div>
-                <div class="deep-orange z-depth-3 grid-item">Orange</div>
-                <div class="black z-depth-3 grid-item">Black</div>
-            </div>
-        </div>
-        <div id="handle-example" class="z-depth-5">
-            <div class="handle-grid">
-                <div class="title z-depth-2">TODO</div>
-                <div class="z-depth-3 handle-item">
-                    <div class="content lmdd-block">
-                        <i class="material-icons handle">reorder</i>
-                        <div class="task">Code refactoring & optimizations</div>
-                    </div>
-                </div>
-                <div class="z-depth-3 handle-item">
-                    <div class="content lmdd-block">
-                        <i class="material-icons handle">reorder</i>
-                        <div class="task">Cross browser testing</div>
-                    </div>
-                </div>
-                <div class="z-depth-3 important handle-item">
-                    <div class="content lmdd-block">
-                        <i class="material-icons handle">reorder</i>
-                        <div class="task">Call mom</div>
-                    </div>
-                </div>
-            </div>
-            <div class="handle-grid done">
-                <div class="title z-depth-2">DONE</div>
-                <div class="z-depth-3 handle-item">
-                    <div class="content lmdd-block">
-                        <i class="material-icons handle">reorder</i>
-                        <div class="task">Basic Drag & Drop script</div>
-                    </div>
-                </div>
-                <div class="z-depth-3 handle-item">
-                    <div class="content lmdd-block">
-                        <i class="material-icons handle">reorder</i>
-                        <div class="task">Smooth transitions</div>
-                    </div>
-                </div>
-                <div class="z-depth-3 handle-item">
-                    <div class="content lmdd-block">
-                        <i class="material-icons handle">reorder</i>
-                        <div class="task">Support nested structures</div>
-                    </div>
-                </div>
-                <div class="z-depth-3 handle-item">
-                    <div class="content lmdd-block">
-                        <i class="material-icons handle">reorder</i>
-                        <div class="task">Scroll while dragging</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="nested-example">
-            <div class="nestable w-1-1 grey lighten-5 z-depth-5">
-                <div class="nestable w-1-3 nested-item red accent-1 z-depth-3">
-                    <div class="nested-item red z-depth-1"><p>Red</p></div>
-                    <div class="nested-item red z-depth-1"><p>Red</p></div>
-                    <div class="nested-item red z-depth-1"><p>Red</p></div>
-                </div>
-                <div class="nestable w-1-3 nested-item green accent-1 z-depth-3">
-                    <div class="nested-item green z-depth-1"><p>Green</p></div>
-                    <div class="nested-item green z-depth-1"><p>Green</p></div>
-                    <div class="nested-item green z-depth-1"><p>Green</p></div>
-                </div>
-                <div class="nestable w-1-3 nested-item blue accent-1 z-depth-3">
-                    <div class="nested-item blue z-depth-1"><p>Blue</p></div>
-                    <div class="nested-item blue z-depth-1"><p>Blue</p></div>
-                    <div class="nested-item blue z-depth-1"><p>Blue</p></div>
-                </div>
-            </div>
-        </div>
+
         <div class="browser-default" id="nested-tree-example">
             <ul class="browser-default nestable-ul">
                 <li class="browser-default nested-li">
