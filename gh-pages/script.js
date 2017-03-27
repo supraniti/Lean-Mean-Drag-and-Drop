@@ -28,7 +28,10 @@ lmdd.set(document.getElementById('features'), {
     draggableItemClass: 'feature-item'
 });
 
-
-
-
-
+var check = document.getElementById('nested-example');
+check.addEventListener('lmddbeforestart',eventHandler);
+check.addEventListener('lmddstart',eventHandler);
+check.addEventListener('lmddend',eventHandler);
+function eventHandler(event){
+    console.log(event,event.detail);
+}

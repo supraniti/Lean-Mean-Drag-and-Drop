@@ -43,7 +43,7 @@
     height:78px;
     color:white;
     font-size:15px;
-    border: 3px solid lightgoldenrodyellow;
+    border: 3px solid white;
     cursor:move;
 }
 
@@ -109,11 +109,13 @@
     padding:3px;
     margin:5px;
     color:white;
-    background-color: #8bc34a;
     font-size:15px;
+    background-color: grey;
     border: 3px solid lightgoldenrodyellow;
 }
-.priority .handle-item{
+.regular .handle-item{
+    background-color: #8bc34a;
+}.priority .handle-item{
     background-color: #E57373;
 }
 .done .handle-item{
