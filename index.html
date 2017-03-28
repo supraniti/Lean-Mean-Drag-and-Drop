@@ -28,7 +28,6 @@
     <meta name="theme-color" content="#ef5423">
     <!-- CSS-->
     <link href="gh-pages/style.css" type="text/css" rel="stylesheet">
-    <!--<link href="gh-pages/prism.css" rel="stylesheet">-->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/styles/default.min.css">
     <link href="dist/lmdd.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" type="text/css"
@@ -223,7 +222,7 @@
                     <div class="collapsible-header"><i class="material-icons">code</i></div>
                     <div class="collapsible-body">
                     <pre><code class="hljs HTML">
-Simple Grid
+Simple
 &lt;div id="basic-example"> (scope)
     &lt;div class="grid"> (container)
         &lt;div class="item">&lt;/div> (draggable)
@@ -254,7 +253,7 @@ Multiple Containers and handle
     });
 &lt;/script>
 
-Nested Grid
+Nested
 &lt;div id="nested-example"> (scope)
     &lt;div class="grid"> (container)
         &lt;div class="grid item"> (container AND draggable)
@@ -288,6 +287,7 @@ Nested Grid
                     </p></div>
                 </li>
             </ul>
+        </div>
         <div id="options" class="section scrollspy">
             <h5>Options</h5>
             <pre><code class="hljs javascript">
@@ -306,7 +306,6 @@ lmdd.set(document.getElementById('someID'), {
     dataMode: false
 });
             </code></pre>
-        </div>
         <table>
             <thead>
             <tr>
@@ -348,7 +347,9 @@ lmdd.set(document.getElementById('someID'), {
                 <td>When set to 'true' LMDD will undo all DOM mutations when the drag event ends, This is useful for integrating LMDD with Angule/React/Vue etc.</td>
             </tr></tbody>
         </table>
-            <h5>Additional Classes</h5>
+        </div>
+
+        <h5>Additional Classes</h5>
             <p>
             <b>'lmdd-block'</b> - To animate transitions LMDD makes a copy of all movable elements on its scope and set them on relative position,<br>
             this is an expensive process and might (in some cases) alter the way your markup renders while dragging.<br>
@@ -398,18 +399,18 @@ lmdd.set(document.getElementById('someID'), {
             <h5>Integrations</h5>
             LMDD is fairly easy to integrate with any other script. I would recommend treating the drag operation as any other user input,<br>
             just some kind of a sophisticated mouse gesture.<br>
-            Having this point of view in mind, the integration process should be as follows:<br>
-            1. Let your app do whatever your app does...<br>
-            2. Upon rendering your markup, set an LMDD instance on the relevant part of the DOM<br>
-            3. Set the dataMode to 'true'. (Which will undo any changes LMDD made on the DOM when the drag operation ends)<br>
-            4. Add an eventListener for the 'lmddend' event<br>
-            5. Use an event handler to process the event details and implement the necessary changes on your app data/state<br>
-
-
-
-
-
-
+        Having this point of view in mind, the integration process should be as follows:
+        <ol>
+            <li>Let your app do whatever your app does...</li>
+            <li>Upon rendering your markup, set an LMDD instance on the relevant part of the DOM</li>
+            <li>Set the dataMode to 'true'. (Which will undo any changes LMDD made on the DOM when the drag
+                operation ends)
+            </li>
+            <li>Add an eventListener for the 'lmddend' event</li>
+            <li>Use an event handler to process the event details and implement the necessary changes on your app
+                data/state
+            </li>
+        </ol>
         <div class="browser-default" id="nested-tree-example">
             <ul class="browser-default nestable-ul">
                 <li class="browser-default nested-li">
@@ -471,12 +472,12 @@ lmdd.set(document.getElementById('someID'), {
                 diskHeight: disk.height,
                 towerHeight: tower.height
             }
-        }
+        };
         var coordinates = {};
         var towers = ['first', 'second', 'third'];
         var disks = ['d1', 'd2', 'd3'];
         towers.forEach(function (tower) {
-            coordinates[tower] = {}
+            coordinates[tower] = {};
             disks.forEach(function (disk) {
                 coordinates[tower][disk] = getCoordinates(tower, disk);
             });
@@ -538,7 +539,7 @@ lmdd.set(document.getElementById('someID'), {
             if ( coordinates['third']['d1'].level === 0 && coordinates['third']['d2'].level === 1 && coordinates['third']['d3'].level === 2){
                 var itrs = document.getElementById('batch').childNodes.length;
                 alert('Hooray! you have smashed the towers of Hanoi challenge. The minimum steps needed for this task is 7, you have done it in ' + itrs + '.')
-            };
+            }
         }
         function clearBatch(){
             var el = document.getElementById('batch');
@@ -650,8 +651,6 @@ lmdd.set(document.getElementById('someID'), {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.10.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
-
-<!--<script src="gh-pages/prism.js"></script>-->
 <script src="dist/lmdd.js"></script>
 <script src="gh-pages/script.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.9/vue.min.js"></script>

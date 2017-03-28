@@ -443,13 +443,13 @@ var lmdd = (function () {
                         if (status === "dragStartTimeout") {//no events fired during the timeout
                             if ((scope.lmddOptions.handleClass) && (!event.target.classList.contains(scope.lmddOptions.handleClass))) {//not dragging with handle
                                 killEvent();
-                                return;
+
                             }
                             else {
                                 var target = getWrapper(event.target, scope.lmddOptions.draggableItemClass);
                                 if (!target) {//not dragging a draggable
                                     killEvent();
-                                    return;
+
                                 }
                                 else {
                                     scope.dispatchEvent(new CustomEvent('lmddbeforestart', {"bubbles": true}));
@@ -591,7 +591,7 @@ var lmdd = (function () {
             else{
                 mirror.style[prop] = cStyle[prop];
             }
-        })
+        });
         var scaleX = scope.lmddOptions.mirrorMaxWidth / shadow.getBoundingClientRect().width;
         var scaleY = scope.lmddOptions.mirrorMinHeight / shadow.getBoundingClientRect().height;
         var scale = Math.min(1, Math.max(scaleX, scaleY));
@@ -657,8 +657,7 @@ var lmdd = (function () {
         }
         tasks.executeTask("onDragEnd");
         if (positioned) {
-            var event = createLmddEvent("lmddend");
-            scope.dispatchEvent(event);
+            scope.dispatchEvent(createLmddEvent("lmddend"));
         }
         if (scope.lmddOptions.dataMode) {//undo DOM mutations
             if (positioned && cloning) {
