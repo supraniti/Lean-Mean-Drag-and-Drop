@@ -14,13 +14,15 @@ Super easy to integrate
 
 ```
 //Load LMDD css and js files
+
 <link href="../css/lmdd.min.css" rel="stylesheet">
 <script src="../js/lmdd.min.js"></script>
 
 //Initialize LMDD instance with your preferred options
+
 <script>lmdd.set(document.getElementById('markupID'),{optionsObject});</script>
 ```
 
 #### Examples & Instrcutions
 
-#can be found here: https://supraniti.github.io/Lean-Mean-Drag-and-Drop/
+can be found here: https://supraniti.github.io/Lean-Mean-Drag-and-Drop/
