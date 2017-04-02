@@ -70,8 +70,10 @@
 </header>
 <main>
     <a href="https://github.com/supraniti/Lean-Mean-Drag-and-Drop"
-       onclick="_gaq.push(['_trackPageview','/linktogithub'])" class="github-link"><img
-            src="gh-pages/images/GitHub-Mark-32px.png"></a>
+       onclick="trackOutboundLink('https://github.com/supraniti/Lean-Mean-Drag-and-Drop'); return false;"
+       class="github-link">
+        <img src="gh-pages/images/GitHub-Mark-32px.png">
+    </a>
     <div class="container">
         <div id="about" class="section scrollspy">
             <p class="flow-text"><i>Lean & Mean Drag and Drop is a small script for dragging, dropping, sorting and reordering html structures</i></p>
@@ -612,9 +614,16 @@
         a.src = g;
         m.parentNode.insertBefore(a, m)
     })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
     ga('create', 'UA-96446945-1', 'auto');
     ga('send', 'pageview');
+    var trackOutboundLink = function (url) {
+        ga('send', 'event', 'outbound', 'click', url, {
+            'transport': 'beacon',
+            'hitCallback': function () {
+                document.location = url;
+            }
+        });
+    }
 </script>
 </body>
 </html>
