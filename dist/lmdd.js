@@ -443,13 +443,11 @@ var lmdd = (function () {
                         if (status === "dragStartTimeout") {//no events fired during the timeout
                             if ((scope.lmddOptions.handleClass) && (!event.target.classList.contains(scope.lmddOptions.handleClass))) {//not dragging with handle
                                 killEvent();
-
                             }
                             else {
                                 var target = getWrapper(event.target, scope.lmddOptions.draggableItemClass);
                                 if (!target) {//not dragging a draggable
                                     killEvent();
-
                                 }
                                 else {
                                     scope.dispatchEvent(new CustomEvent('lmddbeforestart', {"bubbles": true}));
@@ -656,7 +654,9 @@ var lmdd = (function () {
             updateOriginalPosition(clone.elref)
         }
         tasks.executeTask("onDragEnd");
-        scope.dispatchEvent(createLmddEvent("lmddend"));
+        if (status !== "dragStartTimeout" && status !== "waitDragStart") {
+            scope.dispatchEvent(createLmddEvent("lmddend"));
+        }
         if (scope.lmddOptions.dataMode) {//undo DOM mutations
             if (positioned && cloning) {
                 dragged.parentNode.removeChild(dragged);
