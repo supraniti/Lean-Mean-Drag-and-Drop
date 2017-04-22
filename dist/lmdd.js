@@ -656,9 +656,7 @@ var lmdd = (function () {
             updateOriginalPosition(clone.elref)
         }
         tasks.executeTask("onDragEnd");
-        if (positioned) {
-            scope.dispatchEvent(createLmddEvent("lmddend"));
-        }
+        scope.dispatchEvent(createLmddEvent("lmddend"));
         if (scope.lmddOptions.dataMode) {//undo DOM mutations
             if (positioned && cloning) {
                 dragged.parentNode.removeChild(dragged);
