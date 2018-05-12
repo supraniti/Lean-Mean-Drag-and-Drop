@@ -159,8 +159,6 @@ var lmdd = (function () {
             var child = node.childNodes[n];
             if
             (
-                child.nodeType === 8
-                ||
                 (child.nodeType === 3 && !/\S/.test(child.nodeValue))
             ) {
                 node.removeChild(child);
